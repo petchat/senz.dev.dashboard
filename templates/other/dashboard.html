@@ -1,0 +1,1007 @@
+{% if not is_xhr|default(false) %}{% extends "base.html" %}{% endif -%}
+{% block content %}
+    <div id="dashboard">
+        <div class="box ">
+            <div class="box-header">
+                <span>Age&Gender</span>
+            </div>
+            <div class="box-content">
+        <div id="age" style="height:400px"></div>
+
+            </div>
+        </div>
+        <div class="box ">
+            <div class="box-header">
+                <span>Time spent by location</span>
+            </div>
+            <div class="box-content">
+                    <div id="location" style="height:400px"></div>
+
+            </div>
+        </div>
+        <div class="box ">
+            <div class="box-header">
+                <span>Time spent by motion</span>
+            </div>
+            <div class="box-content">
+                    <div id="motion" style="height:400px"></div>
+
+            </div>
+        </div>
+         <div class="box ">
+            <div class="box-header">
+                <span>{{event_name|safe}}</span>
+            </div>
+            <div class="box-content">
+                    <div id="event" style="height:400px"></div>
+
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+{% block extra_js %}
+  <script src="http://echarts.baidu.com/build/dist/echarts.js"></script>
+<script type="text/javascript">
+//        console.log('the age range data of man is : '+{{ man_data_list|safe }})
+//        console.log('the age range data of woman is : '+{{ woman_data_list|safe }})
+
+        require.config({
+            paths: {
+                echarts: 'http://echarts.baidu.com/build/dist'
+            }
+        });
+
+        require(
+            [
+                'echarts',
+                    'echarts/chart/line',
+                'echarts/chart/bar' // 使用柱状图就加载bar模块，按需加载
+            ],
+            function (ec) {
+
+                // 基于准备好的dom，初始化echarts图表
+                var myChart = ec.init(document.getElementById('age'));
+         //option begin
+               option = {
+    title : {
+
+        textStyle:{
+        fontSize: 24,
+        fontWeight: 'bolder',
+        color: '#5f7d8c'
+} ,
+        subtextStyle:{
+        fontSize: 12,
+        fontWeight: 'normal',
+        color: '#5f7d8c'
+} ,
+
+        text: 'Age & Gender',
+//        subtext: 'Application: Tesenz',
+//        backgroundColor: 'rgba(56,151,197,0.2)'
+    },
+    tooltip : {
+        trigger: 'axis'
+    },
+    legend: {
+        x: 'right',
+        itemWidth: 40,
+        itemHeight: 24,
+        data: ['man', 'woman']
+    },
+
+    xAxis : [
+        {
+            nameTextStyle:{
+            fontSize:14,
+            fontWeight:'bold'
+            },
+            name: 'Age Range',
+            type : 'category',
+            data : ['16down','16to35','35to55','55up']
+        }
+    ],
+    yAxis : [
+        {   nameTextStyle:{
+            fontSize:14,
+            fontWeight:'bold'
+        },
+            name:'Total Amount',
+            type : 'value'
+        }
+    ],
+    series : [
+        {
+            barGap:'5%',
+
+            name:'man',
+            type:'bar',
+            itemStyle:{
+                normal:{
+                    color:'#2EC7C9',
+                    barBorderRadius:4
+                }
+
+            },
+            data:{{ man_data_list|safe }}
+
+        },
+        {
+            barGap:'5%',
+            name:'woman',
+            type:'bar',
+                itemStyle:{
+                normal:{
+                    color:'#B6A2DE',
+//                    color:'#1790CF',
+                    barBorderRadius:4
+                }
+
+            },
+            data:{{ woman_data_list|safe }}
+        }
+    ]
+};
+//option end
+                // 为echarts对象加载数据
+                myChart.setOption(option);
+            }
+        //function end
+        );
+    //require end
+
+
+        require(
+            [
+                'echarts',
+                    'echarts/chart/line',
+                'echarts/chart/bar' // 使用柱状图就加载bar模块，按需加载
+            ],
+            function (ec) {
+
+                // 基于准备好的dom，初始化echarts图表
+                var myChart = ec.init(document.getElementById('location'),'blue');
+         //option begin
+               option = {
+    title : {
+
+        textStyle:{
+        fontSize: 24,
+        fontWeight: 'bolder',
+        color: '#5f7d8c'
+} ,
+        subtextStyle:{
+        fontSize: 12,
+        fontWeight: 'normal',
+        color: '#5f7d8c'
+} ,
+
+        text: 'Location percentage',
+//        subtext: 'Application: Tesenz',
+//        backgroundColor: 'rgba(56,151,197,0.2)'
+    },
+    tooltip : {
+        trigger: 'axis'
+    },
+    legend: {
+        x: 'right',
+        itemWidth: 40,
+        itemHeight: 24,
+        data: ['Location']
+    },
+
+    xAxis : [
+        {
+            nameTextStyle:{
+            fontSize:14,
+            fontWeight:'bold'
+            },
+            name: 'Name',
+            type : 'category',
+            data : {{location_name_list|safe}}
+        }
+    ],
+    yAxis : [
+        {   nameTextStyle:{
+            fontSize:14,
+            fontWeight:'bold',
+
+        },
+            name:'Time Percentage',
+            type : 'value'
+        }
+    ],
+series : [
+        {
+
+            name:'Location',
+            type:'bar',
+            itemStyle:{
+                normal:{
+                    color:'#2EC7C9',
+                    barBorderRadius:4
+                }
+
+            },
+            data:{{location_time_list|safe}}
+
+        }
+
+    ]
+};
+//option end
+                // 为echarts对象加载数据
+                myChart.setOption(option);
+            }
+        //function end
+        );
+    //require end
+
+    require(
+            [
+                'echarts',
+                    'echarts/chart/line',
+                'echarts/chart/bar' // 使用柱状图就加载bar模块，按需加载
+            ],
+            function (ec) {
+
+                // 基于准备好的dom，初始化echarts图表
+                var myChart = ec.init(document.getElementById('motion'));
+         //option begin
+               option = {
+    title : {
+
+        textStyle:{
+        fontSize: 24,
+        fontWeight: 'bolder',
+        color: '#5f7d8c'
+} ,
+        subtextStyle:{
+        fontSize: 12,
+        fontWeight: 'normal',
+        color: '#5f7d8c'
+} ,
+
+        text: 'Motion percentage',
+//        subtext: 'Application: Tesenz',
+//        backgroundColor: 'rgba(56,151,197,0.2)'
+    },
+    tooltip : {
+        trigger: 'axis'
+    },
+    legend: {
+        x: 'right',
+        itemWidth: 40,
+        itemHeight: 24,
+        data: ['Motion']
+    },
+
+    xAxis : [
+        {
+            nameTextStyle:{
+            fontSize:14,
+            fontWeight:'bold'
+            },
+            name: 'Name',
+            type : 'category',
+            data : {{motion_name_list|safe}}
+        }
+    ],
+    yAxis : [
+        {   nameTextStyle:{
+            fontSize:14,
+            fontWeight:'bold',
+
+        },
+            name:'Time Percentage',
+            type : 'value'
+        }
+    ],
+series : [
+        {
+
+            name:'Motion',
+            type:'bar',
+            itemStyle:{
+                normal:{
+                    color:'#2EC7C9',
+                    barBorderRadius:4
+                }
+
+            },
+            data:{{motion_time_list|safe}}
+
+        }
+
+    ]
+};
+//option end
+                // 为echarts对象加载数据
+                myChart.setOption(option);
+            }
+        //function end
+        );
+    //require end
+
+  require(
+            [
+                'echarts',
+                    'echarts/chart/line',
+                'echarts/chart/bar' // 使用柱状图就加载bar模块，按需加载
+            ],
+            function (ec) {
+
+                // 基于准备好的dom，初始化echarts图表
+                var myChart = ec.init(document.getElementById('event'));
+         //option begin
+               option = {
+    title : {
+
+        textStyle:{
+        fontSize: 24,
+        fontWeight: 'bolder',
+        color: '#5f7d8c'
+} ,
+        subtextStyle:{
+        fontSize: 12,
+        fontWeight: 'normal',
+        color: '#5f7d8c'
+} ,
+
+        text: 'Custom event statistics',
+//        subtext: 'Application: Tesenz',
+//        backgroundColor: 'rgba(56,151,197,0.2)'
+    },
+    tooltip : {
+        trigger: 'axis'
+    },
+    legend: {
+        x: 'right',
+        itemWidth: 40,
+        itemHeight: 24,
+        data: ['event1'
+        ]
+    },
+
+    xAxis : [
+        {
+            nameTextStyle:{
+            fontSize:14,
+            fontWeight:'bold'
+            },
+            name: 'Activity',
+            type : 'category',
+            data : {{event_to_activity_name_list|safe}}
+        }
+    ],
+    yAxis : [
+        {   nameTextStyle:{
+            fontSize:14,
+            fontWeight:'bold',
+
+        },
+            name:'Total Count',
+            type : 'value'
+        }
+    ],
+series : [
+        {
+
+            name:'event1',
+            type:'bar',
+            itemStyle:{
+                normal:{
+                    color:'#2EC7C9',
+                    barBorderRadius:4
+                }
+
+            },
+            data:{{event_to_activity_count_list|safe}}
+
+        }
+
+    ]
+};
+//option end
+                // 为echarts对象加载数据
+                myChart.setOption(option);
+            }
+        //function end
+        );
+    //require end
+
+//    require(
+//            [
+//                'echarts',
+//                    'echarts/chart/line',
+//                'echarts/chart/bar' // 使用柱状图就加载bar模块，按需加载
+//            ],
+//            function (ec) {
+//
+//                // 基于准备好的dom，初始化echarts图表
+//                var myChart = ec.init(document.getElementById('sound'));
+//         //option begin
+//               option = {
+//    title : {
+//
+//        textStyle:{
+//        fontSize: 24,
+//        fontWeight: 'bolder',
+//        color: '#5f7d8c'
+//} ,
+//        subtextStyle:{
+//        fontSize: 12,
+//        fontWeight: 'normal',
+//        color: '#5f7d8c'
+//} ,
+//
+//        text: 'Sound percentage',
+////        subtext: 'Application: Tesenz',
+////        backgroundColor: 'rgba(56,151,197,0.2)'
+//    },
+//    tooltip : {
+//        trigger: 'axis'
+//    },
+//    legend: {
+//        x: 'right',
+//        itemWidth: 40,
+//        itemHeight: 24,
+//        data: ['Location']
+//    },
+//
+//    xAxis : [
+//        {
+//            nameTextStyle:{
+//            fontSize:14,
+//            fontWeight:'bold'
+//            },
+//            name: 'Sound name',
+//            type : 'category',
+//            data : {{sound_name_list|safe}}
+//        }
+//    ],
+//    yAxis : [
+//        {   nameTextStyle:{
+//            fontSize:14,
+//            fontWeight:'bold',
+//
+//        },
+//            name:'Time Percentage',
+//            type : 'value'
+//        }
+//    ],
+//series : [
+//        {
+//
+//            name:'Location',
+//            type:'bar',
+//            itemStyle:{
+//                normal:{
+//                    color:'#2EC7C9',
+//                    barBorderRadius:4
+//                }
+//
+//            },
+//            data:{{sound_time_list|safe}}
+//
+//        }
+//
+//    ]
+//};
+////option end
+//                // 为echarts对象加载数据
+//                myChart.setOption(option);
+//            }
+//        //function end
+//        );
+    //require end
+    </script>
+{% endblock %}
+
+
+
+
+{% if not is_xhr|default(false) %}{% extends "shared/footer.html" %}{% endif -%}
+{% block content %}
+<div class="main-content">
+ <div id="dashboard">
+        <div class="box ">
+            <div class="box-header">
+                <span>Age&Gender</span>
+            </div>
+            <div class="box-content">
+        <div id="age" style="height:400px"></div>
+
+            </div>
+        </div>
+        <!--<div class="box ">-->
+            <!--<div class="box-header">-->
+                <!--<span>Time spent by location</span>-->
+            <!--</div>-->
+            <!--<div class="box-content">-->
+                    <!--<div id="location" style="height:400px"></div>-->
+
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="box ">-->
+            <!--<div class="box-header">-->
+                <!--<span>Time spent by motion</span>-->
+            <!--</div>-->
+            <!--<div class="box-content">-->
+                    <!--<div id="motion" style="height:400px"></div>-->
+
+            <!--</div>-->
+        <!--</div>-->
+         <!--<div class="box ">-->
+            <!--<div class="box-header">-->
+                <!--<span>{{event_name|safe}}</span>-->
+            <!--</div>-->
+            <!--<div class="box-content">-->
+                    <!--<div id="event" style="height:400px"></div>-->
+
+            <!--</div>-->
+        <!--</div>-->
+
+    </div>
+        </div>
+
+{% endblock %}
+{% block extra_js %}
+  <script src="http://echarts.baidu.com/build/dist/echarts.js"></script>
+<script type="text/javascript">
+//        console.log('the age range data of man is : '+{{ man_data_list|safe }})
+//        console.log('the age range data of woman is : '+{{ woman_data_list|safe }})
+
+        require.config({
+            paths: {
+                echarts: 'http://echarts.baidu.com/build/dist'
+            }
+        });
+
+        require(
+            [
+                'echarts',
+                    'echarts/chart/line',
+                'echarts/chart/bar' // 使用柱状图就加载bar模块，按需加载
+            ],
+            function (ec) {
+
+                // 基于准备好的dom，初始化echarts图表
+                var myChart = ec.init(document.getElementById('age'));
+         //option begin
+               option = {
+    title : {
+
+        textStyle:{
+        fontSize: 24,
+        fontWeight: 'bolder',
+        color: '#5f7d8c'
+} ,
+        subtextStyle:{
+        fontSize: 12,
+        fontWeight: 'normal',
+        color: '#5f7d8c'
+} ,
+
+        text: 'Age & Gender',
+//        subtext: 'Application: Tesenz',
+//        backgroundColor: 'rgba(56,151,197,0.2)'
+    },
+    tooltip : {
+        trigger: 'axis'
+    },
+    legend: {
+        x: 'right',
+        itemWidth: 40,
+        itemHeight: 24,
+        data: ['man', 'woman']
+    },
+
+    xAxis : [
+        {
+            nameTextStyle:{
+            fontSize:14,
+            fontWeight:'bold'
+            },
+            name: 'Age Range',
+            type : 'category',
+            data : ['16down','16to35','35to55','55up']
+        }
+    ],
+    yAxis : [
+        {   nameTextStyle:{
+            fontSize:14,
+            fontWeight:'bold'
+        },
+            name:'Total Amount',
+            type : 'value'
+        }
+    ],
+    series : [
+        {
+            barGap:'5%',
+
+            name:'man',
+            type:'bar',
+            itemStyle:{
+                normal:{
+                    color:'#2EC7C9',
+                    barBorderRadius:4
+                }
+
+            },
+            data:{{ man_data_list|safe }}
+
+        },
+        {
+            barGap:'5%',
+            name:'woman',
+            type:'bar',
+                itemStyle:{
+                normal:{
+                    color:'#B6A2DE',
+//                    color:'#1790CF',
+                    barBorderRadius:4
+                }
+
+            },
+            data:{{ woman_data_list|safe }}
+        }
+    ]
+};
+//option end
+                // 为echarts对象加载数据
+                myChart.setOption(option);
+            }
+        //function end
+        );
+    //require end
+
+
+        require(
+            [
+                'echarts',
+                    'echarts/chart/line',
+                'echarts/chart/bar' // 使用柱状图就加载bar模块，按需加载
+            ],
+            function (ec) {
+
+                // 基于准备好的dom，初始化echarts图表
+                var myChart = ec.init(document.getElementById('location'),'blue');
+         //option begin
+               option = {
+    title : {
+
+        textStyle:{
+        fontSize: 24,
+        fontWeight: 'bolder',
+        color: '#5f7d8c'
+} ,
+        subtextStyle:{
+        fontSize: 12,
+        fontWeight: 'normal',
+        color: '#5f7d8c'
+} ,
+
+        text: 'Location percentage',
+//        subtext: 'Application: Tesenz',
+//        backgroundColor: 'rgba(56,151,197,0.2)'
+    },
+    tooltip : {
+        trigger: 'axis'
+    },
+    legend: {
+        x: 'right',
+        itemWidth: 40,
+        itemHeight: 24,
+        data: ['Location']
+    },
+
+    xAxis : [
+        {
+            nameTextStyle:{
+            fontSize:14,
+            fontWeight:'bold'
+            },
+            name: 'Name',
+            type : 'category',
+            data : {{location_name_list|safe}}
+        }
+    ],
+    yAxis : [
+        {   nameTextStyle:{
+            fontSize:14,
+            fontWeight:'bold',
+
+        },
+            name:'Time Percentage',
+            type : 'value'
+        }
+    ],
+series : [
+        {
+
+            name:'Location',
+            type:'bar',
+            itemStyle:{
+                normal:{
+                    color:'#2EC7C9',
+                    barBorderRadius:4
+                }
+
+            },
+            data:{{location_time_list|safe}}
+
+        }
+
+    ]
+};
+//option end
+                // 为echarts对象加载数据
+                myChart.setOption(option);
+            }
+        //function end
+        );
+    //require end
+
+    require(
+            [
+                'echarts',
+                    'echarts/chart/line',
+                'echarts/chart/bar' // 使用柱状图就加载bar模块，按需加载
+            ],
+            function (ec) {
+
+                // 基于准备好的dom，初始化echarts图表
+                var myChart = ec.init(document.getElementById('motion'));
+         //option begin
+               option = {
+    title : {
+
+        textStyle:{
+        fontSize: 24,
+        fontWeight: 'bolder',
+        color: '#5f7d8c'
+} ,
+        subtextStyle:{
+        fontSize: 12,
+        fontWeight: 'normal',
+        color: '#5f7d8c'
+} ,
+
+        text: 'Motion percentage',
+//        subtext: 'Application: Tesenz',
+//        backgroundColor: 'rgba(56,151,197,0.2)'
+    },
+    tooltip : {
+        trigger: 'axis'
+    },
+    legend: {
+        x: 'right',
+        itemWidth: 40,
+        itemHeight: 24,
+        data: ['Motion']
+    },
+
+    xAxis : [
+        {
+            nameTextStyle:{
+            fontSize:14,
+            fontWeight:'bold'
+            },
+            name: 'Name',
+            type : 'category',
+            data : {{motion_name_list|safe}}
+        }
+    ],
+    yAxis : [
+        {   nameTextStyle:{
+            fontSize:14,
+            fontWeight:'bold',
+
+        },
+            name:'Time Percentage',
+            type : 'value'
+        }
+    ],
+series : [
+        {
+
+            name:'Motion',
+            type:'bar',
+            itemStyle:{
+                normal:{
+                    color:'#2EC7C9',
+                    barBorderRadius:4
+                }
+
+            },
+            data:{{motion_time_list|safe}}
+
+        }
+
+    ]
+};
+//option end
+                // 为echarts对象加载数据
+                myChart.setOption(option);
+            }
+        //function end
+        );
+    //require end
+
+  require(
+            [
+                'echarts',
+                    'echarts/chart/line',
+                'echarts/chart/bar' // 使用柱状图就加载bar模块，按需加载
+            ],
+            function (ec) {
+
+                // 基于准备好的dom，初始化echarts图表
+                var myChart = ec.init(document.getElementById('event'));
+         //option begin
+               option = {
+    title : {
+
+        textStyle:{
+        fontSize: 24,
+        fontWeight: 'bolder',
+        color: '#5f7d8c'
+} ,
+        subtextStyle:{
+        fontSize: 12,
+        fontWeight: 'normal',
+        color: '#5f7d8c'
+} ,
+
+        text: 'Custom event statistics',
+//        subtext: 'Application: Tesenz',
+//        backgroundColor: 'rgba(56,151,197,0.2)'
+    },
+    tooltip : {
+        trigger: 'axis'
+    },
+    legend: {
+        x: 'right',
+        itemWidth: 40,
+        itemHeight: 24,
+        data: ['event1'
+        ]
+    },
+
+    xAxis : [
+        {
+            nameTextStyle:{
+            fontSize:14,
+            fontWeight:'bold'
+            },
+            name: 'Activity',
+            type : 'category',
+            data : {{event_to_activity_name_list|safe}}
+        }
+    ],
+    yAxis : [
+        {   nameTextStyle:{
+            fontSize:14,
+            fontWeight:'bold',
+
+        },
+            name:'Total Count',
+            type : 'value'
+        }
+    ],
+series : [
+        {
+
+            name:'event1',
+            type:'bar',
+            itemStyle:{
+                normal:{
+                    color:'#2EC7C9',
+                    barBorderRadius:4
+                }
+
+            },
+            data:{{event_to_activity_count_list|safe}}
+
+        }
+
+    ]
+};
+//option end
+                // 为echarts对象加载数据
+                myChart.setOption(option);
+            }
+        //function end
+        );
+    //require end
+
+//    require(
+//            [
+//                'echarts',
+//                    'echarts/chart/line',
+//                'echarts/chart/bar' // 使用柱状图就加载bar模块，按需加载
+//            ],
+//            function (ec) {
+//
+//                // 基于准备好的dom，初始化echarts图表
+//                var myChart = ec.init(document.getElementById('sound'));
+//         //option begin
+//               option = {
+//    title : {
+//
+//        textStyle:{
+//        fontSize: 24,
+//        fontWeight: 'bolder',
+//        color: '#5f7d8c'
+//} ,
+//        subtextStyle:{
+//        fontSize: 12,
+//        fontWeight: 'normal',
+//        color: '#5f7d8c'
+//} ,
+//
+//        text: 'Sound percentage',
+////        subtext: 'Application: Tesenz',
+////        backgroundColor: 'rgba(56,151,197,0.2)'
+//    },
+//    tooltip : {
+//        trigger: 'axis'
+//    },
+//    legend: {
+//        x: 'right',
+//        itemWidth: 40,
+//        itemHeight: 24,
+//        data: ['Location']
+//    },
+//
+//    xAxis : [
+//        {
+//            nameTextStyle:{
+//            fontSize:14,
+//            fontWeight:'bold'
+//            },
+//            name: 'Sound name',
+//            type : 'category',
+//            data : {{sound_name_list|safe}}
+//        }
+//    ],
+//    yAxis : [
+//        {   nameTextStyle:{
+//            fontSize:14,
+//            fontWeight:'bold',
+//
+//        },
+//            name:'Time Percentage',
+//            type : 'value'
+//        }
+//    ],
+//series : [
+//        {
+//
+//            name:'Location',
+//            type:'bar',
+//            itemStyle:{
+//                normal:{
+//                    color:'#2EC7C9',
+//                    barBorderRadius:4
+//                }
+//
+//            },
+//            data:{{sound_time_list|safe}}
+//
+//        }
+//
+//    ]
+//};
+////option end
+//                // 为echarts对象加载数据
+//                myChart.setOption(option);
+//            }
+//        //function end
+//        );
+    //require end
+    </script>
+{% endblock %}

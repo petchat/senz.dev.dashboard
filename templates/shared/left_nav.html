@@ -1,0 +1,27 @@
+{% if not is_xhr|default(false) %}{% extends "shared/header.html" %}{% endif -%}
+{% block left_nav %}
+<div class="left-nav">
+                        <ul class="menu">
+                            <li {% if page == "overview" %}class="active"{% endif %}>
+                                <a href="{{ url_for(".index") }}">
+                                    <span class="glyphicon glyphicon-th"></span>
+                                    <span class="option-text">Dashboard</span>
+                                </a>
+                            </li>
+                            <li {% if page == "processes" %}class="active"{% endif %}>
+                                <a href="{{ url_for(".index") }}">
+                                    <span class="glyphicon glyphicon-tasks"></span>
+                                    <span class="option-text">Intergration</span>
+                                </a>
+                            </li>
+                            <li {% if page == "logs" %}class="active"{% endif %}>
+                                <a href="{{ url_for(".index") }}">
+                                    <span class="glyphicon glyphicon-cog"></span>
+                                    <span class="option-text">Settings</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+{% endblock %}
+
+

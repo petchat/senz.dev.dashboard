@@ -1,0 +1,47 @@
+
+{% if not is_xhr|default(false) %}{% extends "shared/base.html" %}{% endif -%}
+ {% block header %}
+<div class="header">
+                <div class="logo">
+                    <a href="{{ url_for("index") }}">
+                        <span class="app-name"> Senz <small>v0.2.0</small></span>
+                    </a>
+                </div>
+                 <div class="top-nav">
+                     {% if username %}
+                     <div id="account">
+                     <div class="dropdown">
+                          <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{ username }}
+                            <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                            <li><a href="/console">Console</a></li>
+                            <li><a href="/dashboard">Dashboard</a></li>
+                            <li><a href="/account">Account</a></li>
+                            <li><a href="/logout">logout</a></li>
+                          </ul>
+                        </div>
+                         </div>
+                     {% else %}
+
+                     <ul class="nav navbar-nav" id="login" >
+                        <li><a href="{{ url_for("login",_anchor="signin") }}">Login</a></li>
+                        <li><a href="{{ url_for("login",_anchor="signup") }}">Sign up</a></li>
+                     </ul>
+
+                     {% endif %}
+
+                    </div>
+
+                </div>
+{% endblock %}
+{% block content %}
+<iframe src="http://trysenz.com/" style="width:100%;height:100%"></iframe>
+
+{% endblock %}
+
+
+
+
+

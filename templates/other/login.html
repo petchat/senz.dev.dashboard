@@ -1,0 +1,10 @@
+{% if not is_xhr|default(false) %}{% extends "base.html" %}{% endif -%}
+{% block content %}
+    <h1>Content</h1>
+{% endblock %}
+{% block extra_js %}
+  <script src="http://echarts.baidu.com/build/dist/echarts.js"></script>
+<script type="text/javascript">
+
+    </script>
+{% endblock %}

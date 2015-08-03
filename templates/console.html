@@ -1,0 +1,74 @@
+
+{% if not is_xhr|default(false) %}{% extends "shared/base.html" %}{% endif -%}
+ {% block header %}
+<div class="header">
+                <div class="logo">
+                    <a href="{{ url_for("index") }}">
+                        <span class="app-name"> Senz <small>v0.2.0</small></span>
+                    </a>
+                </div>
+                 <div class="top-nav">
+                     <div id="account">
+                     <div class="dropdown">
+                          <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{ username }}
+                            <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                            <li><a href="/console">Console</a></li>
+                            <li><a href="/dashboard">Dashboard</a></li>
+                            <li><a href="/account">Account</a></li>
+                            <li><a href="/logout">logout</a></li>
+                          </ul>
+                        </div>
+                         </div>
+
+                    </div>
+
+                </div>
+{% endblock %}
+{% block content %}
+<div class="console-page">
+    <div class="applist">
+    {% for app_name, app_id in all_application_dict.items()%}
+        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 app-item-box">
+            <a href="{{ url_for("dashboard",app_name= app_name ,app_id= app_id )}}" class="app-item-link">
+            <span class="glyphicon glyphicon-th"></span>
+            <span class="option-text">{{ app_name }}</span></a>
+        </div>
+        {% endfor %}
+</div>
+<div class="console-operation" id="console-operation">
+    <a href="{{ url_for("index") }}" class="btn btn-success start-btn">快速入门</a>
+    <a href="#newapp" class="btn btn-default newapp-link" id="newapp-link">创建应用</a>
+</div>
+</div>
+
+<div ng-view="" class="ng-scope" style="display: none;" id="newapp-view">
+    <form id="console-form" action="/console" method="post" role="form" style="display: block;">
+
+        <div class="form-group">
+             <label class="control-label" for="appname">The name of your new application:</label>
+              <div class="controls">
+										<input type="text" name="appname" id="appname" tabindex="1" class="form-control" placeholder="App Name" value="">
+              </div>
+									</div>
+
+									<!--<div class="form-group">-->
+										<!--<input type="password" name="confirm-password" id="confirm-password" tabindex="2" class="form-control" placeholder="Confirm Password">-->
+									<!--</div>-->
+									<div class="form-group">
+										<div class="row">
+											<div class="col-sm-6 col-sm-offset-3">
+												<input type="submit" name="submit" id="submit" tabindex="4" class="form-control btn btn-primary" value="Create New">
+											</div>
+										</div>
+									</div>
+          </form>
+        </div>
+{% endblock %}
+
+
+
+
+
