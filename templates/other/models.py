@@ -18,32 +18,29 @@ class Dashboard:
         self.app_id = None
         pass
 
-    def get_app_key(self,app_table='Application'):
+    def get_all_tracker(self):
         try:
-            Application = Object.extend(app_table)
+            # 这里不能认为终端用户的数量少于1000
+            Application = Object.extend('Application')
             query = Query(Application)
             query.equal_to('app_id',self.app_id)
+            query.ascending('createdAt')
+            query.limit(1000)
             result_list = query.find()
-            length = len(result_list)
-            if length==0:
-                print 'error: application not exists in table Applicaiton'
-                return 0
-            elif length != 1:
-                print 'error: multi application exists in table Applicaiton'
-                return 0
-            else:
-                app_key = result_list[0].get('app_key')
-        except LeanCloudError, e:
+            all_tracker_dict = {}
+            if result_list:
+                for result in result_list:
+                    all_tracker_dict[result.get('username')] = result.id
 
-             raise e
-        return app_key
-
-    def get_demo_app_key(self,app_table='DemoApplication'):
-        return self.get_app_key(app_table=app_table)
-
-    def get_the_app(self,app_table='Application'):
+            self.all_tracker_dict = all_tracker_dict
+            return 1
+        except LeanCloudError,e:
+            print e
+            return 0
+    def get_age_and_gender_data_dict(self,table_name='AppStaticInfo',filed_name = 'app'):
         try:
-            Application = Object.extend(app_table)
+
+            Application = Object.extend('Application')
             query = Query(Application)
             query.equal_to('app_id',self.app_id)
             result_list = query.find()
@@ -56,40 +53,46 @@ class Dashboard:
                 return 0
             else:
                 app = result_list[0]
-        except LeanCloudError, e:
+                DbTable = Object.extend(table_name)
+                query = Query(DbTable)
+                query.equal_to(filed_name,app)
+                result_list = query.find()
+                length = len(result_list)
+                if length==0:
+                    print 'error: application not exists in table %s' %(str(table_name))
+                    return 0
+                elif length != 1:
+                    print 'error: multi application  exists in table %s' %(str(table_name))
+                    return 0
+                else:
+                    app_static_info = result_list[0]
+                    age_and_gender_dict = app_static_info.get('age_and_gender')
+                    return age_and_gender_dict
 
-             raise e
-        return app
 
-    def get_age_and_gender_data_dict(self,app_table='Application',filed_name = 'app'):
-        print app_table
-        try:
-            app = self.get_the_app(app_table=app_table)
-            static_info_table='AppStaticInfo'
-            DbTable = Object.extend(static_info_table)
-            query = Query(DbTable)
-            query.equal_to(filed_name,app)
-            query.exists('age_and_gender')
-            result_list = query.find()
-            length = len(result_list)
-            if length==0:
-                print 'error: application not exists in table %s' %(str(static_info_table))
-                return 0
-            elif length != 1:
-                print 'error: multi application  exists in table %s' %(str(static_info_table))
-                return 0
-            else:
-                app_static_info = result_list[0]
-                age_and_gender_dict = app_static_info.get('age_and_gender')
-                return age_and_gender_dict
+            # WeightedStaticInfo  = Object.extend('WeightedStaticInfo')
+            # query = Query(WeightedStaticInfo)
+            # query.exists('objectId')
+            # query.select('age','gender')
+            # staticInfoList = query.find()
+            # gender_type_list =['man','woman']
+            # age_type_list = ['16down','16to35','35to55','55up']
+            # dataDict ={gender_type:{age_type:0 for age_type in age_type_list} for gender_type in gender_type_list}
+            #
+            # for staticInfo in staticInfoList:
+            #     gender = 'man' if staticInfo.get('gender') >0 else 'woman'
+            #     age_info_dict= staticInfo.get('age')
+            #     dataDict[gender][age_info_dict.keys()[0]] += 1
+            # # dataDict ={'man' if staticInfo.get('gender') >0 else 'woman':dataDict['man' if staticInfo.get('gender') >0 else 'woman'][staticInfo.get('age').keys()[0]] +=1 for staticInfo in staticInfoList}
+            # new_data_dict = {key:[0 for i in range(4)] for key in dataDict.keys()}
+            # for index ,age_type in enumerate(age_type_list):
+            #     for gender_type in dataDict.keys():
+            #         new_data_dict[gender_type][index] = dataDict[gender_type][age_type]
 
         except LeanCloudError, e:
 
              raise e
         return age_and_gender_dict
-
-    def get_demo_age_and_gender_data_dict(self,app_table='DemoApplication',filed_name = 'app'):
-        return self.get_age_and_gender_data_dict(app_table='DemoApplication')
 
     def get_occupation_data_dict(self):
         try:
@@ -115,37 +118,45 @@ class Dashboard:
         return new_data_dict
 
 #下面三个函数的代码可以优化合并
-    def get_location_distribution_data_dict(self,app_table='Application',filed_name = 'app'):
+    def get_location_distribution_data_dict(self):
+        field = 'location'
+        k = 5
+        unknown = 'unknown'
         try:
-            app = self.get_the_app(app_table=app_table)
-            static_info_table='AppStaticInfo'
-            DbTable = Object.extend(static_info_table)
-            query = Query(DbTable)
-            query.equal_to(filed_name,app)
-            query.exists('location_percentage')
-            result_list = query.find()
-            length = len(result_list)
-            if length==0:
-                print 'error: application not exists in table %s' %(str(static_info_table))
-                return 0
-            elif length != 1:
-                print 'error: multi application  exists in table %s' %(str(static_info_table))
-                return 0
-            else:
-                app_static_info = result_list[0]
-                location_percentage_dict = app_static_info.get('location_percentage')
-                return location_percentage_dict
+            WeightedStaticInfo = Object.extend('WeightedUserContext')
+            query = Query(WeightedStaticInfo)
+            query.exists('objectId')
+            query.select(field)
+            # 这个地方后面需要做根据applicationid查询
+            #另外也需要分组查询
+            resultList = query.find()
+            seen_location_dict = {}
+            user_count = len(resultList)
+
+            for result in resultList:
+                location_dict = result.get(field)
+                for key, value in location_dict.items():
+                    if key in seen_location_dict.keys():
+                        seen_location_dict[key] += location_dict[key]
+                    else:
+                        seen_location_dict[key] = location_dict[key]
+            total_unknown_location_value = seen_location_dict.get(unknown)
+            #如果seen_location_dict中含有unknown字段的话，就删掉
+            if total_unknown_location_value:
+                del seen_location_dict[unknown]
+
+            sorted_seen_location = sorted(seen_location_dict.items(), key=lambda l: l[1], reverse=True)
+            sorted_frequent_location = sorted_seen_location[0:k]
+            total_known_time = user_count - total_unknown_location_value
+            sorted_frequent_location_percentage = [(str(kv[0]),(kv[1]/total_known_time)) for kv in sorted_frequent_location]
+            sorted_frequent_location_percentage.append(('others',1-sum([kv[1] for kv in sorted_frequent_location_percentage])))
+
+
 
         except LeanCloudError, e:
 
              raise e
-        return location_percentage_dict
-
-    def get_demo_location_distribution_data_dict(self,app_table='DemoApplication',filed_name = 'app'):
-        return self.get_location_distribution_data_dict(app_table=app_table)
-
-
-
+        return sorted_frequent_location_percentage
     def get_motion_distribution_data_dict(self):
         field = 'motion'
         k = 5
@@ -185,7 +196,6 @@ class Dashboard:
 
              raise e
         return sorted_frequent_location_percentage
-
     def get_sound_distribution_data_dict(self):
         field = 'sound'
         k = 5
@@ -224,70 +234,27 @@ class Dashboard:
              raise e
         return sorted_frequent_location_percentage
 
-    def get_user_profile_category_list(self):
-        return ['Occupation','Tastes']
-
-    def get_path_analysis_measure_list(self):
-        return ['Frequently Track']
-
-    def get_behavior_recognition_event_list(self):
-        return ['Event2']
-
-    def get_behavior_recognition_measure_list(self):
-        return ['Location','Time']
 
 
 
-    def get_event_to_activity_data(self,event_name=None,app_table='Application'):
-        app = self.get_the_app(app_table=app_table)
-        # print app_table
+
+    def get_event_to_activity_data(self,application_id,event_name,db_name='EventActivity'):
         try:
-            db_name = 'FakeEventActivity'
             DbTable  = Object.extend(db_name)
             query = Query(DbTable)
             #这里只是测试知道是少于1K条的
-            query.equal_to('application',app)
-            query.exists('activity_dict')
-            if event_name:
-                query.equal_to('event_name',event_name)
+            query.equal_to('event_name',event_name)
             # query.equal_to('application_id',application_id)
             query.descending('createdAt')
             query.limit(1)
-            result_list = query.find()
-            if result_list:
-                # event_name = result_list[0].get('event_name')
-                activity_statistics_dict = {result_list[0].get('event_name'):result_list[0].get('activity_dict')}
-            else:
-                activity_statistics_dict=[]
+            result = query.find()
+            activity_statistics_dict = result[0].get('activity_dict')
+
+
         except LeanCloudError, e:
 
              raise e
         return activity_statistics_dict
-
-    def get_demo_event_to_activity_data(self,event_name=None,app_table='DemoApplication'):
-       return  self.get_event_to_activity_data(event_name=event_name,app_table=app_table)
-        # app = self.get_the_app(app_table = app_table)
-        # try:
-        #     db_name = 'EventActivity'
-        #     DbTable  = Object.extend(db_name)
-        #     query = Query(DbTable)
-        #     #这里只是测试知道是少于1K条的
-        #     query.equal_to('application',app)
-        #     if event_name:
-        #         query.equal_to('event_name',event_name)
-        #     # query.equal_to('application_id',application_id)
-        #     query.descending('createdAt')
-        #     query.limit(1)
-        #     result_list = query.find()
-        #     if result_list:
-        #         # event_name = result_list[0].get('event_name')
-        #         activity_statistics_dict = {result_list[0].get('event_name'):result_list[0].get('activity_dict')}
-        #     else:
-        #         activity_statistics_dict=[]
-        # except LeanCloudError, e:
-        #
-        #      raise e
-        # return activity_statistics_dict
 
             # query.select('user','timestamp')
             # resultList = query.find()
@@ -387,25 +354,7 @@ class Developer:
         except LeanCloudError,e:
             print e
             return 0
-    def get_all_demo_application(self):
-        try:
-            # 这里认为应用的数量少于1000
-            Application = Object.extend('DemoApplication')
-            query = Query(Application)
-            # query.equal_to('user',self.user.become(self.session_token))
-            query.ascending('createdAt')
-            query.limit(1000)
-            result_list = query.find()
-            all_demo_application_dict = {}
-            if result_list:
-                for result in result_list:
-                    all_demo_application_dict[result.get('app_name')] = result.get('app_id')
 
-            self.all_demo_application_dict = all_demo_application_dict
-            return 1
-        except LeanCloudError,e:
-            print e
-            return 0
 
 
     def get_all_tracker(self):

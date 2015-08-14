@@ -4,7 +4,23 @@
  <div id="dashboard">
         <div class="box ">
             <div class="box-header">
-                <span>Age&Gender</span>
+                <span class="header-name">User Profile</span>
+                <div class="multi-options"><div class="switch-event" style="display: block">
+                           <span class="dropdown-text" style="font-size: 14px;margin-left: 70px;">Switch category:</span>
+                        <div class="dropdown" style="display: inline">
+                          <button class="btn btn-default dropdown-toggle" category-name="{{ user_profile_type }}" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{ default_user_profile_category }}
+                            <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+
+                               {% for user_profile_category in user_profile_category_list %}
+           <li><a href="#">{{ user_profile_category }}</a></li>
+        {% endfor %}
+                          </ul>
+                        </div>
+
+                      </div> </div>
             </div>
             <div class="box-content">
 
@@ -12,26 +28,83 @@
         <div id="age" style="height:400px ">
 
             {% if not age_data %}
-             <div><h1>Data not exists in this section !</h1></div>
+             <div class="not-exists"><h1>Data not exists in this section !</h1></div>
 {% endif %}
         </div>
                  </div></div>
      <div class="box ">
             <div class="box-header">
-                <span>Time spent by location</span>
+                <span class="header-name">Path Analysis</span>
+                 <div class="multi-options"><div class="switch-event" style="display: block">
+                           <span class="dropdown-text" style="font-size: 14px;margin-left: 70px;">Switch measure:</span>
+                        <div class="dropdown" style="display: inline">
+                          <button class="btn btn-default dropdown-toggle" category-name="{{ path_analysis_type }}"type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          {{ default_path_analysis_category }}
+                            <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+
+                               {% for path_analysis_measure in path_analysis_measure_list %}
+           <li><a href="#">{{ path_analysis_measure }}</a></li>
+        {% endfor %}
+                            <!--<li><a href="/">App1</a></li>-->
+                            <!--<li><a href="/">App2</a></li>-->
+
+                            <!--<li><a href="/">App...</a></li>-->
+                          </ul>
+                        </div>
+
+                      </div> </div>
             </div>
             <div class="box-content">
 
 
         <div id="location" style="height:400px ">
             {% if not location_data %}
-             <div><h1>Data not exists in this section !</h1></div>
+             <div class="not-exists"><h1>Data not exists in this section !</h1></div>
 {% endif %}
         </div>
                  </div></div>
      <div class="box ">
             <div class="box-header">
-                <span>Custom Event Info</span>
+                <span class="header-name">Behavior Recognition</span>
+                <div class="multi-options"><div class="switch-event" style="display: block">
+                           <span class="dropdown-text" style="font-size: 14px;margin-left: 70px;">Switch event:</span>
+                        <div class="dropdown" style="display: inline">
+                          <button class="btn btn-default dropdown-toggle" category-name="{{ event_name_type }}"type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{ default_event_name }}
+                            <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                               {% for behavior_recognition_event in behavior_recognition_event_list %}
+           <li><a href="#">{{ behavior_recognition_event }}</a></li>
+        {% endfor %}
+                            <!--<li><a href="/">App1</a></li>-->
+                            <!--<li><a href="/">App2</a></li>-->
+
+                            <!--<li><a href="/">App...</a></li>-->
+                          </ul>
+                        </div>
+                    <span class="dropdown-text" style="font-size: 14px;margin-left: 70px;">Switch measure:</span>
+                    <div class="dropdown" style="display: inline">
+
+                          <button class="btn btn-default dropdown-toggle" category-name="{{ behavior_recognition_measure_type }}"type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{ default_behavior_recognition_measure }}
+                            <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+
+                               {% for behavior_recognition_measure in behavior_recognition_measure_list %}
+           <li><a href="#">{{ behavior_recognition_measure }}</a></li>
+        {% endfor %}
+                            <!--<li><a href="/">App1</a></li>-->
+                            <!--<li><a href="/">App2</a></li>-->
+
+                            <!--<li><a href="/">App...</a></li>-->
+                          </ul>
+                        </div>
+                      </div> </div>
+
             </div>
             <div class="box-content">
 
@@ -48,36 +121,9 @@
 
             </div>
         </div>
-        <!--<div class="box ">-->
-            <!--<div class="box-header">-->
-                <!--<span>Time spent by location</span>-->
-            <!--</div>-->
-            <!--<div class="box-content">-->
-                    <!--<div id="location" style="height:400px"></div>-->
 
-            <!--</div>-->
-        <!--</div>-->
-        <!--<div class="box ">-->
-            <!--<div class="box-header">-->
-                <!--<span>Time spent by motion</span>-->
-            <!--</div>-->
-            <!--<div class="box-content">-->
-                    <!--<div id="motion" style="height:400px"></div>-->
 
-            <!--</div>-->
-        <!--</div>-->
-         <!--<div class="box ">-->
-            <!--<div class="box-header">-->
-                <!--<span>{{event_name|safe}}</span>-->
-            <!--</div>-->
-            <!--<div class="box-content">-->
-                    <!--<div id="event" style="height:400px"></div>-->
 
-            <!--</div>-->
-        <!--</div>-->
-
-    </div>
-        </div>
 
 {% endblock %}
 {% block extra_js %}

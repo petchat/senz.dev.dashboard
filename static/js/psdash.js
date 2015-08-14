@@ -150,14 +150,24 @@
 //    });
 //}
 //
+
 function init_dom(){
     active_id = window.location.hash.substring(1);
-    console.log(active_id)
+    //console.log(active_id)
     if (active_id == 'signup'){
+        $("#login-form").fadeOut(0);
         $("#register-form").fadeIn(0);
- 		$("#login-form").fadeOut(0);
+
 		$('#login-form-link').removeClass('active');
 		$('#register-form-link').addClass('active');
+        //e.preventDefault();
+    }
+    if (active_id == 'forgotpass'){
+        $("#panel-login").fadeOut(0);
+        $("#panel-forgotpass").fadeIn(0);
+
+		//$('#login-form-link').removeClass('active');
+		//$('#register-form-link').addClass('active');
         //e.preventDefault();
     }
 }
@@ -165,6 +175,7 @@ $(document).ready(function() {
     init_dom();
 });
 $(function() {
+
 
     $('#login-form-link').click(function(e) {
 		$("#login-form").delay(100).fadeIn(100);
@@ -180,6 +191,11 @@ $(function() {
 		$(this).addClass('active');
 		//e.preventDefault();
 	});
+    $('#forgot-password-link').click(function(e) {
+        console.log('forgot-password-linking')
+		$("#panel-login").fadeOut(0);
+        $("#panel-forgotpass").fadeIn(0);
+	});
     $('#newapp-link').click(function(e) {
 		$("#newapp-view").delay(100).fadeIn(100);
  		$(".console-page").fadeOut(100);
@@ -187,6 +203,56 @@ $(function() {
 		//$(this).addClass('active');
 		//e.preventDefault();
 	});
+    $('.btn-tracker').click(function(e){
+        var tracker_id = $(this).attr("tracker_id");
+        var app_id = $(".switch-app .dropdown button").attr("app_id")
 
+         $(this).removeClass("btn-success");
+        console.log($(this).text())
+        console.log($(this).attr("class"))
+         $(this).text("Tracked it!")
+        console.log(tracker_id);
+         $.post("/track",
+             {
+            tracker_id: tracker_id,
+                 app_id: app_id
 
+            },
+             function(data,status){
+
+             $(this).addClass("btn-default")
+
+                 console.log(data+" "+status)
+        });
+    });
+    $('.left-nav ul li a').click(function(e){
+        e.preventDefault();
+        var _xsrf = $("[name='_xsrf']").attr('value');
+        var app_id = $(".switch-app .dropdown button").attr("app_id");
+        console.log(_xsrf)
+        console.log(app_id)
+
+        $('.left-nav ul li[class="active"]').removeClass("active");
+        $(this).parent().addClass("active");
+        var href = $(this).attr('href');
+        console.log(href)
+        e.preventDefault();
+
+        $.post(href,
+             {
+            _xsrf: _xsrf,
+                 app_id: app_id
+
+            },
+             function(data,status){
+            $("#psdash").find(".main-content").html(data);
+             //$(this).addClass("btn-default")
+
+                 console.log(data+" "+status)
+        });
+    })
+
+    $(".alert").fadeTo(5000, 0.3).slideUp(2000, function(){
+    $(".alert").alert('close');
+});
 });

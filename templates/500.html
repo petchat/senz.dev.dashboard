@@ -1,0 +1,22 @@
+{% if not is_xhr|default(false) %}{% extends "shared/base.html" %}{% endif -%}
+ {% block header %}
+<div class="header">
+                <div class="logo">
+                    <a href="{{ url_for("index") }}">
+                        <span class="app-name"> Senz <small>v0.2.0</small></span>
+                    </a>
+                </div>
+                <div class="top-nav">
+                </div>
+            </div>
+{% endblock %}
+{% block content %}
+<div class="internal-server-error">
+    	<h1>500 Internal Server Error</h1>
+    <p>The server encountered an unexpected condition which prevented it from fulfilling the request.</p>
+
+</div>
+{% endblock %}
+
+
+

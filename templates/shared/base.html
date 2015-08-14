@@ -4,10 +4,13 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>psDash - Linux system dashboard</title>
+        <meta name="csrf-token" content="{{ _xsrf() }}">
+        <title>Senz - Contextual Aware Technology</title>
         <link href="{{ url_for(".static", filename="css/bootstrap.min.css") }}" rel="stylesheet">
         <link href="{{ url_for(".static", filename="css/psdash.css") }}" rel="stylesheet">
-        <link href='http://fonts.googleapis.com/css?family=Ubuntu:300,400' rel='stylesheet' type='text/css'>
+        <link href="{{ url_for(".static", filename="css/octicons.css") }}" rel="stylesheet">
+        <!--<link href='http://fonts.googleapis.com/css?family=Ubuntu:300,400' rel='stylesheet' type='text/css'>-->
+        <!--<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">-->
         {% block extra_css %}
         {% endblock %}
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -22,10 +25,20 @@
            {% block header %}{% endblock %}
             <div class="container">
                 <div class="content">
+                    {% for message in get_flashed_messages() %}
+                    <div class="alert alert-warning" style="position: fixed;left: 50%;top:10px;z-index: 9999;">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+
                     {% block left_nav %}{% endblock %}
                     {% block content %}{% endblock %}
                 </div>
             </div>
+
+    <input type="hidden" name="_xsrf" value="{{ _xsrf() }}">
+
             {% block footer %}{% endblock %}
         </div>
 
@@ -34,6 +47,9 @@
         <!-- Include all compiled plugins (below), or include individual files as needed -->
         <script src="{{ url_for(".static", filename="js/bootstrap.min.js") }}"></script>
         <script src="{{ url_for(".static", filename="js/psdash.js") }}"></script>
+        <!--<script src="{{ url_for(".static",filename="js/bundled.min.js")}}"></script>-->
+         <script src="{{ url_for(".static",filename="js/clipboard-button.js")}}"></script>
+        <script src="{{ url_for(".static",filename="js/ZeroClipboard.js")}}"></script>
         {% block extra_js %}
         {% endblock %}
     </body>

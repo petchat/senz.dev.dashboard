@@ -16,7 +16,7 @@
                           </button>
                           <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
                             <li><a href="/console">Console</a></li>
-                            <li><a href="/dashboard">Dashboard</a></li>
+                            <!--<li><a href="/dashboard">Dashboard</a></li>-->
                             <li><a href="/account">Account</a></li>
                             <li><a href="/logout">logout</a></li>
                           </ul>
@@ -39,7 +39,9 @@
         {% endfor %}
 </div>
 <div class="console-operation" id="console-operation">
-    <a href="{{ url_for("index") }}" class="btn btn-success start-btn">快速入门</a>
+    <!--<a href="{{ url_for("index") }}" class="btn btn-success start-btn">快速入门</a>-->
+        <a href="{{ url_for("demo") }}" class="btn btn-success start-btn">查看Demo</a>
+
     <a href="#newapp" class="btn btn-default newapp-link" id="newapp-link">创建应用</a>
 </div>
 </div>

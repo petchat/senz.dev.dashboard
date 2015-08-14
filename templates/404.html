@@ -1,0 +1,21 @@
+{% if not is_xhr|default(false) %}{% extends "shared/base.html" %}{% endif -%}
+ {% block header %}
+<div class="header">
+                <div class="logo">
+                    <a href="{{ url_for("index") }}">
+                        <span class="app-name"> Senz <small>v0.2.0</small></span>
+                    </a>
+                </div>
+                <div class="top-nav">
+                </div>
+            </div>
+{% endblock %}
+{% block content %}
+<div class="not-found">
+    	<h1>404 Not Found</h1>
+    <p>The server has not found anything matching the Request-URI.</p>
+</div>
+{% endblock %}
+
+
+

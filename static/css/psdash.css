@@ -6,7 +6,7 @@ body, html {
 }
 
 a {
-    color: #10839d;
+    color: #ffffff;
 }
 a:hover {
     text-decoration: none;
@@ -270,10 +270,17 @@ a:hover {
     margin-bottom: 10px;
 }
 
-#psdash .container .content .main-content div.box .box-header span {
+#psdash .container .content .main-content div.box .box-header .header-name {
     font-size: 20px;
     font-weight: 300;
-    color: #808080;
+    color: #5F7D8C;
+    padding: 10px 0;
+}
+
+#psdash .container .content .main-content div.box .box-header .option {
+    font-size: 14px;
+    font-weight: 300;
+    color: #5F7D8C;
     padding: 10px 0;
 }
 
@@ -423,6 +430,51 @@ a:hover {
     padding-right: 15px;
 
 }
+
+
+.clip_button {
+    width: auto;
+    height: auto;
+    margin: 0;
+        text-align: center;
+        /*border: 1px solid black;*/
+        border: 0;
+        background-color: #ffffff;
+        /*margin: 1px;*/
+        padding: 0;
+    border-radius: 0;
+        /*padding: 1px;*/
+      }
+.clip_button.zeroclipboard-is-hover { background-color: #eee; }
+.clip_button.zeroclipboard-is-active { background-color: #aaa; }
+
+.code-wrapper{
+    border: 1px solid #d0d0d0;
+    border-radius: 4px;
+    position: relative;
+    margin-right: 10px;
+}
+
+.zero-clipboard{
+    position: absolute;
+    right: 1px;
+    top:1px;
+}
+
+pre{
+    border: 0;
+    margin: 0;
+}
+
+h1,h2,h3,h4,h5,h6,label{
+    color: #000000;
+}
+
+#footer{
+    margin-top: 30px;
+}
+
+
 
 @media all and (max-width: 800px){
 	#psdash .container .content > div{

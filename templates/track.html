@@ -1,0 +1,24 @@
+{% if not is_xhr|default(false) %}{% extends "shared/header.html" %}{% endif -%}
+
+
+{% block content %}
+<div class="console-page">
+    <div class="applist" id="tracker-list">
+    {% for tracker_name, tracker_id in all_tracker_dict.items()%}
+        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 app-item-box">
+            <a href="{{ url_for("track",tracker_name= tracker_name ,tracker_id= tracker_id )}}" class="app-item-link">
+            <span class="glyphicon glyphicon-user"></span>
+            <span class="option-text">{{ tracker_name|truncate(30,True) }}</span></a>
+            <button  tabindex="4" tracker_id="{{ tracker_id }}" class="btn-tracker form-control btn btn-success" >Track it!</button>
+
+        </div>
+        {% endfor %}
+</div>
+
+
+{% endblock %}
+
+
+
+
+

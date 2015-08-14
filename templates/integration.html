@@ -1,0 +1,250 @@
+{% block content %}
+ <div id="dashboard">
+
+<div class="span12">
+            <h2 class="page-title">Senz SDK for Android
+                <!-- <small>Add new HomeBase</small> -->
+            </h2>
+            <div class="widget">
+                <div class="widget-title">
+                    <h4>
+                        <i class="icon-cog"></i>&nbsp;SDK Integration</h4>
+                </div>
+                <div class="widget-body form">
+                    <div id="form_wizard_1">
+                        <div id="content_1">
+                            <div class="span3">
+                                <h3>Let's Get Started!</h3>
+                                <h4>1. Integrate the SDK</h4>
+
+                            </div>
+
+                        </div>
+                        <div class="clearfix"></div>
+                        <div id="content_2" style="color: #777777; font-weight: normal; overflow: hidden;">
+                            <div class="form-horizontal">
+                                <div id="moreInstructions">
+                                    <div>
+                                        <label>
+                                            Download the SDK package, extract the jar and add it to your project libs directory:
+                                        </label>
+                                    </div>
+                                    <div class="clearfix">
+                                        <div class="downloads_left" style="">
+                                            <br>
+                                            <a href="javascript:markDownload();" class="baseSDkBtn"><button class="btn btn-success">DOWNLOAD THE SDK </button><i class="fa fa-android"></i></a>
+
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <h4>2. Update your Android Manifest file</h4>
+                                    <!--
+                                    Users get the most out of HomeBase if all these permissions are allowed.
+                                    <br />
+                                    Some permissions are not mandatory, but highly increase user experience.
+                                    -->
+                                    <div id="conHolder" class="hide"></div>
+                                    <!--<copy-button target-element=".android-permissions"><span>fsadkfj</span></copy-button>-->
+                                    <label>Add the following permissions to the manifest section so that you could get more information about your users:</label>
+
+                                    <div id="permissionsCode" class="code-wrapper">
+                                        <div class="zero-clipboard">
+                                        <span class="btn btn-default clip_button android-permissions-clipboard"><span class="octicon octicon-clippy"></span></span>
+                                    </div>
+                                        <pre id="codeCopy1" class="clipboard"><code id="android-permissions">&lt;uses-permission android:name="android.permission.INTERNET" /&gt;
+&lt;uses-permission android:name="android.permission.READ_PHONE_STATE" /&gt;
+&lt;uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /&gt;
+&lt;uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /&gt;
+&lt;uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /&gt;
+&lt;uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /&gt;
+&lt;uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /&gt;
+&lt;uses-permission android:name="android.permission.READ_PROFILE" /&gt;
+&lt;uses-permission android:name="android.permission.READ_CONTACTS" /&gt;
+&lt;uses-permission android:name="android.permission.GET_ACCOUNTS" /&gt;
+&lt;uses-permission android:name="android.permission.READ_CALL_LOG" /&gt;
+&lt;uses-permission android:name="android.permission.READ_SMS" /&gt;
+&lt;uses-permission android:name="android.permission.GET_TASKS"/&gt;
+&lt;uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKS" /&gt;
+&lt;uses-permission android:required="false" android:name="android.permission.WAKE_LOCK"/&gt;
+&lt;uses-permission android:required="false" android:name="android.permission.ACCESS_FINE_LOCATION" /&gt;
+</code></pre>
+
+                                    </div>
+
+
+                                    <!--
+                                    There are several required activities and services which are needed for the SDK.
+
+                                    <br /><br />
+                                    -->
+                                    <br>
+                                    <label>In your application section please add the following:</label>
+                                    <div id="Div2" class="code-wrapper">
+                                         <div class="zero-clipboard">
+                                        <span class="btn btn-default clip_button related-declaration-clipboard"><span class="octicon octicon-clippy"></span></span>
+                                    </div>
+                                        <pre  class="clipboard"><code id="related-declaration">
+&lt;!-- Declare the service of the SDK --&gt;
+&lt;service android:name="com.senz.brainssdk.BrainsService"/&gt;
+
+&lt;!-- Declare receiver that is used by the SDK --&gt;
+&lt;receiver android:name="com.senz.brainssdk.BrainsBroadcastReceiver"&gt;
+	&lt;intent-filter&gt;
+		&lt;action android:name="android.intent.action.BOOT_COMPLETED"/&gt;
+		&lt;action android:name="android.net.wifi.STATE_CHANGE"/&gt;
+		&lt;action android:name="android.location.PROVIDERS_CHANGED"/&gt;
+		&lt;action android:name="com.brainssdk.action.BRAINS"/&gt;
+	&lt;/intent-filter&gt;
+&lt;/receiver&gt;
+
+&lt;!-- Declare your own receiver with the events you would like to receive from the SDK --&gt;
+&lt;receiver android:name=".YourBroadcastReceiverClassNameHere"&gt;
+    &lt;intent-filter&gt;
+        &lt;action android:name="brainssdk.intent.action.LEAVING_HOME"/&gt;
+        &lt;action android:name="brainssdk.intent.action.ENTERING_HOME"/&gt;
+        &lt;action android:name="brainssdk.intent.action.LEAVING_WORK"/&gt;
+        &lt;action android:name="brainssdk.intent.action.ENTERING_WORK"/&gt;
+        &lt;action android:name="brainssdk.intent.action.HEADING_TO_WORK"/&gt;
+        &lt;action android:name="brainssdk.intent.action.HEADING_HOME"/&gt;
+        &lt;action android:name="brainssdk.intent.action.WENT_TO_SLEEP"/&gt;
+        &lt;action android:name="brainssdk.intent.action.WOKE_UP"/&gt;
+        &lt;action android:name="brainssdk.intent.action.GEO_FENCE"/&gt;
+        &lt;action android:name="brainssdk.intent.action.USER_ACTIVITY_CHANGED"/&gt;
+        &lt;action android:name="brainssdk.intent.action.USER_BROWSING"/&gt;
+    &lt;/intent-filter&gt;
+&lt;/receiver&gt;
+
+<strong>&lt;!-- Highlighted below is the unique application key that was generated for your app: --&gt;</strong>
+&lt;meta-data android:name ="SENZ_APP_ID" android:value ="<i class="bold_1 label-warning">{{ app_id }}</i>"/&gt;
+&lt;meta-data android:name ="SENZ_APP_KEY" android:value ="<i class="bold_1 label-warning">{{ app_key }}</i>"/&gt;</code>
+</pre>
+                                    </div>
+                                    <br>
+
+                                    <br>
+
+                                    <h4>3. Running the SDK</h4>
+                                    <div class="control-group">
+                                        <div style="margin-top: 6px;">
+                                            <label>
+                                                The senz SDK is started by calling its <strong>start</strong> API in the onCreate method of your custom <a href="http://developer.android.com/reference/android/app/Application.html" target="_blank">Application</a> / Main
+                        <a href="http://developer.android.com/reference/android/app/Activity.html" target="_blank">Activity</a> or a <a href="http://developer.android.com/reference/android/app/Service.html" target="_blank">Service</a>, depends on the structure of your application. Once you get <strong>onConnected</strong> response to
+the callback your senz SDK is ready for usage.
+
+                                            </label>
+                                            <div class="code-wrapper">
+                                                 <div class="zero-clipboard">
+                                        <span class="btn btn-default clip_button sdk-example-clipboard"><span class="octicon octicon-clippy"></span></span>
+                                    </div>
+                                            <pre><code id="sdk-example">BrainsAPI.start(this, new BrainsAPICallback(){
+    @Override
+    public void onConnected() {
+        Log.d("senz", "SDK is connected. Start using it from here.");
+    }
+    @Override
+    public void onError(Error error) {
+        Log.e ("senz", "Error starting the SDK. code: " + error.ge tCode() + " message: " + error.getMessage());
+    }
+    @Override
+    public void onDisconnected() {
+        Log.d("senz", "SDK is disconnected");
+    }
+    @Override
+    public void onUserDataReady(UserData user) {
+        Log.d("senz", "User data ready");
+    }
+});
+</code></pre></div>
+                                        </div>
+                                    </div>
+                                    <!--
+                                    <div class="control-group">
+                                        <div style="margin-top: 6px;">
+                                            <label>
+                                                To stop the Brains SDK just call the following code in the onDestroy method of your Activity or Service.<span class="pull-right"><span id="conHolder7"></span></span>
+                                            </label>
+                                            <div id="codeCopy7" class="border_grey gen_shadow_1 helvetica_14_lightgrey" style="margin-right: 20px; line-height: 22px; padding: 10px 16px;">
+                                                BrainsAPI.stop(context);
+                                            </div>
+                                            <br />
+                                        </div>
+                                    </div>
+                                    -->
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+     </div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script type="text/javascript">
+var client1 = new ZeroClipboard( $('.android-permissions-clipboard') );
+
+      client1.on( 'ready', function(event) {
+        // console.log( 'movie is loaded' );
+
+        client1.on( 'copy', function(event) {
+            copied_text = $('#android-permissions').text()
+          event.clipboardData.setData('text/plain',copied_text);
+        } );
+
+        client1.on( 'aftercopy', function(event) {
+          console.log('Copied text to clipboard: ' + event.data['text/plain']);
+        } );
+      } );
+
+      client1.on( 'error', function(event) {
+        // console.log( 'ZeroClipboard error of type "' + event.name + '": ' + event.message );
+        ZeroClipboard.destroy();
+      } );
+
+    var client2 = new ZeroClipboard( $('.related-declaration-clipboard') );
+
+      client2.on( 'ready', function(event) {
+        // console.log( 'movie is loaded' );
+
+        client2.on( 'copy', function(event) {
+            copied_text = $('#related-declaration').text();
+          event.clipboardData.setData('text/plain',copied_text);
+        } );
+
+        client2.on( 'aftercopy', function(event) {
+          console.log('Copied text to clipboard: ' + event.data['text/plain']);
+        } );
+      } );
+
+      client2.on( 'error', function(event) {
+        // console.log( 'ZeroClipboard error of type "' + event.name + '": ' + event.message );
+        ZeroClipboard.destroy();
+      } );
+
+    var client3 = new ZeroClipboard( $('.sdk-example-clipboard') );
+
+      client3.on( 'ready', function(event) {
+        // console.log( 'movie is loaded' );
+
+        client3.on( 'copy', function(event) {
+            copied_text = $('#sdk-example').text();
+          event.clipboardData.setData('text/plain',copied_text);
+        } );
+
+        client3.on( 'aftercopy', function(event) {
+          console.log('Copied text to clipboard: ' + event.data['text/plain']);
+        } );
+      } );
+
+      client3.on( 'error', function(event) {
+        // console.log( 'ZeroClipboard error of type "' + event.name + '": ' + event.message );
+        ZeroClipboard.destroy();
+      } );
+    </script>
+{% endblock %}

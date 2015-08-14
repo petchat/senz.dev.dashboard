@@ -26,13 +26,13 @@
                            <span class="dropdown-text">Switch application:</span>
 
                         <div class="dropdown">
-                          <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          <button class="btn btn-default dropdown-toggle" app_id="{{ app_id }}"type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             {{ app_name }}
                             <span class="caret"></span>
                           </button>
                           <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                               {% for app_name, app_id in all_application_dict.items()%}
-           <li><a href="{{ url_for("dashboard",app_name= app_name ,app_id= app_id )}}">{{app_name}}</a></li>
+                               {% for app_name, app_id in all_application_dict.items() %}
+           <li><a href="{{ url_for( route_link ,app_name= app_name ,app_id= app_id )}}">{{app_name}}</a></li>
         {% endfor %}
                             <!--<li><a href="/">App1</a></li>-->
                             <!--<li><a href="/">App2</a></li>-->
@@ -50,7 +50,7 @@
                           </button>
                           <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
                             <li><a href="/console">Console</a></li>
-                            <li><a href="/dashboard">Dashboard</a></li>
+                            <!--<li><a href="/dashboard">Dashboard</a></li>-->
                             <li><a href="/account">Account</a></li>
                             <li><a href="/logout">logout</a></li>
                           </ul>
