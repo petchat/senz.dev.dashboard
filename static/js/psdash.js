@@ -252,6 +252,8 @@ $(function() {
         });
     })
 
+
+
     $(".alert").fadeTo(5000, 0.3).slideUp(2000, function(){
     $(".alert").alert('close');
 });

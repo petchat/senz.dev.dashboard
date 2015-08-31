@@ -3,7 +3,8 @@
 <div class="left-nav" id="left-nav">
                         <ul class="menu">
                             <li class="active">
-                                <a href="{{ url_for("dashboard") }}">
+                                {% set dashboard_link = '/demo' %}
+                                <a href="{{ dashboard_link }}">
                                     <span class="glyphicon glyphicon-th"></span>
                                     <span class="option-text">Dashboard</span>
                                 </a>

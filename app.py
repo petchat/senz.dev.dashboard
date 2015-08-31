@@ -1,7 +1,7 @@
 # coding: utf-8
 
 import datetime
-from flask import Flask, render_template,request,session,redirect,url_for,flash,abort,make_response
+from flask import Flask, render_template,request,session,redirect,url_for,flash,abort,make_response,jsonify
 from flask_wtf.csrf import CsrfProtect
 import hashlib
 import random
@@ -25,8 +25,8 @@ def generate_token():
 
 @app.before_request
 def xsrf_protect():
-    print request.endpoint
-    if request.method == "POST" and request.endpoint not in ['integration','settings']:
+    print 'The endpoint of the request is: '+str(request.endpoint)
+    if request.method == "POST" and request.endpoint not in ['integration','settings','ajax_demo','demo','dash']:
         token = session.pop('_xsrf', None)
         print 'token: ' +str(token)
         print 'form xsrf: ' +str(request.form.get('_xsrf'))
@@ -141,16 +141,13 @@ def settings():
     # return redirect(url_for('dashboard',username=username))
 # 注意现在还没有做user和app_id是否是从属关系的认证
 
-@app.route('/demo',methods=['POST','GET'])
-def demo():
+@app.route('/dash',methods=['GET','POST'])
+def dash():
     username = session.get('username')
     session_token = session.get('session_token')
-
     if not session_token:
         return redirect(url_for('index'))
-    # app_name = app_name
-    # app_id = request.args.get('app_id')
-    # print 'the app_id of the app is: %s' %(str(app_id))
+
 
     user = Developer()
     user.session_token = session_token
@@ -173,71 +170,78 @@ def demo():
     print 'app_name is %s and app_id is %s' %(str(app_name),str(app_id))
     dashboard = Dashboard()
     dashboard.app_id = app_id
-
     all_app_event = 1
-
     if request.method == 'POST':
-        pass
-        # new_data_dict = dashboard.get_demo_age_and_gender_data_dict()
-        # if not new_data_dict:
-        #     age_data = False
-        #     age_category_list = []
-        #     man_data_list = []
-        #     woman_data_list = []
-        # else:
-        #     age_data = True
-        #     age_category_list = sorted(new_data_dict['man'].keys())
-        #     man_data_list = [key[1] for key in sorted(new_data_dict['man'].items(),key=lambda l:l[0])]
-        #     woman_data_list = [key[1] for key in sorted(new_data_dict['woman'].items(),key=lambda l:l[0])]
-        # print 'data in age_and_gender is display_age_and_gender:%s  age_category_list:%s man_data_list:%s woman_data_list:%s' %(str(age_data),str(age_category_list),str(man_data_list),str(woman_data_list))
-        #
-        #
-        # new_data_dict = dashboard.get_demo_location_distribution_data_dict()
-        # del new_data_dict['unknown']
-        # if not new_data_dict:
-        #     location_data = False
-        #     location_category_list = []
-        #     location_percentage_list = []
-        # else:
-        #     location_data = True
-        #     location_category_list = [str(key[0]) for key in sorted(new_data_dict.items(),key=lambda l:l[1],reverse=True)]
-        #     location_percentage_list = [key[1] for key in sorted(new_data_dict.items(),key=lambda l:l[1],reverse=True)]
-        #
-        # print 'data in get_location_distribution_data_dict is location_data: %s location_category_list:%s  location_percentage_list:%s ' %(str(location_data),str(location_category_list),str(location_percentage_list))
-        # new_data_dict = dashboard.get_demo_event_to_activity_data()
-        # print 'new data dict'+str(new_data_dict.values())
-        # # if not new_data_dict.values():
-        # if not new_data_dict:
-        #     event_data = False
-        #     event_name = None
-        #     activity_category_list = []
-        #     activity_count_list = []
-        # else:
-        #     event_data = True
-        #     event_name = new_data_dict.keys()[0]
-        #     new_data_dict = new_data_dict.values()[0]
-        #     del new_data_dict['others']
-        #     activity_category_list = [str(key[0]) for key in sorted(new_data_dict.items(),key=lambda l:l[1],reverse=True)]
-        #     activity_count_list = [key[1] for key in sorted(new_data_dict.items(),key=lambda l:l[1],reverse=True)]
-        #
-        # print 'data in get_event_to_activity_data is event_data: %s event_name:%s  activity_category_list:%s  activity_count_list: %s' %(str(event_data),str(event_name),str(activity_category_list),str(activity_count_list))
-    elif request.method == 'GET':
-        default_user_profile_category = 'Age&Gender'
-        default_path_analysis_category = 'Frequently Location'
-        default_event_name = 'Event1'
-        default_behavior_recognition_measure = 'Activity'
+        is_xhr = True
+    else:
+        is_xhr = False
+    dashboard_link = '/demo'
+    # new_data_dict = dashboard.get_demo_age_and_gender_data_dict()
+    # if not new_data_dict:
+    #     age_data = False
+    #     age_category_list = []
+    #     man_data_list = []
+    #     woman_data_list = []
+    # else:
+    #     age_data = True
+    #     age_category_list = sorted(new_data_dict['man'].keys())
+    #     man_data_list = [key[1] for key in sorted(new_data_dict['man'].items(),key=lambda l:l[0])]
+    #     woman_data_list = [key[1] for key in sorted(new_data_dict['woman'].items(),key=lambda l:l[0])]
+    # print 'data in age_and_gender is display_age_and_gender:%s  age_category_list:%s man_data_list:%s woman_data_list:%s' %(str(age_data),str(age_category_list),str(man_data_list),str(woman_data_list))
+    #
+    #
+    # new_data_dict = dashboard.get_demo_location_distribution_data_dict()
+    # del new_data_dict['unknown']
+    # if not new_data_dict:
+    #     location_data = False
+    #     location_category_list = []
+    #     location_percentage_list = []
+    # else:
+    #     location_data = True
+    #     location_category_list = [str(key[0]) for key in sorted(new_data_dict.items(),key=lambda l:l[1],reverse=True)]
+    #     location_percentage_list = [key[1] for key in sorted(new_data_dict.items(),key=lambda l:l[1],reverse=True)]
+    #
+    # print 'data in get_location_distribution_data_dict is location_data: %s location_category_list:%s  location_percentage_list:%s ' %(str(location_data),str(location_category_list),str(location_percentage_list))
+    # new_data_dict = dashboard.get_demo_event_to_activity_data()
+    # print 'new data dict'+str(new_data_dict.values())
+    # if not new_data_dict.values():
 
-        user_profile_type = 'age'
-        path_analysis_type = 'location'
-        event_name_type = 'Event1'
-        behavior_recognition_measure_type = 'Activity'
+    # if not new_data_dict:
+    #     event_data = False
+    #     event_name = None
+    #     activity_category_list = []
+    #     activity_count_list = []
+    # else:
+    #     event_data = True
+    #     event_name = new_data_dict.keys()[0]
+    #     new_data_dict = new_data_dict.values()[0]
+    #     del new_data_dict['others']
+    #     activity_category_list = [str(key[0]) for key in sorted(new_data_dict.items(),key=lambda l:l[1],reverse=True)]
+    #     activity_count_list = [key[1] for key in sorted(new_data_dict.items(),key=lambda l:l[1],reverse=True)]
+    #
+    # print 'data in get_event_to_activity_data is event_data: %s event_name:%s  activity_category_list:%s  activity_count_list: %s' %(str(event_data),str(event_name),str(activity_category_list),str(activity_count_list))
+
+    default_user_profile_category = 'Age&Gender'
+    default_path_analysis_category = 'Frequently Location'
+    default_event_name = 'Event1'
+    default_behavior_recognition_measure = 'Activity'
+
+    user_profile_type = 'age'
+    path_analysis_type = 'location'
+    event_name_type = 'Event1'
+    behavior_recognition_measure_type = 'activity'
 
 
 
-        user_profile_category_list = dashboard.get_user_profile_category_list()    #['Occupation','Tastes']
-        path_analysis_measure_list = dashboard.get_path_analysis_measure_list() # ['Frequently Track']
-        behavior_recognition_event_list = dashboard.get_behavior_recognition_event_list() #['event2']
-        behavior_recognition_measure_list = dashboard.get_behavior_recognition_measure_list() #['Location','Time']
+    user_profile_category_dict = dashboard.get_user_profile_category_dict()    #['Occupation','Tastes']
+    path_analysis_measure_dict = dashboard.get_path_analysis_measure_dict() # ['Frequently Track']
+    behavior_recognition_event_dict = dashboard.get_behavior_recognition_event_dict() #['event2']
+    behavior_recognition_measure_dict = dashboard.get_behavior_recognition_measure_dict() #['Location','Time']
+
+    del user_profile_category_dict[user_profile_type]
+    del path_analysis_measure_dict[path_analysis_type]
+    del behavior_recognition_event_dict[event_name_type]
+    del behavior_recognition_measure_dict[behavior_recognition_measure_type]
 
 
     # sorted_frequent_location_percentage = dashboard.get_location_distribution_data_dict()
@@ -251,8 +255,11 @@ def demo():
     # print 'sorted_frequent_motion_percentage: ' + str(sorted_frequent_motion_percentage)
     # print 'sorted_frequent_sound_percentage: ' + str(sorted_frequent_sound_percentage)
     # print 'sorted_frequent_sound_percentage: ' + str(activity_statistics_dict)
+
     print 'log comes out !!!!!'
-    return render_template('demo.html',
+    return render_template('shared/dash.html',
+                           is_xhr = is_xhr,
+                           dashboard_link = dashboard_link,
                            route_link='dashboard',
                            # sort according to ['16down', '16to35', '35to55', '55up']
                            # discard unknown data
@@ -265,11 +272,11 @@ def demo():
                            # age_category_list = age_category_list,
                            # man_data_list = man_data_list,
                            # woman_data_list = woman_data_list,
-
+                           #
                            # location_data = location_data,
                            #  location_category_list = location_category_list,
                            #  location_percentage_list = location_percentage_list,
-                           #
+
                            #  event_data=event_data,
                            #   event_name =event_name,
                            # activity_category_list=activity_category_list,
@@ -285,10 +292,10 @@ def demo():
                             event_name_type = event_name_type,
                             behavior_recognition_measure_type = behavior_recognition_measure_type,
 
-                           user_profile_category_list = user_profile_category_list,
-                           path_analysis_measure_list = path_analysis_measure_list,
-                           behavior_recognition_event_list = behavior_recognition_event_list,
-                           behavior_recognition_measure_list = behavior_recognition_measure_list
+                           user_profile_category_dict = user_profile_category_dict,
+                           path_analysis_measure_dict = path_analysis_measure_dict,
+                           behavior_recognition_event_dict = behavior_recognition_event_dict,
+                           behavior_recognition_measure_dict = behavior_recognition_measure_dict
 
                            # location_name_list = [str(kv[0]) for kv in sorted_frequent_location_percentage],
                            # location_time_list = [kv[1] for kv in sorted_frequent_location_percentage],
@@ -301,6 +308,219 @@ def demo():
                            # event_to_activity_count_list=activity_statistics_dict.values()
                            )
 
+@app.route('/demo',methods=['GET','POST'])
+def demo():
+    username = session.get('username')
+    session_token = session.get('session_token')
+    if not session_token:
+        return redirect(url_for('index'))
+
+
+    user = Developer()
+    user.session_token = session_token
+    if user.get_all_demo_application():
+        all_demo_application_dict = user.all_demo_application_dict
+    else:
+        print 'no demo application  exists'
+        all_demo_application_dict ={}
+    print 'all_demo_application_dict is : %s' %(str(all_demo_application_dict))
+    if 'Demo1' in all_demo_application_dict.keys():
+        app_name = 'Demo1'
+        app_id = all_demo_application_dict[app_name]
+    else:
+        'Demo not exists'
+        app_name = None
+        app_id = None
+    session['app_name'] = app_name
+    session['app_id'] = app_id
+    # del all_demo_application_dict[app_name]
+    print 'app_name is %s and app_id is %s' %(str(app_name),str(app_id))
+    dashboard = Dashboard()
+    dashboard.app_id = app_id
+    all_app_event = 1
+    if request.method == 'POST':
+        is_xhr = True
+    else:
+        is_xhr = False
+    dashboard_link = '/demo'
+    # new_data_dict = dashboard.get_demo_age_and_gender_data_dict()
+    # if not new_data_dict:
+    #     age_data = False
+    #     age_category_list = []
+    #     man_data_list = []
+    #     woman_data_list = []
+    # else:
+    #     age_data = True
+    #     age_category_list = sorted(new_data_dict['man'].keys())
+    #     man_data_list = [key[1] for key in sorted(new_data_dict['man'].items(),key=lambda l:l[0])]
+    #     woman_data_list = [key[1] for key in sorted(new_data_dict['woman'].items(),key=lambda l:l[0])]
+    # print 'data in age_and_gender is display_age_and_gender:%s  age_category_list:%s man_data_list:%s woman_data_list:%s' %(str(age_data),str(age_category_list),str(man_data_list),str(woman_data_list))
+    #
+    #
+    # new_data_dict = dashboard.get_demo_location_distribution_data_dict()
+    # del new_data_dict['unknown']
+    # if not new_data_dict:
+    #     location_data = False
+    #     location_category_list = []
+    #     location_percentage_list = []
+    # else:
+    #     location_data = True
+    #     location_category_list = [str(key[0]) for key in sorted(new_data_dict.items(),key=lambda l:l[1],reverse=True)]
+    #     location_percentage_list = [key[1] for key in sorted(new_data_dict.items(),key=lambda l:l[1],reverse=True)]
+    #
+    # print 'data in get_location_distribution_data_dict is location_data: %s location_category_list:%s  location_percentage_list:%s ' %(str(location_data),str(location_category_list),str(location_percentage_list))
+    # new_data_dict = dashboard.get_demo_event_to_activity_data()
+    # print 'new data dict'+str(new_data_dict.values())
+    # if not new_data_dict.values():
+
+    # if not new_data_dict:
+    #     event_data = False
+    #     event_name = None
+    #     activity_category_list = []
+    #     activity_count_list = []
+    # else:
+    #     event_data = True
+    #     event_name = new_data_dict.keys()[0]
+    #     new_data_dict = new_data_dict.values()[0]
+    #     del new_data_dict['others']
+    #     activity_category_list = [str(key[0]) for key in sorted(new_data_dict.items(),key=lambda l:l[1],reverse=True)]
+    #     activity_count_list = [key[1] for key in sorted(new_data_dict.items(),key=lambda l:l[1],reverse=True)]
+    #
+    # print 'data in get_event_to_activity_data is event_data: %s event_name:%s  activity_category_list:%s  activity_count_list: %s' %(str(event_data),str(event_name),str(activity_category_list),str(activity_count_list))
+
+    default_user_profile_category = 'Age&Gender'
+    default_path_analysis_category = 'Frequently Location'
+    default_event_name = 'Event1'
+    default_behavior_recognition_measure = 'Activity'
+
+    user_profile_type = 'age'
+    path_analysis_type = 'location'
+    event_name_type = 'Event1'
+    behavior_recognition_measure_type = 'activity'
+
+
+
+    user_profile_category_dict = dashboard.get_user_profile_category_dict()    #['Occupation','Tastes']
+    path_analysis_measure_dict = dashboard.get_path_analysis_measure_dict() # ['Frequently Track']
+    behavior_recognition_event_dict = dashboard.get_behavior_recognition_event_dict() #['event2']
+    behavior_recognition_measure_dict = dashboard.get_behavior_recognition_measure_dict() #['Location','Time']
+
+    del user_profile_category_dict[user_profile_type]
+    del path_analysis_measure_dict[path_analysis_type]
+    del behavior_recognition_event_dict[event_name_type]
+    del behavior_recognition_measure_dict[behavior_recognition_measure_type]
+
+
+    # sorted_frequent_location_percentage = dashboard.get_location_distribution_data_dict()
+    # sorted_frequent_motion_percentage=dashboard.get_motion_distribution_data_dict()
+    # sorted_frequent_sound_percentage = dashboard.get_sound_distribution_data_dict()
+    # event_name = 'event1'
+    # application_id = 'application_id'
+    # activity_statistics_dict = dashboard.get_event_to_activity_data(application_id,event_name)
+    # print 'new_data_dict: ' + str(new_data_dict)
+    # print 'sorted_frequent_location_percentage: ' +str(sorted_frequent_location_percentage)
+    # print 'sorted_frequent_motion_percentage: ' + str(sorted_frequent_motion_percentage)
+    # print 'sorted_frequent_sound_percentage: ' + str(sorted_frequent_sound_percentage)
+    # print 'sorted_frequent_sound_percentage: ' + str(activity_statistics_dict)
+
+    print 'log comes out !!!!!'
+    return render_template('demo.html',
+                           is_xhr = is_xhr,
+                           dashboard_link = dashboard_link,
+                           route_link='dashboard',
+                           # sort according to ['16down', '16to35', '35to55', '55up']
+                           # discard unknown data
+                            username = username,
+                           app_name = app_name,
+                           app_id =app_id,
+                           all_application_dict = {},
+
+                           # age_data = age_data,
+                           # age_category_list = age_category_list,
+                           # man_data_list = man_data_list,
+                           # woman_data_list = woman_data_list,
+                           #
+                           # location_data = location_data,
+                           #  location_category_list = location_category_list,
+                           #  location_percentage_list = location_percentage_list,
+
+                           #  event_data=event_data,
+                           #   event_name =event_name,
+                           # activity_category_list=activity_category_list,
+                           # activity_count_list=activity_count_list,
+
+                            default_user_profile_category = default_user_profile_category,
+                           default_path_analysis_category = default_path_analysis_category,
+                           default_event_name = default_event_name,
+                           default_behavior_recognition_measure = default_behavior_recognition_measure,
+
+                           user_profile_type = user_profile_type,
+                           path_analysis_type = path_analysis_type,
+                            event_name_type = event_name_type,
+                            behavior_recognition_measure_type = behavior_recognition_measure_type,
+
+                           user_profile_category_dict = user_profile_category_dict,
+                           path_analysis_measure_dict = path_analysis_measure_dict,
+                           behavior_recognition_event_dict = behavior_recognition_event_dict,
+                           behavior_recognition_measure_dict = behavior_recognition_measure_dict
+
+                           # location_name_list = [str(kv[0]) for kv in sorted_frequent_location_percentage],
+                           # location_time_list = [kv[1] for kv in sorted_frequent_location_percentage],
+                           # motion_name_list = [str(kv[0]) for kv in sorted_frequent_motion_percentage],
+                           # motion_time_list = [kv[1] for kv in sorted_frequent_motion_percentage],
+                           # sound_name_list = [str(kv[0]) for kv in sorted_frequent_sound_percentage],
+                           # sound_time_list = [kv[1] for kv in sorted_frequent_sound_percentage],
+                           # event_name =event_name,
+                           # event_to_activity_name_list=[str(key) for key in activity_statistics_dict.keys()],
+                           # event_to_activity_count_list=activity_statistics_dict.values()
+                           )
+
+@app.route('/ajax/demo/<param>',methods=['GET','POST'])
+def ajax_demo(param):
+    username = session.get('username')
+    session_token = session.get('session_token')
+
+    if not session_token:
+        print 'session_token not exists!'
+        return None
+
+    # app_name = app_name
+    # app_id = request.args.get('app_id')
+    # print 'the app_id of the app is: %s' %(str(app_id))
+
+    user = Developer()
+    user.session_token = session_token
+    print 'The form is: %s' %(str(request.form))
+    print 'Param is: %s' %(str(param))
+    _xsrf = request.form.get('_xsrf')
+    app_id = request.form.get('app_id')
+
+    dashboard = Dashboard()
+    dashboard.app_id = app_id
+
+    if param == 'profile':
+        category = request.form.get('category')
+        print 'before get_profile_option'
+        option = dashboard.get_profile_option(category=category,kind='demo')
+        print 'Option is: %s' %(str(option))
+        return jsonify(option)
+        pass
+    elif param == 'path':
+        category = request.form.get('category')
+        option = dashboard.get_path_option(category=category,kind='demo')
+        return jsonify(option)
+        pass
+    elif param == 'behavior':
+        event_name = request.form.get('event')
+        category = request.form.get('category')
+        option = dashboard.get_event_option(event_name=event_name,category=category,kind='demo')
+        print 'after get_event_option'
+        print 'Option is: %s' %(str(option))
+        return jsonify(option)
+        pass
+    else:
+        return None
+        pass
 
 @app.route('/dashboard',methods=['GET','POST'])
 def dashboard():
@@ -445,7 +665,7 @@ def login():
         # email=request.form['email']
         username = request.form['username']
         password=request.form['password']
-        remember = request.form['remember']
+        remember = request.form.get('remember')
         result = user.login_with_username(username=username,password=password)
         if result:
             print 'redirecting to console'

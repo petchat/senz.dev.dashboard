@@ -8,11 +8,231 @@ from leancloud import User
 
 from wsgi import signer
 
-
+import copy
 
 not_binary_label_dict = {'field':['field__manufacture', 'field__financial', 'field__infotech', 'field__law', 'field__agriculture', 'field__human_resource', 'field__commerce', 'field__natural', 'field__service', 'field__humanities', 'field__medical', 'field__architecture', 'field__athlete'], 'age':['age__16to35', 'age__35to55', 'age__55up', 'age__16down'], 'sport':['sport__basketball', 'sport__bicycling', 'sport__tabel_tennis', 'sport__football', 'sport__jogging', 'sport__badminton', 'sport__fitness'],'consumption': ['consumption__10000to20000', 'consumption__20000up', 'consumption__5000to10000', 'consumption__5000down'], 'occupation':['occupation__freelancer', 'occupation__supervisor', 'occupation__student', 'occupation__others', 'occupation__official', 'occupation__salesman', 'occupation__teacher', 'occupation__soldier', 'occupation__engineer']}
 binary_label_list = [u'ACG', u'indoorsman', u'game_show', u'has_car', u'game_news', u'entertainment_news', u'health', u'online_shopping', u'variety_show', u'business_news', u'tvseries_show', u'current_news', u'sports_news', u'tech_news', u'offline_shopping', u'pregnant', u'gender', u'study', u'married', u'sports_show', u'gamer', u'social', u'has_pet']
 query_limit = 1000
+
+
+user_profile_base_option = {
+    'title' : {
+        'textStyle':{
+        'fontSize': 24,
+        'fontWeight': 'bolder',
+        'color': '#5f7d8c'
+        } ,
+        'subtextStyle':{
+        'fontSize': 12,
+        'fontWeight': 'normal',
+        'color': '#5f7d8c'
+        } ,
+        'text': ''
+    },
+    'tooltip': {
+        'trigger': 'axis'
+    },
+    'legend': {
+        'x': 'right',
+        'itemWidth': 40,
+        'itemHeight': 24,
+        'data': ''
+    },
+
+    'xAxis': [
+        {
+            'nameTextStyle':{
+            'fontSize':14,
+            'fontWeight':'bold'
+            },
+            'name': '',
+            'type': 'category',
+            'data' : ''
+        }
+    ],
+    'yAxis' : [
+        {   'nameTextStyle':{
+            'fontSize':14,
+            'fontWeight':'bold'
+        },
+            'name':'',
+            'type': 'value'
+        }
+    ],
+    'series': [
+        {
+            'barGap':'5%',
+            'name':'man',
+            'type':'bar',
+            'itemStyle':{
+                'normal':{
+                    'color':'#2EC7C9',
+                    'barBorderRadius':4
+                }
+
+            },
+            'data':''
+        },
+        {
+            'barGap':'5%',
+            'name':'woman',
+            'type':'bar',
+            'itemStyle':{
+                'normal':{
+                    'color':'#B6A2DE',
+                    'barBorderRadius':4
+                }
+
+            },
+            'data':''
+
+
+        }
+    ]
+}
+
+
+path_analysis_base_option = {
+    'title': {
+        'textStyle':{
+        'fontSize': 24,
+        'fontWeight': 'bolder',
+        'color': '#5f7d8c'
+} ,
+        'subtextStyle':{
+        'fontSize': 12,
+        'fontWeight': 'normal',
+        'color': '#5f7d8c'
+} ,
+
+        'text': 'Location percentage'
+    },
+    'tooltip ': {
+        'trigger': 'axis'
+    },
+    'legend': {
+        'x': 'right',
+        'itemWidth': 40,
+        'itemHeight': 24,
+        'data': ['Location']
+    },
+
+    'xAxis' : [
+        {
+            'nameTextStyle':{
+            'fontSize':14,
+            'fontWeight':'bold'
+            },
+            'name': 'Name',
+            'type': 'category',
+            'data': '',
+
+             'axisLabel':{
+            'interval':0,
+            'rotate':5
+}
+        }
+    ],
+    'yAxis': [
+        {   'nameTextStyle':{
+            'fontSize':14,
+            'fontWeight':'bold'
+        },
+            'name':'Time Percentage',
+            'type': 'value'
+        }
+    ],
+'series': [
+        {
+            'name':'Location',
+            'type':'bar',
+            'itemStyle':{
+                'normal':{
+                    'color':'#2EC7C9',
+                    'barBorderRadius':4
+                }
+
+            },
+            'data':''
+
+        }
+
+    ]
+}
+
+
+event_recognition_base_option= {
+    'title': {
+        'textStyle':{
+        'fontSize': 24,
+        'fontWeight': 'bolder',
+        'color': '#5f7d8c'
+} ,
+        'subtextStyle':{
+        'fontSize': 12,
+        'fontWeight': 'normal',
+        'color': '#5f7d8c'
+} ,
+
+        'text': 'Custom event statistics'
+    },
+    'tooltip': {
+        'trigger': 'axis'
+    },
+    'legend': {
+        'x': 'right',
+        'itemWidth': 40,
+        'itemHeight': 24,
+        'data': [{
+            'name': ''
+        }]
+    },
+    'xAxis': [
+        {
+            'nameTextStyle':{
+            'fontSize':10,
+            'fontWeight':'bold'
+            },
+            'name': 'Activity',
+            'type': 'category',
+            'data':'',
+
+             'axisLabel':{
+            'interval':0,
+            'rotate':5
+}
+        }
+    ],
+    'yAxis': [
+        {   'nameTextStyle':{
+            'fontSize':14,
+            'fontWeight':'bold'
+
+        },
+            'name':'Times',
+            'type': 'value'
+        }
+    ],
+'series': [
+        {
+
+            'name':'',
+            'type':'bar',
+            'itemStyle':{
+                'normal':{
+                    'color':'#2EC7C9',
+                    'barBorderRadius':4
+                }
+            },
+            'data':''
+
+        }
+
+    ]
+}
+
+
+
 class Dashboard:
     def __init__(self):
         self.app_id = None
@@ -41,18 +261,21 @@ class Dashboard:
     def get_demo_app_key(self,app_table='DemoApplication'):
         return self.get_app_key(app_table=app_table)
 
-    def get_the_app(self,app_table='Application'):
+    def get_the_app(self,app_table='Application',kind=None):
         try:
-            Application = Object.extend(app_table)
+            if kind == 'demo':
+                Application = Object.extend('DemoApplication')
+            else:
+                Application = Object.extend('Application')
             query = Query(Application)
             query.equal_to('app_id',self.app_id)
             result_list = query.find()
             length = len(result_list)
             if length==0:
-                print 'error: application not exists in table Applicaiton'
+                print 'error: application not exists in table Application'
                 return 0
             elif length != 1:
-                print 'error: multi application exists in table Applicaiton'
+                print 'error: multi application exists in table Application'
                 return 0
             else:
                 app = result_list[0]
@@ -61,88 +284,173 @@ class Dashboard:
              raise e
         return app
 
-    def get_age_and_gender_data_dict(self,app_table='Application',filed_name = 'app'):
-        print app_table
+    def get_age_and_gender_data_dict(self,app_table='Application',field_name = 'app',kind=None):
+        # print app_table
+        age_and_gender_dict={}
         try:
-            app = self.get_the_app(app_table=app_table)
+            app = self.get_the_app(kind=kind)
             static_info_table='AppStaticInfo'
             DbTable = Object.extend(static_info_table)
             query = Query(DbTable)
-            query.equal_to(filed_name,app)
+            query.equal_to(field_name,app)
             query.exists('age_and_gender')
             result_list = query.find()
             length = len(result_list)
             if length==0:
                 print 'error: application not exists in table %s' %(str(static_info_table))
-                return 0
-            elif length != 1:
+                return {}
+            elif length > 1:
                 print 'error: multi application  exists in table %s' %(str(static_info_table))
-                return 0
-            else:
-                app_static_info = result_list[0]
-                age_and_gender_dict = app_static_info.get('age_and_gender')
-                return age_and_gender_dict
+                # return 0
+
+            app_static_info = result_list[0]
+            age_and_gender_dict = app_static_info.get('age_and_gender')
+            # return age_and_gender_dict
 
         except LeanCloudError, e:
 
              raise e
         return age_and_gender_dict
 
-    def get_demo_age_and_gender_data_dict(self,app_table='DemoApplication',filed_name = 'app'):
-        return self.get_age_and_gender_data_dict(app_table='DemoApplication')
+    # def get_demo_age_and_gender_data_dict(self,app_table='DemoApplication',field_name = 'app'):
+    #     return self.get_age_and_gender_data_dict(app_table=app_table)
 
-    def get_occupation_data_dict(self):
+    def get_occupation_data_dict(self,app_table='Application',field_name = 'app',kind=None):
         try:
-            WeightedStaticInfo  = Object.extend('WeightedStaticInfo')
-            query = Query(WeightedStaticInfo)
-            query.exists('objectId')
-            staticInfoList = query.find()
-            dataDict ={gender_type:{age_type:0 for age_type in age_type_list} for gender_type in gender_type_list}
+            app = self.get_the_app(kind=kind)
+            static_info_table='AppStaticInfo'
+            DbTable = Object.extend(static_info_table)
+            query = Query(DbTable)
+            query.equal_to(field_name,app)
+            query.exists('occupation')
+            result_list = query.find()
+            length = len(result_list)
+            if length==0:
+                print 'error: application not exists in table %s' %(str(static_info_table))
+                return {}
+            elif length > 1:
+                print 'error: multi application  exists in table %s' %(str(static_info_table))
+                # return 0
 
-            for staticInfo in staticInfoList:
-                gender = 'man' if staticInfo.get('gender') >0 else 'woman'
-                age_info_dict= staticInfo.get('age')
-                dataDict[gender][age_info_dict.keys()[0]] += 1
-            # dataDict ={'man' if staticInfo.get('gender') >0 else 'woman':dataDict['man' if staticInfo.get('gender') >0 else 'woman'][staticInfo.get('age').keys()[0]] +=1 for staticInfo in staticInfoList}
-            new_data_dict = {key:[0 for i in range(4)] for key in dataDict.keys()}
-            for index ,age_type in enumerate(age_type_list):
-                for gender_type in dataDict.keys():
-                    new_data_dict[gender_type][index] = dataDict[gender_type][age_type]
+            app_static_info = result_list[0]
+            occupation_dict = app_static_info.get('occupation')
+            # return age_and_gender_dict
 
         except LeanCloudError, e:
 
              raise e
-        return new_data_dict
+        return occupation_dict
 
-#下面三个函数的代码可以优化合并
-    def get_location_distribution_data_dict(self,app_table='Application',filed_name = 'app'):
+    def get_sport_data_dict(self,app_table='Application',field_name = 'app',kind=None):
         try:
-            app = self.get_the_app(app_table=app_table)
+            field = 'sport'
+            app = self.get_the_app(kind=kind)
             static_info_table='AppStaticInfo'
             DbTable = Object.extend(static_info_table)
             query = Query(DbTable)
-            query.equal_to(filed_name,app)
+            query.equal_to(field_name,app)
+            query.exists(field)
+            result_list = query.find()
+            length = len(result_list)
+            if length==0:
+                print 'error: application not exists in table %s' %(str(static_info_table))
+                return {}
+            elif length > 1:
+                print 'error: multi application  exists in table %s' %(str(static_info_table))
+                # return 0
+
+            app_static_info = result_list[0]
+            data_dict = app_static_info.get(field)
+            # return age_and_gender_dict
+
+        except LeanCloudError, e:
+
+             raise e
+        return data_dict
+
+
+    def get_consumption_data_dict(self,app_table='Application',field_name = 'app',kind=None):
+        try:
+            field = 'consumption'
+            app = self.get_the_app(kind=kind)
+            static_info_table='AppStaticInfo'
+            DbTable = Object.extend(static_info_table)
+            query = Query(DbTable)
+            query.equal_to(field_name,app)
+            query.exists(field)
+            result_list = query.find()
+            length = len(result_list)
+            if length==0:
+                print 'error: application not exists in table %s' %(str(static_info_table))
+                return {}
+            elif length > 1:
+                print 'error: multi application  exists in table %s' %(str(static_info_table))
+                # return 0
+            app_static_info = result_list[0]
+            data_dict = app_static_info.get(field)
+            # return age_and_gender_dict
+        except LeanCloudError, e:
+
+             raise e
+        return data_dict
+
+
+    def get_field_data_dict(self,app_table='Application',field_name = 'app',kind=None):
+        try:
+            field = 'field'
+            app = self.get_the_app(kind=kind)
+            static_info_table='AppStaticInfo'
+            DbTable = Object.extend(static_info_table)
+            query = Query(DbTable)
+            query.equal_to(field_name,app)
+            query.exists(field)
+            result_list = query.find()
+            length = len(result_list)
+            if length==0:
+                print 'error: application not exists in table %s' %(str(static_info_table))
+                return {}
+            elif length > 1:
+                print 'error: multi application  exists in table %s' %(str(static_info_table))
+                # return 0
+            app_static_info = result_list[0]
+            data_dict = app_static_info.get(field)
+            # return age_and_gender_dict
+        except LeanCloudError, e:
+
+             raise e
+        return data_dict
+
+    # def get_demo_occupation_data_dict(self,app_table='DemoApplication',field_name='app'):
+    #     return self.get_occupation_data_dict(app_table=app_table)
+
+#下面三个函数的代码可以优化合并
+    def get_location_distribution_data_dict(self,app_table='Application',field_name = 'app',kind=None):
+        try:
+
+            app = self.get_the_app(kind=kind)
+            static_info_table='AppStaticInfo'
+            DbTable = Object.extend(static_info_table)
+            query = Query(DbTable)
+            query.equal_to(field_name,app)
             query.exists('location_percentage')
             result_list = query.find()
             length = len(result_list)
             if length==0:
                 print 'error: application not exists in table %s' %(str(static_info_table))
-                return 0
-            elif length != 1:
+                return {}
+            elif length > 1:
                 print 'error: multi application  exists in table %s' %(str(static_info_table))
-                return 0
-            else:
-                app_static_info = result_list[0]
-                location_percentage_dict = app_static_info.get('location_percentage')
-                return location_percentage_dict
+            app_static_info = result_list[0]
+            location_percentage_dict = app_static_info.get('location_percentage')
+            # return location_percentage_dict
 
         except LeanCloudError, e:
 
              raise e
         return location_percentage_dict
 
-    def get_demo_location_distribution_data_dict(self,app_table='DemoApplication',filed_name = 'app'):
-        return self.get_location_distribution_data_dict(app_table=app_table)
+    # def get_demo_location_distribution_data_dict(self,app_table='DemoApplication',field_name = 'app'):
+    #     return self.get_location_distribution_data_dict(app_table=app_table)
 
 
 
@@ -224,24 +532,11 @@ class Dashboard:
              raise e
         return sorted_frequent_location_percentage
 
-    def get_user_profile_category_list(self):
-        return ['Occupation','Tastes']
+    def get_event_to_activity_data(self,event_name=None,app_table='Application',kind=None):
 
-    def get_path_analysis_measure_list(self):
-        return ['Frequently Track']
-
-    def get_behavior_recognition_event_list(self):
-        return ['Event2']
-
-    def get_behavior_recognition_measure_list(self):
-        return ['Location','Time']
-
-
-
-    def get_event_to_activity_data(self,event_name=None,app_table='Application'):
-        app = self.get_the_app(app_table=app_table)
         # print app_table
         try:
+            app = self.get_the_app(kind=kind)
             db_name = 'FakeEventActivity'
             DbTable  = Object.extend(db_name)
             query = Query(DbTable)
@@ -256,7 +551,8 @@ class Dashboard:
             result_list = query.find()
             if result_list:
                 # event_name = result_list[0].get('event_name')
-                activity_statistics_dict = {result_list[0].get('event_name'):result_list[0].get('activity_dict')}
+                # activity_statistics_dict = {result_list[0].get('event_name'):result_list[0].get('activity_dict')}
+                activity_statistics_dict = result_list[0].get('activity_dict')
             else:
                 activity_statistics_dict=[]
         except LeanCloudError, e:
@@ -264,54 +560,258 @@ class Dashboard:
              raise e
         return activity_statistics_dict
 
-    def get_demo_event_to_activity_data(self,event_name=None,app_table='DemoApplication'):
-       return  self.get_event_to_activity_data(event_name=event_name,app_table=app_table)
-        # app = self.get_the_app(app_table = app_table)
-        # try:
-        #     db_name = 'EventActivity'
-        #     DbTable  = Object.extend(db_name)
-        #     query = Query(DbTable)
-        #     #这里只是测试知道是少于1K条的
-        #     query.equal_to('application',app)
-        #     if event_name:
-        #         query.equal_to('event_name',event_name)
-        #     # query.equal_to('application_id',application_id)
-        #     query.descending('createdAt')
-        #     query.limit(1)
-        #     result_list = query.find()
-        #     if result_list:
-        #         # event_name = result_list[0].get('event_name')
-        #         activity_statistics_dict = {result_list[0].get('event_name'):result_list[0].get('activity_dict')}
-        #     else:
-        #         activity_statistics_dict=[]
-        # except LeanCloudError, e:
-        #
-        #      raise e
-        # return activity_statistics_dict
+    def get_event_to_location_data(self,event_name=None,app_table='Application',kind=None):
 
-            # query.select('user','timestamp')
-            # resultList = query.find()
-            # DBTable = Object.extend('MergedUserContext')
-            # activity_dict = {}
-            # total_count = len(resultList)
-            # print 'the length of resultList is : %s' %(str(total_count))
-            # for index1,result in enumerate(resultList):
-            #     query = Query(DBTable)
-            #     query.equal_to('user',result.get('user'))
-            #     query.less_than_or_equal_to('startTime',result.get('timestamp'))
-            #     query.greater_than_or_equal_to('endTime',result.get('timestamp'))
-            #     resultList1 = query.find()
-            #     if len(resultList1) == 1 or len(resultList1) == 2 :
-            #         activity = resultList1[0].get('event')[0]
-            #         if activity in activity_dict.keys():
-            #             activity_dict[activity]+=1
-            #         else:
-            #             activity_dict[activity] =1
-            #     else:
-            #         print 'length of resultList1: %s' %(str(len(resultList1)))
-            #         print 'Seems to be an error,index: %s,user: %s; timestamp: %s \n' %(str(index1),str(result.get('user').id),str(result.get('timestamp')))
-            #
-            # activity_dict['others'] = total_count-sum(activity_dict.values())
+        # print app_table
+        try:
+
+            app = self.get_the_app(kind=kind)
+            db_name = 'FakeEventActivity'
+            DbTable  = Object.extend(db_name)
+            query = Query(DbTable)
+            #这里只是测试知道是少于1K条的
+            query.equal_to('application',app)
+            query.exists('location_dict')
+            if event_name:
+                query.equal_to('event_name',event_name)
+            # query.equal_to('application_id',application_id)
+            query.descending('createdAt')
+            query.limit(1)
+            result_list = query.find()
+            if result_list:
+                # event_name = result_list[0].get('event_name')
+                # activity_statistics_dict = {result_list[0].get('event_name'):result_list[0].get('activity_dict')}
+                statistics_dict = result_list[0].get('location_dict')
+            else:
+                statistics_dict=[]
+        except LeanCloudError, e:
+             raise e
+        return statistics_dict
+
+    # def get_demo_event_to_activity_data(self,event_name=None,app_table='DemoApplication'):
+    #    return  self.get_event_to_activity_data(event_name=event_name,app_table=app_table)
+    # def get_demo_event_to_location_data(self,event_name=None,app_table='DemoApplication'):
+    #    return  self.get_event_to_location_data(event_name=event_name,app_table=app_table)
+
+
+
+    def get_user_profile_category_dict(self):
+        # return {'occupation':'Occupation','taste':'Tastes'}
+        return {'age':'Age&Gender','occupation':'Occupation','sport':'Sport','field':'Field','consumption':'Consumption'}
+
+    def get_path_analysis_measure_dict(self):
+        # return {'track':'Frequently Track'}
+        return {'location':'Frequently Location'}
+
+    def get_behavior_recognition_event_dict(self):
+        return {'Event1':'Event1','Event2':'Event2'}
+
+    def get_behavior_recognition_measure_dict(self):
+        # return {'location':'Location','time':'Time'}
+        return {'activity':'Activity','location':'Location'}
+
+
+
+    def get_profile_option(self,category='age',kind=None):
+
+        if category == 'age':
+            new_data_dict = self.get_age_and_gender_data_dict(kind=kind)
+            if not new_data_dict:
+                age_data = False
+                age_category_list = []
+                man_data_list = []
+                woman_data_list = []
+            else:
+                age_data = True
+                age_category_list = sorted(new_data_dict['man'].keys())
+                man_data_list = [key[1] for key in sorted(new_data_dict['man'].items(),key=lambda l:l[0])]
+                woman_data_list = [key[1] for key in sorted(new_data_dict['woman'].items(),key=lambda l:l[0])]
+            user_profile_option = copy.deepcopy(user_profile_base_option)
+            user_profile_option['title']['text'] = 'Age & Gender'
+            user_profile_option['legend']['data'] = ['man', 'woman']
+            user_profile_option['xAxis'][0]['name'] = 'Age Range'
+            user_profile_option['xAxis'][0]['data'] = age_category_list   #['16down','16to35','35to55','55up']
+            user_profile_option['yAxis'][0]['name'] = 'Total Amount'
+            user_profile_option['series'][0]['name'] ='man'
+            user_profile_option['series'][0]['data'] = man_data_list
+            user_profile_option['series'][1]['name'] = 'woman'
+            user_profile_option['series'][1]['data'] = woman_data_list
+
+        elif category == 'occupation':
+            new_data_dict = self.get_occupation_data_dict(kind=kind)
+            if not new_data_dict:
+                occupation_data = False
+                occupation_category_list = []
+                occupation_data_list = []
+            else:
+                if 'unknown' in new_data_dict.keys():
+                    del new_data_dict['unknown']
+                occupation_data = True
+                occupation_category_list = [key[0] for key in sorted(new_data_dict.items(),key=lambda l:l[1])]
+                occupation_data_list = [key[1] for key in sorted(new_data_dict.items(),key=lambda l:l[1])]
+            user_profile_option = copy.deepcopy(user_profile_base_option)
+            user_profile_option['title']['text'] = 'Occupation'
+            user_profile_option['legend']['data'] = ['occupation']
+            user_profile_option['xAxis'][0]['name'] = 'Occupations'
+            user_profile_option['xAxis'][0]['data'] = occupation_category_list   #['16down','16to35','35to55','55up']
+            user_profile_option['yAxis'][0]['name'] = 'Total Amount'
+            user_profile_option['series'][0]['name'] ='occupation'
+            user_profile_option['series'][0]['data'] = occupation_data_list
+            del user_profile_option['series'][1]
+            pass
+        elif category == 'sport':
+            new_data_dict = self.get_sport_data_dict(kind=kind)
+            if not new_data_dict:
+                has_data = False
+                category_list = []
+                data_list = []
+            else:
+                if 'unknown' in new_data_dict.keys():
+                    del new_data_dict['unknown']
+                has_data = True
+                category_list = [key[0] for key in sorted(new_data_dict.items(),key=lambda l:l[1])]
+                data_list = [key[1] for key in sorted(new_data_dict.items(),key=lambda l:l[1])]
+            user_profile_option = copy.deepcopy(user_profile_base_option)
+            user_profile_option['title']['text'] = 'Sport'
+            user_profile_option['legend']['data'] = ['sport']
+            user_profile_option['xAxis'][0]['name'] = 'Sports'
+            user_profile_option['xAxis'][0]['data'] = category_list   #['16down','16to35','35to55','55up']
+            user_profile_option['yAxis'][0]['name'] = 'Total Amount'
+            user_profile_option['series'][0]['name'] ='sport'
+            user_profile_option['series'][0]['data'] = data_list
+            del user_profile_option['series'][1]
+            pass
+        elif category == 'consumption':
+            new_data_dict = self.get_consumption_data_dict(kind=kind)
+            if not new_data_dict:
+                has_data = False
+                category_list = []
+                data_list = []
+            else:
+                if 'unknown' in new_data_dict.keys():
+                    del new_data_dict['unknown']
+                has_data = True
+                category_list = [key[0] for key in sorted(new_data_dict.items(),key=lambda l:l[1])]
+                data_list = [key[1] for key in sorted(new_data_dict.items(),key=lambda l:l[1])]
+            user_profile_option = copy.deepcopy(user_profile_base_option)
+            user_profile_option['title']['text'] = 'Consumption'
+            user_profile_option['legend']['data'] = ['consumption']
+            user_profile_option['xAxis'][0]['name'] = 'Consumptions'
+            user_profile_option['xAxis'][0]['data'] = category_list   #['16down','16to35','35to55','55up']
+            user_profile_option['yAxis'][0]['name'] = 'Total Amount'
+            user_profile_option['series'][0]['name'] ='consumption'
+            user_profile_option['series'][0]['data'] = data_list
+            del user_profile_option['series'][1]
+
+        elif category == 'field':
+            new_data_dict = self.get_field_data_dict(kind=kind)
+            if not new_data_dict:
+                has_data = False
+                category_list = []
+                data_list = []
+            else:
+                if 'unknown' in new_data_dict.keys():
+                    del new_data_dict['unknown']
+                has_data = True
+                category_list = [key[0] for key in sorted(new_data_dict.items(),key=lambda l:l[1])]
+                data_list = [key[1] for key in sorted(new_data_dict.items(),key=lambda l:l[1])]
+            user_profile_option = copy.deepcopy(user_profile_base_option)
+            user_profile_option['title']['text'] = 'Field'
+            user_profile_option['legend']['data'] = ['field']
+            user_profile_option['xAxis'][0]['name'] = 'Fields'
+            user_profile_option['xAxis'][0]['data'] = category_list   #['16down','16to35','35to55','55up']
+            user_profile_option['yAxis'][0]['name'] = 'Total Amount'
+            user_profile_option['series'][0]['name'] ='field'
+            user_profile_option['series'][0]['data'] = data_list
+            del user_profile_option['series'][1]
+        else:
+            pass
+        return user_profile_option
+
+    def get_path_option(self,category='location',kind=None):
+        if category == 'location':
+            new_data_dict = self.get_location_distribution_data_dict(kind=kind)
+            if not new_data_dict:
+                location_data = False
+                location_category_list = []
+                location_data_list = []
+            else:
+                if 'unknown' in new_data_dict.keys():
+                    del new_data_dict['unknown']
+                location_data = True
+                location_category_list = [key[0] for key in sorted(new_data_dict.items(),key=lambda l:l[1])]
+                location_data_list = [key[1] for key in sorted(new_data_dict.items(),key=lambda l:l[1])]
+                path_analysis_option = copy.deepcopy(path_analysis_base_option)
+                path_analysis_option['title']['text'] = 'Location Percentage'
+                path_analysis_option['legend']['data'] = ['location']
+                path_analysis_option['xAxis'][0]['name'] = 'Locations'
+                path_analysis_option['xAxis'][0]['data'] = location_category_list
+                path_analysis_option['yAxis'][0]['name'] = 'Time percentage'
+                path_analysis_option['series'][0]['name'] ='location'
+                path_analysis_option['series'][0]['data'] = location_data_list
+            pass
+        elif category == 'track':
+            pass
+        else:
+            pass
+        return path_analysis_option
+
+    def get_event_option(self,event_name=None,category=None,kind=None):
+        if category == 'activity':
+            new_data_dict = self.get_event_to_activity_data(event_name=event_name,kind=kind)
+            if not new_data_dict:
+                print 'new_data_dict is empty in get_event_option'
+                behavior_data = False
+                behavior_category_list = []
+                behavior_data_list = []
+            else:
+                print 'new_data_dict is %s' %(str(new_data_dict))
+                if 'others' in new_data_dict.keys():
+                    del new_data_dict['others']
+                behavior_data = True
+
+                behavior_category_list = [key[0] for key in sorted(new_data_dict.items(),key=lambda l:l[1])]
+                behavior_data_list = [key[1] for key in sorted(new_data_dict.items(),key=lambda l:l[1])]
+                event_recognition_option = copy.deepcopy(event_recognition_base_option)
+                event_recognition_option['title']['text'] = 'Custom Event Statistics'
+                event_recognition_option['legend']['data'] = ['activity']
+                event_recognition_option['xAxis'][0]['name'] = 'Activities'
+                event_recognition_option['xAxis'][0]['data'] = behavior_category_list
+                event_recognition_option['yAxis'][0]['name'] = 'Total Amount'
+                event_recognition_option['series'][0]['name'] ='activity'
+                event_recognition_option['series'][0]['data'] = behavior_data_list
+
+        elif category == 'location':
+            new_data_dict = self.get_event_to_location_data(event_name=event_name,kind=kind)
+            if not new_data_dict:
+                print 'new_data_dict is empty in get_event_option'
+                behavior_data = False
+                behavior_category_list = []
+                behavior_data_list = []
+            else:
+                print 'new_data_dict is %s' %(str(new_data_dict))
+                if 'unknown' in new_data_dict.keys():
+                    del new_data_dict['unknown']
+                behavior_data = True
+                behavior_category_list = [key[0] for key in sorted(new_data_dict.items(),key=lambda l:l[1])]
+                behavior_data_list = [key[1] for key in sorted(new_data_dict.items(),key=lambda l:l[1])]
+                event_recognition_option = copy.deepcopy(event_recognition_base_option)
+                event_recognition_option['title']['text'] = 'Custom Event Statistics'
+                event_recognition_option['legend']['data'] = ['location']
+                event_recognition_option['xAxis'][0]['name'] = 'Locations'
+                event_recognition_option['xAxis'][0]['data'] = behavior_category_list
+                event_recognition_option['yAxis'][0]['name'] = 'Total Amount'
+                event_recognition_option['series'][0]['name'] ='location'
+                event_recognition_option['series'][0]['data'] = behavior_data_list
+
+        elif category == 'time':
+            pass
+        else:
+            pass
+        return event_recognition_option
+
+
+
 
 
 
@@ -884,3 +1384,50 @@ class Developer:
 #
 
 
+
+# app = self.get_the_app(app_table = app_table)
+        # try:
+        #     db_name = 'EventActivity'
+        #     DbTable  = Object.extend(db_name)
+        #     query = Query(DbTable)
+        #     #这里只是测试知道是少于1K条的
+        #     query.equal_to('application',app)
+        #     if event_name:
+        #         query.equal_to('event_name',event_name)
+        #     # query.equal_to('application_id',application_id)
+        #     query.descending('createdAt')
+        #     query.limit(1)
+        #     result_list = query.find()
+        #     if result_list:
+        #         # event_name = result_list[0].get('event_name')
+        #         activity_statistics_dict = {result_list[0].get('event_name'):result_list[0].get('activity_dict')}
+        #     else:
+        #         activity_statistics_dict=[]
+        # except LeanCloudError, e:
+        #
+        #      raise e
+        # return activity_statistics_dict
+
+            # query.select('user','timestamp')
+            # resultList = query.find()
+            # DBTable = Object.extend('MergedUserContext')
+            # activity_dict = {}
+            # total_count = len(resultList)
+            # print 'the length of resultList is : %s' %(str(total_count))
+            # for index1,result in enumerate(resultList):
+            #     query = Query(DBTable)
+            #     query.equal_to('user',result.get('user'))
+            #     query.less_than_or_equal_to('startTime',result.get('timestamp'))
+            #     query.greater_than_or_equal_to('endTime',result.get('timestamp'))
+            #     resultList1 = query.find()
+            #     if len(resultList1) == 1 or len(resultList1) == 2 :
+            #         activity = resultList1[0].get('event')[0]
+            #         if activity in activity_dict.keys():
+            #             activity_dict[activity]+=1
+            #         else:
+            #             activity_dict[activity] =1
+            #     else:
+            #         print 'length of resultList1: %s' %(str(len(resultList1)))
+            #         print 'Seems to be an error,index: %s,user: %s; timestamp: %s \n' %(str(index1),str(result.get('user').id),str(result.get('timestamp')))
+            #
+            # activity_dict['others'] = total_count-sum(activity_dict.values())

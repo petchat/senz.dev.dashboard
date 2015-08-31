@@ -1,0 +1,639 @@
+{% if not is_xhr|default(false) %}{% extends "shared/footer.html" %}{% endif -%}
+{% block content %}
+<div class="main-content">
+ <div id="dashboard">
+        <div class="box ">
+            <div class="box-header">
+                <span class="header-name">User Profile</span>
+                <div class="multi-options" id="user-profile"><div class="switch-category" style="display: block">
+                           <span class="dropdown-text" style="font-size: 14px;margin-left: 70px;">Switch category:</span>
+                        <div class="dropdown" style="display: inline">
+                          <button class="btn btn-default dropdown-toggle" category-name="{{ user_profile_type }}" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{ default_user_profile_category }}
+                            <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                               {% for user_profile_type ,user_profile_category in user_profile_category_dict.items() %}
+           <li ><a href="{{ user_profile_type }}">{{ user_profile_category }}</a></li>
+        {% endfor %}
+                          </ul>
+                        </div>
+
+                      </div> </div>
+            </div>
+            <div class="box-content">
+        <div id="age" style="height:400px ">
+            {% if not age_data %}
+             <div class="not-exists"><h1>Data not exists in this section !</h1></div>
+{% endif %}
+        </div>
+                 </div></div>
+     <div class="box ">
+            <div class="box-header">
+
+
+                <span class="header-name">Path Analysis</span>
+                 <div class="multi-options" id="path-analysis"><div class="switch-measure" style="display: block">
+                           <span class="dropdown-text" style="font-size: 14px;margin-left: 70px;">Switch measure:</span>
+                        <div class="dropdown" style="display: inline">
+                          <button class="btn btn-default dropdown-toggle" category-name="{{ path_analysis_type }}" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          {{ default_path_analysis_category }}
+                            <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+
+                               {% for path_analysis_type,path_analysis_measure in path_analysis_measure_dict.items() %}
+           <li><a href="path_analysis_type">{{ path_analysis_measure }}</a></li>
+        {% endfor %}
+                            <!--<li><a href="/">App1</a></li>-->
+                            <!--<li><a href="/">App2</a></li>-->
+
+                            <!--<li><a href="/">App...</a></li>-->
+                          </ul>
+                        </div>
+
+                      </div> </div>
+            </div>
+            <div class="box-content">
+
+
+        <div id="location" style="height:400px ">
+            {% if not location_data %}
+             <div class="not-exists"><h1>Data not exists in this section !</h1></div>
+{% endif %}
+        </div>
+                 </div></div>
+     <div class="box ">
+            <div class="box-header">
+                <span class="header-name">Behavior Recognition</span>
+                <div class="multi-options" id="behavior-recognition" ><div class="switch-event" style="display: block">
+                           <span class="dropdown-text" style="font-size: 14px;margin-left: 70px;">Switch event:</span>
+                        <div class="dropdown" id="dropdown-event" style="display: inline">
+                          <button class="btn btn-default dropdown-toggle" category-name="{{ event_name_type }}"type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{ default_event_name }}
+                            <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                               {% for behavior_recognition_event_type,behavior_recognition_event in behavior_recognition_event_dict.items() %}
+           <li><a href="{{ behavior_recognition_event_type }}">{{ behavior_recognition_event }}</a></li>
+        {% endfor %}
+                            <!--<li><a href="/">App1</a></li>-->
+                            <!--<li><a href="/">App2</a></li>-->
+
+                            <!--<li><a href="/">App...</a></li>-->
+                          </ul>
+                        </div>
+                    <span class="dropdown-text" style="font-size: 14px;margin-left: 70px;">Switch measure:</span>
+                    <div class="dropdown" id="dropdown-measure" style="display: inline">
+
+                          <button class="btn btn-default dropdown-toggle" category-name="{{ behavior_recognition_measure_type }}"type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{ default_behavior_recognition_measure }}
+                            <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+
+                               {% for behavior_recognition_measure_type,behavior_recognition_measure in behavior_recognition_measure_dict.items() %}
+           <li><a href="{{ behavior_recognition_measure_type }}">{{ behavior_recognition_measure }}</a></li>
+        {% endfor %}
+                            <!--<li><a href="/">App1</a></li>-->
+                            <!--<li><a href="/">App2</a></li>-->
+
+                            <!--<li><a href="/">App...</a></li>-->
+                          </ul>
+                        </div>
+                      </div> </div>
+
+            </div>
+            <div class="box-content">
+
+
+       <div id="event" style="height:400px ">
+            {% if not event_data %}
+             <div class="not-exists"><h1>Data not exists in this section !</h1></div>
+{% endif %}
+        </div>
+                 </div></div>
+
+
+
+
+            </div>
+        </div>
+
+
+
+
+{% endblock %}
+{% block extra_js %}
+  <!--<script src="http://echarts.baidu.com/build/dist/echarts.js"></script>-->
+ <script src="http://echarts.baidu.com/build/dist/echarts-all.js"></script>
+<script type="text/javascript">
+//        console.log('the age range data of man is : '+{{ man_data_list|safe }})
+//        console.log('the age range data of woman is : '+{{ woman_data_list|safe }})
+
+function change_li($this,e){
+
+        var click_text = $this.text();
+
+        var dropdown_button = $this.parent('li').parent('ul').siblings('button');
+        var button_text = dropdown_button.text().trim();
+        var link = dropdown_button.attr('category-name');
+        dropdown_button.text(click_text);
+        dropdown_button.attr('category-name',$this.attr('href'));
+        var new_li = $("<a></a>").attr('href',link).text(button_text).wrap("<li></li>").parent();
+        $this.parent('li').parent('ul').prepend(new_li);
+        $this.parent('li').remove();
+       e.preventDefault();
+}
+
+$('#user-profile ul ').on('click',"li a",function(e){
+        change_li($(this),e)
+        var _xsrf = $("[name='_xsrf']").attr('value');
+        var app_id = $(".switch-app .dropdown button").attr("app_id");
+         var url = '/ajax/demo/';
+        console.log(_xsrf)
+        console.log(app_id)
+
+
+
+        $.post(url,
+             {
+            _xsrf: _xsrf,
+                 app_id: app_id,
+                href : $(this).attr('href')
+
+            },
+             function(data,status){
+            $("#psdash").find(".main-content").html(data);
+             //$(this).addClass("btn-default")
+
+                 console.log(data+" "+status)
+        });
+    })
+
+$('#path-analysis ul ').on('click',"li a",function(e){
+        change_li($(this),e)
+        var _xsrf = $("[name='_xsrf']").attr('value');
+        var app_id = $(".switch-app .dropdown button").attr("app_id");
+         var url = '/ajax/demo/';
+        console.log(_xsrf)
+        console.log(app_id)
+
+
+
+//        $.post(url,
+//             {
+//            _xsrf: _xsrf,
+//                 app_id: app_id,
+//                href : $(this).attr('href')
+//
+//            },
+//             function(data,status){
+//            $("#psdash").find(".main-content").html(data);
+//             //$(this).addClass("btn-default")
+//
+//                 console.log(data+" "+status)
+//        });
+    })
+
+
+$('#behavior-recognition #dropdown-event ul ').on('click',"li a",function(e){
+        change_li($(this),e)
+        var _xsrf = $("[name='_xsrf']").attr('value');
+        var app_id = $(".switch-app .dropdown button").attr("app_id");
+         var url = '/ajax/demo/';
+        console.log(_xsrf)
+        console.log(app_id)
+
+
+
+//        $.post(url,
+//             {
+//            _xsrf: _xsrf,
+//                 app_id: app_id,
+//                href : $(this).attr('href')
+//
+//            },
+//             function(data,status){
+//            $("#psdash").find(".main-content").html(data);
+//             //$(this).addClass("btn-default")
+//
+//                 console.log(data+" "+status)
+//        });
+    })
+
+
+$('#behavior-recognition #dropdown-measure ul ').on('click',"li a",function(e){
+        change_li($(this),e)
+        var _xsrf = $("[name='_xsrf']").attr('value');
+        var app_id = $(".switch-app .dropdown button").attr("app_id");
+         var url = '/ajax/demo/';
+        console.log(_xsrf)
+        console.log(app_id)
+
+
+
+//        $.post(url,
+//             {
+//            _xsrf: _xsrf,
+//                 app_id: app_id,
+//                href : $(this).attr('href')
+//
+//            },
+//             function(data,status){
+//            $("#psdash").find(".main-content").html(data);
+//             //$(this).addClass("btn-default")
+//
+//                 console.log(data+" "+status)
+//        });
+    })
+
+function user_profile(option){
+    var myChart = echarts.init(document.getElementById('user-profile'));
+    myChart.setOption(option);
+}
+
+function path_analysis(option){
+    var myChart = echarts.init(document.getElementById('path-analysis'));
+    myChart.setOption(option);
+}
+
+function behavior_recognition(option){
+    var myChart = echarts.init(document.getElementById('behavior-recognition'));
+    myChart.setOption(option);
+}
+$(document).ready(function() {
+    var _xsrf = $("[name='_xsrf']").attr('value');
+    var app_id = $(".switch-app .dropdown button").attr("app_id");
+    var url = '/ajax/demo/';
+
+var user_profile_base_option = {
+    title : {
+        textStyle:{
+        fontSize: 24,
+        fontWeight: 'bolder',
+        color: '#5f7d8c'
+        } ,
+        subtextStyle:{
+        fontSize: 12,
+        fontWeight: 'normal',
+        color: '#5f7d8c'
+        } ,
+        text: 'Age & Gender'
+    },
+    tooltip : {
+        trigger: 'axis'
+    },
+    legend: {
+        x: 'right',
+        itemWidth: 40,
+        itemHeight: 24,
+        data: ['man', 'woman']
+    },
+
+    xAxis : [
+        {
+            nameTextStyle:{
+            fontSize:14,
+            fontWeight:'bold'
+            },
+            name: 'Age Range',
+            type : 'category',
+            data : ['16down','16to35','35to55','55up']
+        }
+    ],
+    yAxis : [
+        {   nameTextStyle:{
+            fontSize:14,
+            fontWeight:'bold'
+        },
+            name:'Total Amount',
+            type : 'value'
+        }
+    ],
+    series : [
+        {
+            barGap:'5%',
+            name:'man',
+            type:'bar',
+            itemStyle:{
+                normal:{
+                    color:'#2EC7C9',
+                    barBorderRadius:4
+                }
+
+            },
+//            data:{{ man_data_list|safe }}
+            data:''
+        },
+        {
+            barGap:'5%',
+            name:'woman',
+            type:'bar',
+            itemStyle:{
+                normal:{
+                    color:'#B6A2DE',
+                    barBorderRadius:4
+                }
+
+            },
+//            data:{{ woman_data_list|safe }}
+            data:''
+
+
+        }
+    ]
+};
+
+
+var path_analysis_base_option = {
+    title : {
+        textStyle:{
+        fontSize: 24,
+        fontWeight: 'bolder',
+        color: '#5f7d8c'
+} ,
+        subtextStyle:{
+        fontSize: 12,
+        fontWeight: 'normal',
+        color: '#5f7d8c'
+} ,
+
+        text: 'Location percentage'
+    },
+    tooltip : {
+        trigger: 'axis'
+    },
+    legend: {
+        x: 'right',
+        itemWidth: 40,
+        itemHeight: 24,
+        data: ['Location']
+    },
+
+    xAxis : [
+        {
+            nameTextStyle:{
+            fontSize:10,
+            fontWeight:'bold'
+            },
+            name: 'Name',
+            type : 'category',
+//            data : {{location_category_list|safe}},
+            data : '',
+
+             axisLabel:{
+            interval:0,
+            rotate:5
+}
+        }
+    ],
+    yAxis : [
+        {   nameTextStyle:{
+            fontSize:14,
+            fontWeight:'bold'
+
+        },
+            name:'Time Percentage',
+            type : 'value'
+        }
+    ],
+series : [
+        {
+
+            name:'Location',
+            type:'bar',
+            itemStyle:{
+                normal:{
+                    color:'#2EC7C9',
+                    barBorderRadius:4
+                }
+
+            },
+//            data:{{location_percentage_list|safe}}
+            data:''
+
+        }
+
+    ]
+};
+
+
+var event_recognition_base_option= {
+    title : {
+
+        textStyle:{
+        fontSize: 24,
+        fontWeight: 'bolder',
+        color: '#5f7d8c'
+} ,
+        subtextStyle:{
+        fontSize: 12,
+        fontWeight: 'normal',
+        color: '#5f7d8c'
+} ,
+
+        text: 'Custom event statistics'
+//        subtext: 'Application: Tesenz',
+//        backgroundColor: 'rgba(56,151,197,0.2)'
+    },
+    tooltip : {
+        trigger: 'axis'
+    },
+    legend: {
+        x: 'right',
+        itemWidth: 40,
+        itemHeight: 24,
+        data: [{
+            name: event_name
+        }]
+    },
+
+    xAxis : [
+        {
+            nameTextStyle:{
+            fontSize:10,
+            fontWeight:'bold'
+            },
+            name: 'Activity',
+            type : 'category',
+//            data : {{activity_category_list|safe}},
+            data :'',
+
+             axisLabel:{
+            interval:0,
+            rotate:5
+}
+        }
+    ],
+    yAxis : [
+        {   nameTextStyle:{
+            fontSize:14,
+            fontWeight:'bold'
+
+        },
+            name:'Times',
+            type : 'value'
+        }
+    ],
+series : [
+        {
+
+            name:event_name,
+            type:'bar',
+            itemStyle:{
+                normal:{
+                    color:'#2EC7C9',
+                    barBorderRadius:4
+                }
+
+            },
+//            data:{{activity_count_list|safe}}
+            data:''
+
+        }
+
+    ]
+};
+
+user_profile_category = $('#user-behavior .switch-category .dropdown button').attr('category-name')
+    $.post(url+'profile',
+             {
+            _xsrf: _xsrf,
+                 app_id: app_id,
+                category : user_profile_category
+            },
+             function(data,status) {
+                 switch (user_profile_category) {
+                     case 'activity':
+                         user_profile_base_option.title.text = data['title']['text'];
+                         user_profile_base_option.legend.data = data['legend']['data'];
+
+                         user_profile_base_option.xAxis[0].name = data['xAxis'][0]['name'];
+                         user_profile_base_option.xAxis[0].type = data['xAxis'][0]['type'];
+                         user_profile_base_option.xAxis[0].data = data['xAxis'][0]['data'];
+
+                         user_profile_base_option.yAxis[0].name = data['yAxis'][0]['name'];
+                         user_profile_base_option.yAxis[0].type = data['yAxis'][0]['type'];
+
+                         user_profile_base_option.series[0].name = data['series'][0]['name'];
+                         user_profile_base_option.series[0].data = data['series'][0]['data'];
+
+                         user_profile_base_option.series[1].name = data['series'][1]['name'];
+                         user_profile_base_option.series[1].data = data['series'][1]['data'];
+
+                         break;
+                     case 'occupation':
+                         break;
+                     default :
+                         break;
+                 }
+
+                 user_profile(user_profile_base_option);
+                 console.log(data+" "+status+" "+user_profile_base_option)
+        });
+
+    var path_analysis_measure = $('#path-analysis .switch-measure .dropdown button').attr('category-name')
+
+    $.post(url+'path',
+             {
+            _xsrf: _xsrf,
+                 app_id: app_id,
+                measure : path_analysis_measure
+            },
+             function(data,status){
+                 switch (path_analysis_measure) {
+                     case 'location':
+                         path_analysis_measure.title.text = data['title']['text'];
+                         path_analysis_measure.legend.data = data['legend']['data'];
+
+                         path_analysis_measure.xAxis[0].name = data['xAxis'][0]['name'];
+                         path_analysis_measure.xAxis[0].type = data['xAxis'][0]['type'];
+                         path_analysis_measure.xAxis[0].data = data['xAxis'][0]['data'];
+
+                         path_analysis_measure.xAxis[0].axisLabel.interval = data['xAxis'][0]['axisLabel']['interval'];
+                         path_analysis_measure.xAxis[0].axisLabel.rotate = data['xAxis'][0]['axisLabel']['rotate'];
+
+
+
+
+                         path_analysis_measure.yAxis[0].name = data['yAxis'][0]['name'];
+                         path_analysis_measure.yAxis[0].type = data['yAxis'][0]['type'];
+
+                         path_analysis_measure.series[0].name = data['series'][0]['name'];
+                         path_analysis_measure.series[0].data = data['series'][0]['data'];
+
+
+                         break;
+                     case 'track':
+                         break;
+                     default :
+                         break;
+                 }
+                 path_analysis(path_analysis_measure);
+                 console.log(data+" "+status+" "+path_analysis_measure)
+        });
+
+    var event_recognition_event_name = $('#behavior-recognition .switch-event .dropdown button').attr('category-name');
+    var event_recognition_measure = $('#behavior-recognition .switch-measure .dropdown button').attr('category-name');
+     $.post(url+'event',
+             {
+            _xsrf: _xsrf,
+                 app_id: app_id,
+                event_name : event_recognition_event_name,
+                 measure: event_recognition_measure
+            },
+             function(data,status){
+                 switch (event_recognition_measure) {
+                     case 'activity':
+                         event_recognition_base_option.title.text = data['title']['text'];
+                         event_recognition_base_option.legend.data = data['legend']['data'];
+
+                         event_recognition_base_option.xAxis[0].name = data['xAxis'][0]['name'];
+                         event_recognition_base_option.xAxis[0].type = data['xAxis'][0]['type'];
+                         event_recognition_base_option.xAxis[0].data = data['xAxis'][0]['data'];
+
+                         event_recognition_base_option.xAxis[0].axisLabel.interval = data['xAxis'][0]['axisLabel']['interval'];
+                         event_recognition_base_option.xAxis[0].axisLabel.rotate = data['xAxis'][0]['axisLabel']['rotate'];
+
+
+
+
+                         event_recognition_base_option.yAxis[0].name = data['yAxis'][0]['name'];
+                         event_recognition_base_option.yAxis[0].type = data['yAxis'][0]['type'];
+
+                         event_recognition_base_option.series[0].name = data['series'][0]['name'];
+                         event_recognition_base_option.series[0].data = data['series'][0]['data'];
+
+
+                         break;
+                     case 'track':
+                         break;
+                     default :
+                         break;
+                 }
+                 behavior_recognition(data);
+                 console.log(data+" "+status)
+        });
+
+});
+
+//{% if age_data %}
+//
+//user_profile()
+//
+//    {% endif %}
+//
+//{% if location_data %}
+//
+//path_analysis()
+//
+//    {% endif %}
+//
+//{% if event_data %}
+//
+//behavior_recognition()
+//
+//    {% endif %}
+    </script>
+{% endblock %}
