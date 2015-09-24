@@ -14,6 +14,7 @@ not_binary_label_dict = {'field':['field__manufacture', 'field__financial', 'fie
 binary_label_list = [u'ACG', u'indoorsman', u'game_show', u'has_car', u'game_news', u'entertainment_news', u'health', u'online_shopping', u'variety_show', u'business_news', u'tvseries_show', u'current_news', u'sports_news', u'tech_news', u'offline_shopping', u'pregnant', u'gender', u'study', u'married', u'sports_show', u'gamer', u'social', u'has_pet']
 query_limit = 1000
 
+APPLICATION_CLASS = 'BindingApplication'
 
 user_profile_base_option = {
     'title' : {
@@ -240,7 +241,7 @@ class Dashboard:
         self.app_id = None
         pass
 
-    def get_app_key(self,app_table='Application'):
+    def get_app_key(self,app_table=APPLICATION_CLASS):
         try:
             Application = Object.extend(app_table)
             query = Query(Application)
@@ -260,15 +261,15 @@ class Dashboard:
              raise e
         return app_key
 
-    def get_demo_app_key(self,app_table='DemoApplication'):
+    def get_demo_app_key(self,app_table=APPLICATION_CLASS):
         return self.get_app_key(app_table=app_table)
 
-    def get_the_app(self,app_table='Application',kind=None):
+    def get_the_app(self,app_table=APPLICATION_CLASS,kind=None):
         try:
             if kind == 'demo':
                 Application = Object.extend('DemoApplication')
             else:
-                Application = Object.extend('Application')
+                Application = Object.extend(APPLICATION_CLASS)
             query = Query(Application)
             query.equal_to('app_id',self.app_id)
             result_list = query.find()
@@ -286,7 +287,7 @@ class Dashboard:
              raise e
         return app
 
-    def get_age_and_gender_data_dict(self,app_table='Application',field_name = 'app',kind=None):
+    def get_age_and_gender_data_dict(self,app_table=APPLICATION_CLASS,field_name = 'app',kind=None):
         # print app_table
         age_and_gender_dict={}
         try:
@@ -317,7 +318,7 @@ class Dashboard:
     # def get_demo_age_and_gender_data_dict(self,app_table='DemoApplication',field_name = 'app'):
     #     return self.get_age_and_gender_data_dict(app_table=app_table)
 
-    def get_occupation_data_dict(self,app_table='Application',field_name = 'app',kind=None):
+    def get_occupation_data_dict(self,app_table=APPLICATION_CLASS,field_name = 'app',kind=None):
         try:
             app = self.get_the_app(kind=kind)
             static_info_table='AppStaticInfo'
@@ -343,7 +344,7 @@ class Dashboard:
              raise e
         return occupation_dict
 
-    def get_sport_data_dict(self,app_table='Application',field_name = 'app',kind=None):
+    def get_sport_data_dict(self,app_table=APPLICATION_CLASS,field_name = 'app',kind=None):
         try:
             field = 'sport'
             app = self.get_the_app(kind=kind)
@@ -371,7 +372,7 @@ class Dashboard:
         return data_dict
 
 
-    def get_consumption_data_dict(self,app_table='Application',field_name = 'app',kind=None):
+    def get_consumption_data_dict(self,app_table=APPLICATION_CLASS,field_name = 'app',kind=None):
         try:
             field = 'consumption'
             app = self.get_the_app(kind=kind)
@@ -397,7 +398,7 @@ class Dashboard:
         return data_dict
 
 
-    def get_field_data_dict(self,app_table='Application',field_name = 'app',kind=None):
+    def get_field_data_dict(self,app_table=APPLICATION_CLASS,field_name = 'app',kind=None):
         try:
             field = 'field'
             app = self.get_the_app(kind=kind)
@@ -426,7 +427,7 @@ class Dashboard:
     #     return self.get_occupation_data_dict(app_table=app_table)
 
 #下面三个函数的代码可以优化合并
-    def get_location_distribution_data_dict(self,app_table='Application',field_name = 'app',kind=None):
+    def get_location_distribution_data_dict(self,app_table=APPLICATION_CLASS,field_name = 'app',kind=None):
         try:
 
             app = self.get_the_app(kind=kind)
@@ -534,7 +535,7 @@ class Dashboard:
              raise e
         return sorted_frequent_location_percentage
 
-    def get_event_to_activity_data(self,event_name=None,app_table='Application',kind=None):
+    def get_event_to_activity_data(self,event_name=None,app_table=APPLICATION_CLASS,kind=None):
 
         # print app_table
         try:
@@ -562,7 +563,7 @@ class Dashboard:
              raise e
         return activity_statistics_dict
 
-    def get_event_to_location_data(self,event_name=None,app_table='Application',kind=None):
+    def get_event_to_location_data(self,event_name=None,app_table=APPLICATION_CLASS,kind=None):
 
         # print app_table
         try:
@@ -874,6 +875,7 @@ class Developer:
         self.user.set('email',email)
         self.user.set('username',username)
         self.user.set('password',password)
+        self.user.set('type','developer')    # for distinguishing developer and tracker in the table _User
         try:
             result = self.user.sign_up()
             print result
@@ -911,7 +913,7 @@ class Developer:
     def get_all_application(self):
         try:
             # 这里认为应用的数量少于1000
-            Application = Object.extend('Application')
+            Application = Object.extend(APPLICATION_CLASS)
             query = Query(Application)
             query.equal_to('user',self.user.become(self.session_token))
             query.ascending('createdAt')
@@ -927,13 +929,15 @@ class Developer:
         except LeanCloudError,e:
             print e
             return 0
+
     def get_all_demo_application(self):
         try:
             # 这里认为应用的数量少于1000
-            Application = Object.extend('DemoApplication')
+            Application = Object.extend(APPLICATION_CLASS)
             query = Query(Application)
             # query.equal_to('user',self.user.become(self.session_token))
             query.ascending('createdAt')
+            query.equal_to('type','demo')
             query.limit(1000)
             result_list = query.find()
             all_demo_application_dict = {}
@@ -972,7 +976,7 @@ class Developer:
         try:
             user = self.user.become(self.session_token)
             print 'Got the user'
-            Application = Object.extend('Application')
+            Application = Object.extend(APPLICATION_CLASS)
             application = Application()
             query = Query(Application)
             query.equal_to('user',user)
@@ -1001,7 +1005,7 @@ class Developer:
         try:
             user = self.user.become(self.session_token)
             print 'Got the user'
-            Application = Object.extend('Application')
+            Application = Object.extend(APPLICATION_CLASS)
             application = Application()
             query = Query(Application)
             query.equal_to('user',user)

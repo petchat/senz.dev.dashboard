@@ -7,7 +7,7 @@ import random
 # from views.dashboard import dashboard_view
 import config as config
 import itsdangerous
-
+DEMO_APP_NAME = 'Demo'
 app = Flask(__name__)
 app.config['SECRET_KEY'] = config.SECRET_KEY
 # CsrfProtect(app)
@@ -59,7 +59,10 @@ def index():
 def integration():
     print 'args: '+str(request.args)
     print 'form: '+str(request.form)
-    app_id = request.form.get('app_id')
+    # app_id = request.form.get('app_id')
+    app_name = session.get('app_name')
+    app_id = session.get('app_id')
+
     dashboard = Dashboard()
     dashboard.app_id = app_id
     app_key = dashboard.get_app_key()
@@ -99,7 +102,10 @@ def integration():
 def settings():
     print 'args: '+str(request.args)
     print 'form: '+str(request.form)
-    app_id = request.form.get('app_id')
+    # app_id = request.form.get('app_id')
+    app_name = session.get('app_name')
+    app_id = session.get('app_id')
+
     dashboard = Dashboard()
     dashboard.app_id = app_id
     app_key = dashboard.get_app_key()
@@ -108,7 +114,7 @@ def settings():
     if not app_key:
         flash('App not exists')
         return render_template('console.html')
-    if app_id == "demoappid55c468cc60b2279e85396871":
+    if app_name == DEMO_APP_NAME:
         disabled= True
     else:
         disabled = False
@@ -145,29 +151,58 @@ def settings():
     # return redirect(url_for('dashboard',username=username))
 # 注意现在还没有做user和app_id是否是从属关系的认证
 
-@app.route('/dash',methods=['GET','POST'])
-def dash():
+@app.route('/dash/<param>',methods=['GET','POST'])
+def dash(param):
+
+
     username = session.get('username')
     session_token = session.get('session_token')
+
     if not session_token:
         return redirect(url_for('index'))
-
+    # app_name = request.args.get('app_name')
+    # app_id = request.args.get('app_id')
+    app_name = session.get('app_name')
+    app_id = session.get('app_id')
+    print 'the app_name is %s and the app_id  is: %s' %(str(app_name), str(app_id))
 
     user = Developer()
     user.session_token = session_token
-    if user.get_all_demo_application():
-        all_demo_application_dict = user.all_demo_application_dict
+    print 'Param is %s' %(str(param))
+    if param == 'dashboard':
+        if user.get_all_application():
+            all_application_dict = user.all_application_dict                #一旦上一步执行成功，会给user添加一个成员变量 all_demo_application_dict
+        else:
+            print 'no application  exists'
+            all_application_dict ={}
+        print 'all_application_dict is : %s' %(str(all_application_dict))
+        if app_name and app_id:
+            del all_application_dict[app_name]
+        else:
+            app_name = all_application_dict.keys()[0]
+            app_id = all_application_dict[app_name]
+            del all_application_dict[app_name]
+    elif param == 'demo':
+
+        if user.get_all_demo_application():
+            all_demo_application_dict = user.all_demo_application_dict   #一旦上一步执行成功，会给user添加一个成员变量 all_demo_application_dict
+        else:
+            print 'no demo application  exists'
+            all_demo_application_dict ={}
+        print 'all_demo_application_dict is : %s' %(str(all_demo_application_dict))
+        all_application_dict = {}
+        if DEMO_APP_NAME in all_demo_application_dict.keys():
+            app_name = DEMO_APP_NAME
+            app_id = all_demo_application_dict[app_name]
+        else:
+            'Demo not exists'
+            app_name = None
+            app_id = None
     else:
-        print 'no demo application  exists'
-        all_demo_application_dict ={}
-    print 'all_demo_application_dict is : %s' %(str(all_demo_application_dict))
-    if 'Demo1' in all_demo_application_dict.keys():
-        app_name = 'Demo1'
-        app_id = all_demo_application_dict[app_name]
-    else:
-        'Demo not exists'
-        app_name = None
-        app_id = None
+        print 'Param is %s' %(str(param))
+        all_application_dict = {}
+
+
     session['app_name'] = app_name
     session['app_id'] = app_id
     # del all_demo_application_dict[app_name]
@@ -179,51 +214,7 @@ def dash():
         is_xhr = True
     else:
         is_xhr = False
-    dashboard_link = '/demo'
-    # new_data_dict = dashboard.get_demo_age_and_gender_data_dict()
-    # if not new_data_dict:
-    #     age_data = False
-    #     age_category_list = []
-    #     man_data_list = []
-    #     woman_data_list = []
-    # else:
-    #     age_data = True
-    #     age_category_list = sorted(new_data_dict['man'].keys())
-    #     man_data_list = [key[1] for key in sorted(new_data_dict['man'].items(),key=lambda l:l[0])]
-    #     woman_data_list = [key[1] for key in sorted(new_data_dict['woman'].items(),key=lambda l:l[0])]
-    # print 'data in age_and_gender is display_age_and_gender:%s  age_category_list:%s man_data_list:%s woman_data_list:%s' %(str(age_data),str(age_category_list),str(man_data_list),str(woman_data_list))
-    #
-    #
-    # new_data_dict = dashboard.get_demo_location_distribution_data_dict()
-    # del new_data_dict['unknown']
-    # if not new_data_dict:
-    #     location_data = False
-    #     location_category_list = []
-    #     location_percentage_list = []
-    # else:
-    #     location_data = True
-    #     location_category_list = [str(key[0]) for key in sorted(new_data_dict.items(),key=lambda l:l[1],reverse=True)]
-    #     location_percentage_list = [key[1] for key in sorted(new_data_dict.items(),key=lambda l:l[1],reverse=True)]
-    #
-    # print 'data in get_location_distribution_data_dict is location_data: %s location_category_list:%s  location_percentage_list:%s ' %(str(location_data),str(location_category_list),str(location_percentage_list))
-    # new_data_dict = dashboard.get_demo_event_to_activity_data()
-    # print 'new data dict'+str(new_data_dict.values())
-    # if not new_data_dict.values():
-
-    # if not new_data_dict:
-    #     event_data = False
-    #     event_name = None
-    #     activity_category_list = []
-    #     activity_count_list = []
-    # else:
-    #     event_data = True
-    #     event_name = new_data_dict.keys()[0]
-    #     new_data_dict = new_data_dict.values()[0]
-    #     del new_data_dict['others']
-    #     activity_category_list = [str(key[0]) for key in sorted(new_data_dict.items(),key=lambda l:l[1],reverse=True)]
-    #     activity_count_list = [key[1] for key in sorted(new_data_dict.items(),key=lambda l:l[1],reverse=True)]
-    #
-    # print 'data in get_event_to_activity_data is event_data: %s event_name:%s  activity_category_list:%s  activity_count_list: %s' %(str(event_data),str(event_name),str(activity_category_list),str(activity_count_list))
+    print 'last all_application_dict is : %s' %(str(all_application_dict))
 
     default_user_profile_category = 'Age&Gender'
     default_path_analysis_category = 'Frequently Location'
@@ -263,14 +254,14 @@ def dash():
     print 'log comes out !!!!!'
     return render_template('shared/dash.html',
                            is_xhr = is_xhr,
-                           dashboard_link = dashboard_link,
+                           # dashboard_link = dashboard_link,
                            route_link='dashboard',
                            # sort according to ['16down', '16to35', '35to55', '55up']
                            # discard unknown data
                             username = username,
                            app_name = app_name,
                            app_id =app_id,
-                           all_application_dict = {},
+                           all_application_dict = all_application_dict,
 
                            # age_data = age_data,
                            # age_category_list = age_category_list,
@@ -314,6 +305,7 @@ def dash():
 
 @app.route('/demo',methods=['GET','POST'])
 def demo():
+
     username = session.get('username')
     session_token = session.get('session_token')
     if not session_token:
@@ -323,13 +315,13 @@ def demo():
     user = Developer()
     user.session_token = session_token
     if user.get_all_demo_application():
-        all_demo_application_dict = user.all_demo_application_dict
+        all_demo_application_dict = user.all_demo_application_dict   #一旦上一步执行成功，会给user添加一个成员变量 all_demo_application_dict
     else:
         print 'no demo application  exists'
         all_demo_application_dict ={}
     print 'all_demo_application_dict is : %s' %(str(all_demo_application_dict))
-    if 'Demo1' in all_demo_application_dict.keys():
-        app_name = 'Demo1'
+    if DEMO_APP_NAME in all_demo_application_dict.keys():
+        app_name = DEMO_APP_NAME
         app_id = all_demo_application_dict[app_name]
     else:
         'Demo not exists'
@@ -348,27 +340,27 @@ def demo():
         is_xhr = False
     dashboard_link = '/demo'
 
-    default_user_profile_category = 'Age&Gender'
-    default_path_analysis_category = 'Frequently Location'
-    default_event_name = 'Event1'
-    default_behavior_recognition_measure = 'Activity'
-
-    user_profile_type = 'age'
-    path_analysis_type = 'location'
-    event_name_type = 'Event1'
-    behavior_recognition_measure_type = 'activity'
-
-
-
-    user_profile_category_dict = dashboard.get_user_profile_category_dict()    #['Occupation','Tastes']
-    path_analysis_measure_dict = dashboard.get_path_analysis_measure_dict() # ['Frequently Track']
-    behavior_recognition_event_dict = dashboard.get_behavior_recognition_event_dict() #['event2']
-    behavior_recognition_measure_dict = dashboard.get_behavior_recognition_measure_dict() #['Location','Time']
-
-    del user_profile_category_dict[user_profile_type]
-    del path_analysis_measure_dict[path_analysis_type]
-    del behavior_recognition_event_dict[event_name_type]
-    del behavior_recognition_measure_dict[behavior_recognition_measure_type]
+    # default_user_profile_category = 'Age&Gender'
+    # default_path_analysis_category = 'Frequently Location'
+    # default_event_name = 'Event1'
+    # default_behavior_recognition_measure = 'Activity'
+    #
+    # user_profile_type = 'age'
+    # path_analysis_type = 'location'
+    # event_name_type = 'Event1'
+    # behavior_recognition_measure_type = 'activity'
+    #
+    #
+    #
+    # user_profile_category_dict = dashboard.get_user_profile_category_dict()    #['Occupation','Tastes']
+    # path_analysis_measure_dict = dashboard.get_path_analysis_measure_dict() # ['Frequently Track']
+    # behavior_recognition_event_dict = dashboard.get_behavior_recognition_event_dict() #['event2']
+    # behavior_recognition_measure_dict = dashboard.get_behavior_recognition_measure_dict() #['Location','Time']
+    #
+    # del user_profile_category_dict[user_profile_type]
+    # del path_analysis_measure_dict[path_analysis_type]
+    # del behavior_recognition_event_dict[event_name_type]
+    # del behavior_recognition_measure_dict[behavior_recognition_measure_type]
 
 
     # sorted_frequent_location_percentage = dashboard.get_location_distribution_data_dict()
@@ -409,20 +401,20 @@ def demo():
                            # activity_category_list=activity_category_list,
                            # activity_count_list=activity_count_list,
 
-                            default_user_profile_category = default_user_profile_category,
-                           default_path_analysis_category = default_path_analysis_category,
-                           default_event_name = default_event_name,
-                           default_behavior_recognition_measure = default_behavior_recognition_measure,
-
-                           user_profile_type = user_profile_type,
-                           path_analysis_type = path_analysis_type,
-                            event_name_type = event_name_type,
-                            behavior_recognition_measure_type = behavior_recognition_measure_type,
-
-                           user_profile_category_dict = user_profile_category_dict,
-                           path_analysis_measure_dict = path_analysis_measure_dict,
-                           behavior_recognition_event_dict = behavior_recognition_event_dict,
-                           behavior_recognition_measure_dict = behavior_recognition_measure_dict
+                           #  default_user_profile_category = default_user_profile_category,
+                           # default_path_analysis_category = default_path_analysis_category,
+                           # default_event_name = default_event_name,
+                           # default_behavior_recognition_measure = default_behavior_recognition_measure,
+                           #
+                           # user_profile_type = user_profile_type,
+                           # path_analysis_type = path_analysis_type,
+                           #  event_name_type = event_name_type,
+                           #  behavior_recognition_measure_type = behavior_recognition_measure_type,
+                           #
+                           # user_profile_category_dict = user_profile_category_dict,
+                           # path_analysis_measure_dict = path_analysis_measure_dict,
+                           # behavior_recognition_event_dict = behavior_recognition_event_dict,
+                           # behavior_recognition_measure_dict = behavior_recognition_measure_dict
 
                            # location_name_list = [str(kv[0]) for kv in sorted_frequent_location_percentage],
                            # location_time_list = [kv[1] for kv in sorted_frequent_location_percentage],
@@ -461,19 +453,19 @@ def ajax_demo(param):
     if param == 'profile':
         category = request.form.get('category')
         print 'before get_profile_option'
-        option = dashboard.get_profile_option(category=category,kind='demo')
+        option = dashboard.get_profile_option(category=category)
         print 'Option is: %s' %(str(option))
         return jsonify(option)
         pass
     elif param == 'path':
         category = request.form.get('category')
-        option = dashboard.get_path_option(category=category,kind='demo')
+        option = dashboard.get_path_option(category=category)
         return jsonify(option)
         pass
     elif param == 'behavior':
         event_name = request.form.get('event')
         category = request.form.get('category')
-        option = dashboard.get_event_option(event_name=event_name,category=category,kind='demo')
+        option = dashboard.get_event_option(event_name=event_name,category=category)
         print 'after get_event_option'
         print 'Option is: %s' %(str(option))
         return jsonify(option)
@@ -557,6 +549,8 @@ def dashboard():
         del all_application_dict[app_name]
     dashboard = Dashboard()
     dashboard.app_id = app_id
+
+    # 存到session中是为了在dash中使用
     session['app_name'] = app_name
     session['app_id'] = app_id
 
@@ -567,27 +561,27 @@ def dashboard():
         is_xhr = False
     dashboard_link = '/dashboard'
 
-    default_user_profile_category = 'Age&Gender'
-    default_path_analysis_category = 'Frequently Location'
-    default_event_name = 'Event1'
-    default_behavior_recognition_measure = 'Activity'
-
-    user_profile_type = 'age'
-    path_analysis_type = 'location'
-    event_name_type = 'Event1'
-    behavior_recognition_measure_type = 'activity'
-
-
-
-    user_profile_category_dict = dashboard.get_user_profile_category_dict()    #['Occupation','Tastes']
-    path_analysis_measure_dict = dashboard.get_path_analysis_measure_dict() # ['Frequently Track']
-    behavior_recognition_event_dict = dashboard.get_behavior_recognition_event_dict() #['event2']
-    behavior_recognition_measure_dict = dashboard.get_behavior_recognition_measure_dict() #['Location','Time']
-
-    del user_profile_category_dict[user_profile_type]
-    del path_analysis_measure_dict[path_analysis_type]
-    del behavior_recognition_event_dict[event_name_type]
-    del behavior_recognition_measure_dict[behavior_recognition_measure_type]
+    # default_user_profile_category = 'Age&Gender'
+    # default_path_analysis_category = 'Frequently Location'
+    # default_event_name = 'Event1'
+    # default_behavior_recognition_measure = 'Activity'
+    #
+    # user_profile_type = 'age'
+    # path_analysis_type = 'location'
+    # event_name_type = 'Event1'
+    # behavior_recognition_measure_type = 'activity'
+    #
+    #
+    #
+    # user_profile_category_dict = dashboard.get_user_profile_category_dict()    #['Occupation','Tastes']
+    # path_analysis_measure_dict = dashboard.get_path_analysis_measure_dict() # ['Frequently Track']
+    # behavior_recognition_event_dict = dashboard.get_behavior_recognition_event_dict() #['event2']
+    # behavior_recognition_measure_dict = dashboard.get_behavior_recognition_measure_dict() #['Location','Time']
+    #
+    # del user_profile_category_dict[user_profile_type]
+    # del path_analysis_measure_dict[path_analysis_type]
+    # del behavior_recognition_event_dict[event_name_type]
+    # del behavior_recognition_measure_dict[behavior_recognition_measure_type]
 
 
     print 'log comes out !!!!!'
@@ -602,22 +596,23 @@ def dashboard():
                             username = username,
                            app_name = app_name,
                            app_id =app_id,
+
                            all_application_dict = all_application_dict,
 
-                            default_user_profile_category = default_user_profile_category,
-                           default_path_analysis_category = default_path_analysis_category,
-                           default_event_name = default_event_name,
-                           default_behavior_recognition_measure = default_behavior_recognition_measure,
-
-                           user_profile_type = user_profile_type,
-                           path_analysis_type = path_analysis_type,
-                            event_name_type = event_name_type,
-                            behavior_recognition_measure_type = behavior_recognition_measure_type,
-
-                           user_profile_category_dict = user_profile_category_dict,
-                           path_analysis_measure_dict = path_analysis_measure_dict,
-                           behavior_recognition_event_dict = behavior_recognition_event_dict,
-                           behavior_recognition_measure_dict = behavior_recognition_measure_dict
+                           #  default_user_profile_category = default_user_profile_category,
+                           # default_path_analysis_category = default_path_analysis_category,
+                           # default_event_name = default_event_name,
+                           # default_behavior_recognition_measure = default_behavior_recognition_measure,
+                           #
+                           # user_profile_type = user_profile_type,
+                           # path_analysis_type = path_analysis_type,
+                           #  event_name_type = event_name_type,
+                           #  behavior_recognition_measure_type = behavior_recognition_measure_type,
+                           #
+                           # user_profile_category_dict = user_profile_category_dict,
+                           # path_analysis_measure_dict = path_analysis_measure_dict,
+                           # behavior_recognition_event_dict = behavior_recognition_event_dict,
+                           # behavior_recognition_measure_dict = behavior_recognition_measure_dict
                            )
 
 @app.route('/login', methods=['GET','POST'])

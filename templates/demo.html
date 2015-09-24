@@ -9,6 +9,83 @@
 //        console.log('the age range data of man is : '+{{ man_data_list|safe }})
 //        console.log('the age range data of woman is : '+{{ woman_data_list|safe }})
 
+        $(document).ready(function(){
+    var _xsrf = $("[name='_xsrf']").attr('value');
+    var app_id = $(".switch-app .dropdown button").attr("app_id");
+    url = '/dash/demo'
+    $.post(url,
+             {
+            _xsrf: _xsrf,
+                 app_id: app_id
+            },
+             function(data,status) {
+                 console.log(data);
+                 $('.main-content').html(data)
+                 init_dashboard()
+        });
+});
+
+function init_dashboard() {
+    var _xsrf = $("[name='_xsrf']").attr('value');
+    var app_id = $(".switch-app .dropdown button").attr("app_id");
+    var url = '/ajax/demo/';
+
+    user_profile_category = $('#user-profile .switch-category .dropdown button').attr('category-name')
+    $.post(url+'profile',
+             {
+            _xsrf: _xsrf,
+                 app_id: app_id,
+                category : user_profile_category
+            },
+             function(data,status) {
+                 console.log(data);
+                 if(data['status']==1){
+                     console.log(data['data'])
+                     user_profile(data['data']);
+                 }
+                 else{
+                     user_profile(data['data']);
+                 }
+        });
+
+    path_analysis_category = $('#path-analysis .switch-category .dropdown button').attr('category-name')
+    $.post(url+'path',
+             {
+                _xsrf: _xsrf,
+                 app_id: app_id,
+                category : path_analysis_category
+            },
+             function(data,status) {
+                 console.log(data);
+                if(data['status']==1){
+                     path_analysis(data['data']);
+                 }
+                 else{
+                     path_analysis(data['data']);
+                 }        });
+
+    behavior_recognition_event = $('#behavior-recognition #dropdown-event  button').attr('category-name');
+    behavior_recognition_category = $('#behavior-recognition #dropdown-category  button').attr('category-name');
+    $.post(url+'behavior',
+             {
+                 _xsrf: _xsrf,
+                 app_id: app_id,
+                 event:behavior_recognition_event,
+                 category : behavior_recognition_category
+            },
+             function(data,status) {
+                 console.log(data);
+                 if(data['status']==1){
+                     behavior_recognition(data['data']);
+                 }
+                 else{
+                     behavior_recognition(data['data']);
+                 }
+        });
+}
+
+
+
 function change_li($this,e){
         var click_text = $this.text();
         var dropdown_button = $this.parent('li').parent('ul').siblings('button');
@@ -146,80 +223,7 @@ function behavior_recognition(option){
     myChart.setOption(option);
 }
 
-function init_dashboard() {
-    var _xsrf = $("[name='_xsrf']").attr('value');
-    var app_id = $(".switch-app .dropdown button").attr("app_id");
-    var url = '/ajax/demo/';
 
-    user_profile_category = $('#user-profile .switch-category .dropdown button').attr('category-name')
-    $.post(url+'profile',
-             {
-            _xsrf: _xsrf,
-                 app_id: app_id,
-                category : user_profile_category
-            },
-             function(data,status) {
-                 console.log(data);
-                 if(data['status']==1){
-                     console.log(data['data'])
-                     user_profile(data['data']);
-                 }
-                 else{
-                     user_profile(data['data']);
-                 }
-        });
-
-    path_analysis_category = $('#path-analysis .switch-category .dropdown button').attr('category-name')
-    $.post(url+'path',
-             {
-                _xsrf: _xsrf,
-                 app_id: app_id,
-                category : path_analysis_category
-            },
-             function(data,status) {
-                 console.log(data);
-                if(data['status']==1){
-                     path_analysis(data['data']);
-                 }
-                 else{
-                     path_analysis(data['data']);
-                 }        });
-
-    behavior_recognition_event = $('#behavior-recognition #dropdown-event  button').attr('category-name');
-    behavior_recognition_category = $('#behavior-recognition #dropdown-category  button').attr('category-name');
-    $.post(url+'behavior',
-             {
-                 _xsrf: _xsrf,
-                 app_id: app_id,
-                 event:behavior_recognition_event,
-                 category : behavior_recognition_category
-            },
-             function(data,status) {
-                 console.log(data);
-                 if(data['status']==1){
-                     behavior_recognition(data['data']);
-                 }
-                 else{
-                     behavior_recognition(data['data']);
-                 }
-        });
-}
-$(document).ready(function(){
-    var _xsrf = $("[name='_xsrf']").attr('value');
-    var app_id = $(".switch-app .dropdown button").attr("app_id");
-    url = '/dash'
-    $.post(url,
-             {
-            _xsrf: _xsrf,
-                 app_id: app_id
-            },
-             function(data,status) {
-                 console.log(data);
-                 $('.main-content').html(data)
-                 init_dashboard()
-
-        });
-});
 
     </script>
 {% endblock %}

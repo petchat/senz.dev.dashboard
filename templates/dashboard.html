@@ -10,7 +10,8 @@
         $(document).ready(function(){
     var _xsrf = $("[name='_xsrf']").attr('value');
     var app_id = $(".switch-app .dropdown button").attr("app_id");
-    url = '/dash'
+            //获得Dashboard页面的基本框架
+    url = '/dash/dashboard'
     $.post(url,
              {
             _xsrf: _xsrf,
