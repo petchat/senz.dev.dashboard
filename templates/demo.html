@@ -4,7 +4,7 @@
 {% endblock %}
 {% block extra_js %}
   <!--<script src="http://echarts.baidu.com/build/dist/echarts.js"></script>-->
- <script src="http://echarts.baidu.com/build/dist/echarts-all.js"></script>
+ <script src="{{ url_for(".static",filename="js/echarts-all.js") }}"></script>
 <script type="text/javascript">
 //        console.log('the age range data of man is : '+{{ man_data_list|safe }})
 //        console.log('the age range data of woman is : '+{{ woman_data_list|safe }})
@@ -39,7 +39,13 @@ $('body').on('click',"#user-profile ul li a",function(e){
             },
              function(data,status){
             console.log(data)
-                 user_profile(data);
+                 if(data['status']==1){
+                     console.log(data['data'])
+                     user_profile(data['data']);
+                 }
+                 else{
+                     user_profile(data['data']);
+                 }
         });
     });
 
@@ -84,7 +90,12 @@ $('body').on('click',"#behavior-recognition #dropdown-event ul li a",function(e)
             },
              function(data,status){
                  console.log(data+" "+status);
-                 behavior_recognition(data)
+                  if(data['status']==1){
+                     behavior_recognition(data['data']);
+                 }
+                 else{
+                     behavior_recognition(data['data']);
+                 }
         });
     });
 
@@ -111,7 +122,12 @@ $('body').on('click',"#behavior-recognition #dropdown-category ul li a",function
             },
              function(data,status){
                  console.log(data+" "+status);
-                 behavior_recognition(data)
+                  if(data['status']==1){
+                     behavior_recognition(data['data']);
+                 }
+                 else{
+                     behavior_recognition(data['data']);
+                 }
         });
     });
 
@@ -144,7 +160,13 @@ function init_dashboard() {
             },
              function(data,status) {
                  console.log(data);
-                 user_profile(data);
+                 if(data['status']==1){
+                     console.log(data['data'])
+                     user_profile(data['data']);
+                 }
+                 else{
+                     user_profile(data['data']);
+                 }
         });
 
     path_analysis_category = $('#path-analysis .switch-category .dropdown button').attr('category-name')
@@ -156,8 +178,12 @@ function init_dashboard() {
             },
              function(data,status) {
                  console.log(data);
-                 path_analysis(data);
-        });
+                if(data['status']==1){
+                     path_analysis(data['data']);
+                 }
+                 else{
+                     path_analysis(data['data']);
+                 }        });
 
     behavior_recognition_event = $('#behavior-recognition #dropdown-event  button').attr('category-name');
     behavior_recognition_category = $('#behavior-recognition #dropdown-category  button').attr('category-name');
@@ -170,7 +196,12 @@ function init_dashboard() {
             },
              function(data,status) {
                  console.log(data);
-                 behavior_recognition(data);
+                 if(data['status']==1){
+                     behavior_recognition(data['data']);
+                 }
+                 else{
+                     behavior_recognition(data['data']);
+                 }
         });
 }
 $(document).ready(function(){

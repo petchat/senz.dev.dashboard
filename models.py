@@ -20,12 +20,14 @@ user_profile_base_option = {
         'textStyle':{
         'fontSize': 24,
         'fontWeight': 'bolder',
-        'color': '#5f7d8c'
+        # 'color': '#5f7d8c'
+        'color': '#079d9e'
+
         } ,
         'subtextStyle':{
         'fontSize': 12,
         'fontWeight': 'normal',
-        'color': '#5f7d8c'
+        'color': '#079d9e'
         } ,
         'text': ''
     },
@@ -66,7 +68,7 @@ user_profile_base_option = {
             'type':'bar',
             'itemStyle':{
                 'normal':{
-                    'color':'#2EC7C9',
+                    'color':'#7bcce7',
                     'barBorderRadius':4
                 }
 
@@ -79,7 +81,7 @@ user_profile_base_option = {
             'type':'bar',
             'itemStyle':{
                 'normal':{
-                    'color':'#B6A2DE',
+                    'color':'#ffb200',
                     'barBorderRadius':4
                 }
 
@@ -97,12 +99,12 @@ path_analysis_base_option = {
         'textStyle':{
         'fontSize': 24,
         'fontWeight': 'bolder',
-        'color': '#5f7d8c'
+        'color': '#079d9e'
 } ,
         'subtextStyle':{
         'fontSize': 12,
         'fontWeight': 'normal',
-        'color': '#5f7d8c'
+        'color': '#079d9e'
 } ,
 
         'text': 'Location percentage'
@@ -148,7 +150,7 @@ path_analysis_base_option = {
             'type':'bar',
             'itemStyle':{
                 'normal':{
-                    'color':'#2EC7C9',
+                    'color':'#69f0ae',
                     'barBorderRadius':4
                 }
 
@@ -166,12 +168,12 @@ event_recognition_base_option= {
         'textStyle':{
         'fontSize': 24,
         'fontWeight': 'bolder',
-        'color': '#5f7d8c'
+        'color': '#079d9e'
 } ,
         'subtextStyle':{
         'fontSize': 12,
         'fontWeight': 'normal',
-        'color': '#5f7d8c'
+        'color': '#079d9e'
 } ,
 
         'text': 'Custom event statistics'
@@ -220,7 +222,7 @@ event_recognition_base_option= {
             'type':'bar',
             'itemStyle':{
                 'normal':{
-                    'color':'#2EC7C9',
+                    'color':'#e11f78',
                     'barBorderRadius':4
                 }
             },
@@ -613,7 +615,8 @@ class Dashboard:
 
 
     def get_profile_option(self,category='age',kind=None):
-
+        user_profile_option = {}
+        status = 1
         if category == 'age':
             new_data_dict = self.get_age_and_gender_data_dict(kind=kind)
             if not new_data_dict:
@@ -621,21 +624,24 @@ class Dashboard:
                 age_category_list = []
                 man_data_list = []
                 woman_data_list = []
+                status = 0
+
             else:
                 age_data = True
                 age_category_list = sorted(new_data_dict['man'].keys())
                 man_data_list = [key[1] for key in sorted(new_data_dict['man'].items(),key=lambda l:l[0])]
                 woman_data_list = [key[1] for key in sorted(new_data_dict['woman'].items(),key=lambda l:l[0])]
-            user_profile_option = copy.deepcopy(user_profile_base_option)
-            user_profile_option['title']['text'] = 'Age & Gender'
-            user_profile_option['legend']['data'] = ['man', 'woman']
-            user_profile_option['xAxis'][0]['name'] = 'Age Range'
-            user_profile_option['xAxis'][0]['data'] = age_category_list   #['16down','16to35','35to55','55up']
-            user_profile_option['yAxis'][0]['name'] = 'Total Amount'
-            user_profile_option['series'][0]['name'] ='man'
-            user_profile_option['series'][0]['data'] = man_data_list
-            user_profile_option['series'][1]['name'] = 'woman'
-            user_profile_option['series'][1]['data'] = woman_data_list
+
+                user_profile_option = copy.deepcopy(user_profile_base_option)
+                user_profile_option['title']['text'] = 'Age & Gender'
+                user_profile_option['legend']['data'] = ['man', 'woman']
+                user_profile_option['xAxis'][0]['name'] = 'Age Range'
+                user_profile_option['xAxis'][0]['data'] = age_category_list   #['16down','16to35','35to55','55up']
+                user_profile_option['yAxis'][0]['name'] = 'Total Amount'
+                user_profile_option['series'][0]['name'] ='man'
+                user_profile_option['series'][0]['data'] = man_data_list
+                user_profile_option['series'][1]['name'] = 'woman'
+                user_profile_option['series'][1]['data'] = woman_data_list
 
         elif category == 'occupation':
             new_data_dict = self.get_occupation_data_dict(kind=kind)
@@ -643,21 +649,24 @@ class Dashboard:
                 occupation_data = False
                 occupation_category_list = []
                 occupation_data_list = []
+                status = 0
+
             else:
                 if 'unknown' in new_data_dict.keys():
                     del new_data_dict['unknown']
                 occupation_data = True
                 occupation_category_list = [key[0] for key in sorted(new_data_dict.items(),key=lambda l:l[1])]
                 occupation_data_list = [key[1] for key in sorted(new_data_dict.items(),key=lambda l:l[1])]
-            user_profile_option = copy.deepcopy(user_profile_base_option)
-            user_profile_option['title']['text'] = 'Occupation'
-            user_profile_option['legend']['data'] = ['occupation']
-            user_profile_option['xAxis'][0]['name'] = 'Occupations'
-            user_profile_option['xAxis'][0]['data'] = occupation_category_list   #['16down','16to35','35to55','55up']
-            user_profile_option['yAxis'][0]['name'] = 'Total Amount'
-            user_profile_option['series'][0]['name'] ='occupation'
-            user_profile_option['series'][0]['data'] = occupation_data_list
-            del user_profile_option['series'][1]
+
+                user_profile_option = copy.deepcopy(user_profile_base_option)
+                user_profile_option['title']['text'] = 'Occupation'
+                user_profile_option['legend']['data'] = ['occupation']
+                user_profile_option['xAxis'][0]['name'] = 'Occupations'
+                user_profile_option['xAxis'][0]['data'] = occupation_category_list   #['16down','16to35','35to55','55up']
+                user_profile_option['yAxis'][0]['name'] = 'Total Amount'
+                user_profile_option['series'][0]['name'] ='occupation'
+                user_profile_option['series'][0]['data'] = occupation_data_list
+                del user_profile_option['series'][1]
             pass
         elif category == 'sport':
             new_data_dict = self.get_sport_data_dict(kind=kind)
@@ -665,21 +674,24 @@ class Dashboard:
                 has_data = False
                 category_list = []
                 data_list = []
+                status = 0
+
             else:
                 if 'unknown' in new_data_dict.keys():
                     del new_data_dict['unknown']
                 has_data = True
                 category_list = [key[0] for key in sorted(new_data_dict.items(),key=lambda l:l[1])]
                 data_list = [key[1] for key in sorted(new_data_dict.items(),key=lambda l:l[1])]
-            user_profile_option = copy.deepcopy(user_profile_base_option)
-            user_profile_option['title']['text'] = 'Sport'
-            user_profile_option['legend']['data'] = ['sport']
-            user_profile_option['xAxis'][0]['name'] = 'Sports'
-            user_profile_option['xAxis'][0]['data'] = category_list   #['16down','16to35','35to55','55up']
-            user_profile_option['yAxis'][0]['name'] = 'Total Amount'
-            user_profile_option['series'][0]['name'] ='sport'
-            user_profile_option['series'][0]['data'] = data_list
-            del user_profile_option['series'][1]
+
+                user_profile_option = copy.deepcopy(user_profile_base_option)
+                user_profile_option['title']['text'] = 'Sport'
+                user_profile_option['legend']['data'] = ['sport']
+                user_profile_option['xAxis'][0]['name'] = 'Sports'
+                user_profile_option['xAxis'][0]['data'] = category_list   #['16down','16to35','35to55','55up']
+                user_profile_option['yAxis'][0]['name'] = 'Total Amount'
+                user_profile_option['series'][0]['name'] ='sport'
+                user_profile_option['series'][0]['data'] = data_list
+                del user_profile_option['series'][1]
             pass
         elif category == 'consumption':
             new_data_dict = self.get_consumption_data_dict(kind=kind)
@@ -687,21 +699,23 @@ class Dashboard:
                 has_data = False
                 category_list = []
                 data_list = []
+                status = 0
             else:
                 if 'unknown' in new_data_dict.keys():
                     del new_data_dict['unknown']
                 has_data = True
                 category_list = [key[0] for key in sorted(new_data_dict.items(),key=lambda l:l[1])]
                 data_list = [key[1] for key in sorted(new_data_dict.items(),key=lambda l:l[1])]
-            user_profile_option = copy.deepcopy(user_profile_base_option)
-            user_profile_option['title']['text'] = 'Consumption'
-            user_profile_option['legend']['data'] = ['consumption']
-            user_profile_option['xAxis'][0]['name'] = 'Consumptions'
-            user_profile_option['xAxis'][0]['data'] = category_list   #['16down','16to35','35to55','55up']
-            user_profile_option['yAxis'][0]['name'] = 'Total Amount'
-            user_profile_option['series'][0]['name'] ='consumption'
-            user_profile_option['series'][0]['data'] = data_list
-            del user_profile_option['series'][1]
+
+                user_profile_option = copy.deepcopy(user_profile_base_option)
+                user_profile_option['title']['text'] = 'Consumption'
+                user_profile_option['legend']['data'] = ['consumption']
+                user_profile_option['xAxis'][0]['name'] = 'Consumptions'
+                user_profile_option['xAxis'][0]['data'] = category_list   #['16down','16to35','35to55','55up']
+                user_profile_option['yAxis'][0]['name'] = 'Total Amount'
+                user_profile_option['series'][0]['name'] ='consumption'
+                user_profile_option['series'][0]['data'] = data_list
+                del user_profile_option['series'][1]
 
         elif category == 'field':
             new_data_dict = self.get_field_data_dict(kind=kind)
@@ -709,38 +723,50 @@ class Dashboard:
                 has_data = False
                 category_list = []
                 data_list = []
+                status = 0
             else:
                 if 'unknown' in new_data_dict.keys():
                     del new_data_dict['unknown']
                 has_data = True
                 category_list = [key[0] for key in sorted(new_data_dict.items(),key=lambda l:l[1])]
                 data_list = [key[1] for key in sorted(new_data_dict.items(),key=lambda l:l[1])]
-            user_profile_option = copy.deepcopy(user_profile_base_option)
-            user_profile_option['title']['text'] = 'Field'
-            user_profile_option['legend']['data'] = ['field']
-            user_profile_option['xAxis'][0]['name'] = 'Fields'
-            user_profile_option['xAxis'][0]['data'] = category_list   #['16down','16to35','35to55','55up']
-            user_profile_option['yAxis'][0]['name'] = 'Total Amount'
-            user_profile_option['series'][0]['name'] ='field'
-            user_profile_option['series'][0]['data'] = data_list
-            del user_profile_option['series'][1]
+
+
+                user_profile_option = copy.deepcopy(user_profile_base_option)
+                user_profile_option['title']['text'] = 'Field'
+                user_profile_option['legend']['data'] = ['field']
+                user_profile_option['xAxis'][0]['name'] = 'Fields'
+                user_profile_option['xAxis'][0]['data'] = category_list   #['16down','16to35','35to55','55up']
+                user_profile_option['yAxis'][0]['name'] = 'Total Amount'
+                user_profile_option['series'][0]['name'] ='field'
+                user_profile_option['series'][0]['data'] = data_list
+                del user_profile_option['series'][1]
         else:
             pass
-        return user_profile_option
+        option={}
+        option['data']= user_profile_option
+        option['status'] = status
+        return option
 
     def get_path_option(self,category='location',kind=None):
+        path_analysis_option = {}
+        status=1
+
         if category == 'location':
             new_data_dict = self.get_location_distribution_data_dict(kind=kind)
             if not new_data_dict:
                 location_data = False
                 location_category_list = []
                 location_data_list = []
+                status = 0
             else:
                 if 'unknown' in new_data_dict.keys():
                     del new_data_dict['unknown']
                 location_data = True
                 location_category_list = [key[0] for key in sorted(new_data_dict.items(),key=lambda l:l[1])]
                 location_data_list = [key[1] for key in sorted(new_data_dict.items(),key=lambda l:l[1])]
+
+
                 path_analysis_option = copy.deepcopy(path_analysis_base_option)
                 path_analysis_option['title']['text'] = 'Location Percentage'
                 path_analysis_option['legend']['data'] = ['location']
@@ -749,14 +775,19 @@ class Dashboard:
                 path_analysis_option['yAxis'][0]['name'] = 'Time percentage'
                 path_analysis_option['series'][0]['name'] ='location'
                 path_analysis_option['series'][0]['data'] = location_data_list
-            pass
+                pass
         elif category == 'track':
             pass
         else:
             pass
-        return path_analysis_option
+        option={}
+        option['status'] = status
+        option['data'] = path_analysis_option
+        return  option
 
     def get_event_option(self,event_name=None,category=None,kind=None):
+        event_recognition_option = {}
+        status = 1
         if category == 'activity':
             new_data_dict = self.get_event_to_activity_data(event_name=event_name,kind=kind)
             if not new_data_dict:
@@ -764,6 +795,7 @@ class Dashboard:
                 behavior_data = False
                 behavior_category_list = []
                 behavior_data_list = []
+                status = 0
             else:
                 print 'new_data_dict is %s' %(str(new_data_dict))
                 if 'others' in new_data_dict.keys():
@@ -772,6 +804,8 @@ class Dashboard:
 
                 behavior_category_list = [key[0] for key in sorted(new_data_dict.items(),key=lambda l:l[1])]
                 behavior_data_list = [key[1] for key in sorted(new_data_dict.items(),key=lambda l:l[1])]
+
+
                 event_recognition_option = copy.deepcopy(event_recognition_base_option)
                 event_recognition_option['title']['text'] = 'Custom Event Statistics'
                 event_recognition_option['legend']['data'] = ['activity']
@@ -788,6 +822,7 @@ class Dashboard:
                 behavior_data = False
                 behavior_category_list = []
                 behavior_data_list = []
+                status = 0
             else:
                 print 'new_data_dict is %s' %(str(new_data_dict))
                 if 'unknown' in new_data_dict.keys():
@@ -795,6 +830,8 @@ class Dashboard:
                 behavior_data = True
                 behavior_category_list = [key[0] for key in sorted(new_data_dict.items(),key=lambda l:l[1])]
                 behavior_data_list = [key[1] for key in sorted(new_data_dict.items(),key=lambda l:l[1])]
+
+
                 event_recognition_option = copy.deepcopy(event_recognition_base_option)
                 event_recognition_option['title']['text'] = 'Custom Event Statistics'
                 event_recognition_option['legend']['data'] = ['location']
@@ -808,7 +845,10 @@ class Dashboard:
             pass
         else:
             pass
-        return event_recognition_option
+        option ={}
+        option['status'] = status
+        option['data'] = event_recognition_option
+        return option
 
 
 
@@ -931,6 +971,7 @@ class Developer:
     def create_new_app(self,app_name):
         try:
             user = self.user.become(self.session_token)
+            print 'Got the user'
             Application = Object.extend('Application')
             application = Application()
             query = Query(Application)
@@ -940,6 +981,7 @@ class Developer:
                 print 'Application name exists!'
                 return 0
             else:
+                print 'Application name not exists! '
                 application.set('app_name',app_name)
                 application.set('user',user)
                 application.save()
@@ -949,6 +991,29 @@ class Developer:
 
                 application.set('app_id',app_id)
                 application.set('app_key',app_key)
+                application.save()
+                return 1
+        except LeanCloudError,e:
+            print e
+            return 0
+
+    def delete_app(self,app_id=None,kind=None):
+        try:
+            user = self.user.become(self.session_token)
+            print 'Got the user'
+            Application = Object.extend('Application')
+            application = Application()
+            query = Query(Application)
+            query.equal_to('user',user)
+            query.equal_to('app_id',app_id)
+            result = query.find()
+            if result:
+                print 'Application found!'
+                result[0].destroy()
+                return 0
+            else:
+                print 'Application  not exists! '
+
                 application.save()
                 return 1
         except LeanCloudError,e:
@@ -1016,418 +1081,3 @@ class Developer:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# # -*- coding: utf-8 -*-
-# import leancloud
-# from leancloud import Object
-# from leancloud import LeanCloudError
-# from leancloud import Query
-# from leancloud import User
-# import time
-# import datetime
-# import operator
-# import numpy as np
-# from logentries import LogentriesHandler
-# import logging
-# # from flask import current_app
-#
-# from wsgi import signer
-#
-#
-# not_binary_label_dict = {'field':['field__manufacture', 'field__financial', 'field__infotech', 'field__law', 'field__agriculture', 'field__human_resource', 'field__commerce', 'field__natural', 'field__service', 'field__humanities', 'field__medical', 'field__architecture', 'field__athlete'], 'age':['age__16to35', 'age__35to55', 'age__55up', 'age__16down'], 'sport':['sport__basketball', 'sport__bicycling', 'sport__tabel_tennis', 'sport__football', 'sport__jogging', 'sport__badminton', 'sport__fitness'],'consumption': ['consumption__10000to20000', 'consumption__20000up', 'consumption__5000to10000', 'consumption__5000down'], 'occupation':['occupation__freelancer', 'occupation__supervisor', 'occupation__student', 'occupation__others', 'occupation__official', 'occupation__salesman', 'occupation__teacher', 'occupation__soldier', 'occupation__engineer']}
-# binary_label_list = [u'ACG', u'indoorsman', u'game_show', u'has_car', u'game_news', u'entertainment_news', u'health', u'online_shopping', u'variety_show', u'business_news', u'tvseries_show', u'current_news', u'sports_news', u'tech_news', u'offline_shopping', u'pregnant', u'gender', u'study', u'married', u'sports_show', u'gamer', u'social', u'has_pet']
-#
-# class Dashboard:
-#     def get_age_and_gender_data_dict(self):
-#         try:
-#             WeightedStaticInfo  = Object.extend('WeightedStaticInfo')
-#             query = Query(WeightedStaticInfo)
-#             query.exists('objectId')
-#             query.select('age','gender')
-#             staticInfoList = query.find()
-#             gender_type_list =['man','woman']
-#             age_type_list = ['16down','16to35','35to55','55up']
-#             dataDict ={gender_type:{age_type:0 for age_type in age_type_list} for gender_type in gender_type_list}
-#
-#             for staticInfo in staticInfoList:
-#                 gender = 'man' if staticInfo.get('gender') >0 else 'woman'
-#                 age_info_dict= staticInfo.get('age')
-#                 dataDict[gender][age_info_dict.keys()[0]] += 1
-#             # dataDict ={'man' if staticInfo.get('gender') >0 else 'woman':dataDict['man' if staticInfo.get('gender') >0 else 'woman'][staticInfo.get('age').keys()[0]] +=1 for staticInfo in staticInfoList}
-#             new_data_dict = {key:[0 for i in range(4)] for key in dataDict.keys()}
-#             for index ,age_type in enumerate(age_type_list):
-#                 for gender_type in dataDict.keys():
-#                     new_data_dict[gender_type][index] = dataDict[gender_type][age_type]
-#
-#         except LeanCloudError, e:
-#
-#              raise e
-#         return new_data_dict
-#     def get_occupation_data_dict(self):
-#         try:
-#             WeightedStaticInfo  = Object.extend('WeightedStaticInfo')
-#             query = Query(WeightedStaticInfo)
-#             query.exists('objectId')
-#             staticInfoList = query.find()
-#             dataDict ={gender_type:{age_type:0 for age_type in age_type_list} for gender_type in gender_type_list}
-#
-#             for staticInfo in staticInfoList:
-#                 gender = 'man' if staticInfo.get('gender') >0 else 'woman'
-#                 age_info_dict= staticInfo.get('age')
-#                 dataDict[gender][age_info_dict.keys()[0]] += 1
-#             # dataDict ={'man' if staticInfo.get('gender') >0 else 'woman':dataDict['man' if staticInfo.get('gender') >0 else 'woman'][staticInfo.get('age').keys()[0]] +=1 for staticInfo in staticInfoList}
-#             new_data_dict = {key:[0 for i in range(4)] for key in dataDict.keys()}
-#             for index ,age_type in enumerate(age_type_list):
-#                 for gender_type in dataDict.keys():
-#                     new_data_dict[gender_type][index] = dataDict[gender_type][age_type]
-#
-#         except LeanCloudError, e:
-#
-#              raise e
-#         return new_data_dict
-#
-# #下面三个函数的代码可以优化合并
-#     def get_location_distribution_data_dict(self):
-#         field = 'location'
-#         k = 5
-#         unknown = 'unknown'
-#         try:
-#             WeightedStaticInfo = Object.extend('WeightedUserContext')
-#             query = Query(WeightedStaticInfo)
-#             query.exists('objectId')
-#             query.select(field)
-#             # 这个地方后面需要做根据applicationid查询
-#             #另外也需要分组查询
-#             resultList = query.find()
-#             seen_location_dict = {}
-#             user_count = len(resultList)
-#
-#             for result in resultList:
-#                 location_dict = result.get(field)
-#                 for key, valu in location_dict.items():
-#                     if key in seen_location_dict.keys():
-#                         seen_location_dict[key] += location_dict[key]
-#                     else:
-#                         seen_location_dict[key] = location_dict[key]
-#             total_unknown_location_value = seen_location_dict.get(unknown)
-#             #如果seen_location_dict中含有unknown字段的话，就删掉
-#             if total_unknown_location_value:
-#                 del seen_location_dict[unknown]
-#
-#             sorted_seen_location = sorted(seen_location_dict.items(), key=lambda l: l[1], reverse=True)
-#             sorted_frequent_location = sorted_seen_location[0:k]
-#             total_known_time = user_count - total_unknown_location_value
-#             sorted_frequent_location_percentage = [(str(kv[0]),(kv[1]/total_known_time)) for kv in sorted_frequent_location]
-#             sorted_frequent_location_percentage.append(('others',1-sum([kv[1] for kv in sorted_frequent_location_percentage])))
-#
-#
-#
-#         except LeanCloudError, e:
-#
-#              raise e
-#         return sorted_frequent_location_percentage
-#     def get_motion_distribution_data_dict(self):
-#         field = 'motion'
-#         k = 5
-#         unknown = 'unknown'
-#         try:
-#             WeightedStaticInfo = Object.extend('WeightedUserContext')
-#             query = Query(WeightedStaticInfo)
-#             query.exists('objectId')
-#             query.select(field)
-#             # 这个地方后面需要做根据applicationid查询
-#             #另外也需要分组查询
-#             resultList = query.find()
-#             seen_location_dict = {}
-#             user_count = len(resultList)
-#
-#             for result in resultList:
-#                 location_dict = result.get(field)
-#                 for key, valu in location_dict.items():
-#                     if key in seen_location_dict.keys():
-#                         seen_location_dict[key] += location_dict[key]
-#                     else:
-#                         seen_location_dict[key] = location_dict[key]
-#             total_unknown_location_value = seen_location_dict.get(unknown)
-#             #如果seen_location_dict中含有unknown字段的话，就删掉
-#             if total_unknown_location_value:
-#                 del seen_location_dict[unknown]
-#
-#             sorted_seen_location = sorted(seen_location_dict.items(), key=lambda l: l[1], reverse=True)
-#             sorted_frequent_location = sorted_seen_location[0:k]
-#             total_known_time = user_count - total_unknown_location_value
-#             sorted_frequent_location_percentage = [(str(kv[0]),(kv[1]/total_known_time)) for kv in sorted_frequent_location]
-#             sorted_frequent_location_percentage.append(('others',1-sum([kv[1] for kv in sorted_frequent_location_percentage])))
-#
-#
-#
-#         except LeanCloudError, e:
-#
-#              raise e
-#         return sorted_frequent_location_percentage
-#     def get_sound_distribution_data_dict(self):
-#         field = 'sound'
-#         k = 5
-#         unknown = 'unknown'
-#         try:
-#             WeightedStaticInfo = Object.extend('WeightedUserContext')
-#             query = Query(WeightedStaticInfo)
-#             query.exists('objectId')
-#             query.select(field)
-#             # 这个地方后面需要做根据applicationid查询
-#             #另外也需要分组查询
-#             resultList = query.find()
-#             seen_location_dict = {}
-#             user_count = len(resultList)
-#
-#             for result in resultList:
-#                 location_dict = result.get(field)
-#                 for key, valu in location_dict.items():
-#                     if key in seen_location_dict.keys():
-#                         seen_location_dict[key] += location_dict[key]
-#                     else:
-#                         seen_location_dict[key] = location_dict[key]
-#             total_unknown_location_value = seen_location_dict.get(unknown)
-#             #如果seen_location_dict中含有unknown字段的话，就删掉
-#             if total_unknown_location_value:
-#                 del seen_location_dict[unknown]
-#
-#             sorted_seen_location = sorted(seen_location_dict.items(), key=lambda l: l[1], reverse=True)
-#             sorted_frequent_location = sorted_seen_location[0:k]
-#             total_known_time = user_count - total_unknown_location_value
-#             sorted_frequent_location_percentage = [(str(kv[0]),(kv[1]/total_known_time)) for kv in sorted_frequent_location]
-#             sorted_frequent_location_percentage.append(('others',1-sum([kv[1] for kv in sorted_frequent_location_percentage])))
-#
-#         except LeanCloudError, e:
-#
-#              raise e
-#         return sorted_frequent_location_percentage
-#
-#
-#
-#
-#
-#     def get_event_to_activity_data(self,application_id,event_name,db_name='EventActivity'):
-#         try:
-#             DbTable  = Object.extend(db_name)
-#             query = Query(DbTable)
-#             #这里只是测试知道是少于1K条的
-#             query.equal_to('event_name',event_name)
-#             # query.equal_to('application_id',application_id)
-#             query.descending('createdAt')
-#             query.limit(1)
-#             result = query.find()
-#             activity_statistics_dict = result[0].get('activity_dict')
-#
-#
-#         except LeanCloudError, e:
-#
-#              raise e
-#         return activity_statistics_dict
-#
-#             # query.select('user','timestamp')
-#             # resultList = query.find()
-#             # DBTable = Object.extend('MergedUserContext')
-#             # activity_dict = {}
-#             # total_count = len(resultList)
-#             # print 'the length of resultList is : %s' %(str(total_count))
-#             # for index1,result in enumerate(resultList):
-#             #     query = Query(DBTable)
-#             #     query.equal_to('user',result.get('user'))
-#             #     query.less_than_or_equal_to('startTime',result.get('timestamp'))
-#             #     query.greater_than_or_equal_to('endTime',result.get('timestamp'))
-#             #     resultList1 = query.find()
-#             #     if len(resultList1) == 1 or len(resultList1) == 2 :
-#             #         activity = resultList1[0].get('event')[0]
-#             #         if activity in activity_dict.keys():
-#             #             activity_dict[activity]+=1
-#             #         else:
-#             #             activity_dict[activity] =1
-#             #     else:
-#             #         print 'length of resultList1: %s' %(str(len(resultList1)))
-#             #         print 'Seems to be an error,index: %s,user: %s; timestamp: %s \n' %(str(index1),str(result.get('user').id),str(result.get('timestamp')))
-#             #
-#             # activity_dict['others'] = total_count-sum(activity_dict.values())
-#
-#
-#
-#
-#
-#
-#
-# class Developer:
-#     def __init__(self,user_id=None):
-#         self.user = User()
-#         self.user_id = user_id
-#
-#     @classmethod
-#     def is_valid_email(self,email):
-#         query = Query(User)
-#         query.exists('email',email)
-#         return 0 if query.find() else 1;
-#
-#     def signup(self,email,username,password):
-#         self.user.set('email',email)
-#         self.user.set('username',username)
-#         self.user.set('password',password)
-#         try:
-#             result = self.user.sign_up()
-#             print result
-#             return 1
-#         except LeanCloudError,e:
-#             print e
-#             return 0
-#
-#     def login_with_email(self,email,password):
-#         # self.user.login(email,password)
-#         pass
-#
-#     def login_with_username(self,username,password):
-#         try:
-#             self.user.login(username,password)
-#             self.user_id = self.user.id
-#             self.session_token = self.user.get_session_token()
-#             print 'user.id: %s' %(str(self.user_id))
-#             print 'session_token: %s' %(str(self.session_token))
-#             return 1
-#         except LeanCloudError,e:
-#             print e
-#             return 0
-#
-#     def init_developer_with_user_id(self,user_id):
-#         query = Query(User)
-#         query.equal_to('objectId',user_id)
-#         result = query.find()
-#         if len(result)==1:
-#             return result[0]
-#         else:
-#             print len(result)
-#             print user_id
-#
-#     def create_new_app(self,app_name):
-#         try:
-#             developer = self.init_developer_with_user_id(self.user_id)
-#             signed_key = signer.sign(app_name)
-#             Application = Object.extend('Application')
-#             application = Application()
-#             application.set('application_name',app_name)
-#             application.set('user',developer)
-#             application.save()
-#             app_id = application.id
-#             app_key = signer.sign(app_id).split(app_id+'.')[1]
-#             application.set('app_id',app_id)
-#             application.set('app_key',app_key)
-#             application.save()
-#             return 1
-#         except LeanCloudError,e:
-#             print e
-#             return 0
-#         pass
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-
-
-
-# app = self.get_the_app(app_table = app_table)
-        # try:
-        #     db_name = 'EventActivity'
-        #     DbTable  = Object.extend(db_name)
-        #     query = Query(DbTable)
-        #     #这里只是测试知道是少于1K条的
-        #     query.equal_to('application',app)
-        #     if event_name:
-        #         query.equal_to('event_name',event_name)
-        #     # query.equal_to('application_id',application_id)
-        #     query.descending('createdAt')
-        #     query.limit(1)
-        #     result_list = query.find()
-        #     if result_list:
-        #         # event_name = result_list[0].get('event_name')
-        #         activity_statistics_dict = {result_list[0].get('event_name'):result_list[0].get('activity_dict')}
-        #     else:
-        #         activity_statistics_dict=[]
-        # except LeanCloudError, e:
-        #
-        #      raise e
-        # return activity_statistics_dict
-
-            # query.select('user','timestamp')
-            # resultList = query.find()
-            # DBTable = Object.extend('MergedUserContext')
-            # activity_dict = {}
-            # total_count = len(resultList)
-            # print 'the length of resultList is : %s' %(str(total_count))
-            # for index1,result in enumerate(resultList):
-            #     query = Query(DBTable)
-            #     query.equal_to('user',result.get('user'))
-            #     query.less_than_or_equal_to('startTime',result.get('timestamp'))
-            #     query.greater_than_or_equal_to('endTime',result.get('timestamp'))
-            #     resultList1 = query.find()
-            #     if len(resultList1) == 1 or len(resultList1) == 2 :
-            #         activity = resultList1[0].get('event')[0]
-            #         if activity in activity_dict.keys():
-            #             activity_dict[activity]+=1
-            #         else:
-            #             activity_dict[activity] =1
-            #     else:
-            #         print 'length of resultList1: %s' %(str(len(resultList1)))
-            #         print 'Seems to be an error,index: %s,user: %s; timestamp: %s \n' %(str(index1),str(result.get('user').id),str(result.get('timestamp')))
-            #
-            # activity_dict['others'] = total_count-sum(activity_dict.values())

@@ -2,7 +2,9 @@ body, html {
     font-family: 'Ubuntu', Arial, sans-serif;
     height: 100%;
     width: 100%;
-    background-color:#458bbe;
+    /*background-color:#458bbe;*/
+    background-color:#77CCC5;
+
 }
 
 a {
@@ -23,7 +25,7 @@ a:hover {
 }
 
 #psdash .header {
-    background-color: #458bbe;
+    background-color: #77CCC5;
 
     width:100%;
     height:90px;
@@ -38,7 +40,7 @@ a:hover {
 
 #psdash .header .logo {
 
-    background-color: #458bbe;
+    background-color: #77CCC5;
     width: 200px;
     position: absolute;
     text-align: center;
@@ -94,7 +96,7 @@ a:hover {
 }
 
 #psdash .header .top-nav .dropdown-text {
-    color: #ffffff;
+    color: #079D9E;
     padding: 10px;
     font-size: 18px;
     position: relative;
@@ -114,13 +116,19 @@ a:hover {
     right: 30px;
 }
 #psdash .header .top-nav #account button{
-    background-color: #458bbe;
+    background-color: #77CCC5;
     border: 0;
-    color: #adadad;
+    color: #079D9E;
 }
 #psdash .header .top-nav .switch-app {
     position: absolute;
     left: 200px;
+}
+#psdash .header .top-nav .switch-app button {
+    color: #079D9E;
+}
+body .caret{
+    color: #079D9E!important;
 }
 #psdash .header .top-nav #login li a {
     /*display: block;*/
@@ -167,33 +175,40 @@ a:hover {
 
 #psdash .container .content .left-nav {
     width: 200px;
-    background-color: #458bbe;
+    /*background-color: #77CCC5;*/
     /*color: #ffffff;*/
     position: fixed;
     top:90px;
     /*height:;*/
     overflow: visible!important;
-    z-index: 9999;
+    z-index: 9000;
 
 }
 
 #psdash .container .content .left-nav ul.menu {
     list-style-type: none;
-    margin: 20px 0 0 0;
+    margin: 0 0 0 0;
     padding: 0;
 }
 #psdash .container .content .left-nav ul.menu li  {
-    margin-bottom: 50px;
+    /*margin-top: 20px;*/
+    /*margin-bottom: 20px;*/
+    margin: 0;
+}
+#psdash .container .content .left-nav ul.menu li a .tab-text-wrapper{
+    margin-top: -10px;
 }
 
 #psdash .container .content .left-nav ul.menu li a {
     display: block;
     width: 200px;
     height: 40px;
-    padding-top: 6px;
+    padding-bottom: 40px;
+    padding-top: 40px;
+    /*padding-top: 6px;*/
     padding-left: 20px;
-    border-left: 4px solid #458bbe;
-    color: #ffffff;
+    /*border-left: 4px solid #77CCC5;*/
+    color: #000000;
 }
 
 #psdash .container .content .left-nav ul.menu li a span.glyphicon {
@@ -209,8 +224,9 @@ a:hover {
 
 #psdash .container .content .left-nav ul.menu li.active a, #psdash .content .left-nav ul.menu li a:hover {
     text-decoration: none;
-    color: #313443;
-    border-left: 4px solid #d43f3a;
+    color: #FFFFFF;
+    /*border-left: 4px solid #d43f3a;*/
+    background-color: #079D9E;
 }
 
 /*#psdash .container .content .main-content {*/
@@ -232,37 +248,49 @@ a:hover {
     /*border-top: 10px solid #c1d0d9;*/
     /*border-left: 10px solid #c1d0d9;*/
 
-    /*margin-left: 200px;*/
-    padding-left: 200px;
+    /*margin-left: 200px!important;*/
+    /*padding-left: 10px;*/
+    /*border-left: 200px ;*/
+    /*left: 200px;*/
     /*background-color: #dee2ea;*/
-    background-color: #458bbe;
+    background-color: #77CCC5;
 
 
     /*padding-top: 10px;*/
-    position:relative;
+    /*position:absolute;*/
     /*top:90px;*/
     /*left:200px;*/
-    /*width:100%;*/
+    width: auto;
     /*height: 100%;*/
     /*overflow: hidden;*/
+    z-index: 9500;
 
 }
-
+#psdash .container .content .left-block{
+    width:200px;
+}
 #dashboard div.box {
     display:block;
 }
 
+#integration{
+    background-color: #FFFFFF;
+    padding-left: 40px;
+    padding-top: 10px;
+    box-shadow: -7px 7px 10px 0 rgba( 2, 2, 2,0.3 );
+}
 #psdash .container .content .main-content div.box {
     padding: 20px;
     background-color: #ffffff;
-    border-radius: 4px;
+    /*border-radius: 4px;*/
     /*border: 1px solid #c2c6ce;*/
     /*border: 1px solid #c2c6ce;*/
 
     /*margin-right: 20px;*/
     margin-bottom: 20px;
     min-height: 310px;
-    box-shadow:0px 10px 30px rgba(100,100,100,1);
+    /*box-shadow:-10px 0 14px 25px rgba(0,0,0,0.8);*/
+    box-shadow: -7px 7px 10px 0 rgba( 2, 2, 2,0.3 );
 
 }
 
@@ -273,10 +301,21 @@ a:hover {
 #psdash .container .content .main-content div.box .box-header .header-name {
     font-size: 20px;
     font-weight: 300;
-    color: #5F7D8C;
+    color: #6DB8CB;
     padding: 10px 0;
 }
+.dropdown-text{
+    color: #079D9E!important;
+}
+.box .dropdown button{
+    background-color: #77CCC5!important;
+    color: #FFFFFF!important;
+}
 
+.dropdown ul li a{
+
+    color: #77CCC5!important;
+}
 #psdash .container .content .main-content div.box .box-header .option {
     font-size: 14px;
     font-weight: 300;
@@ -324,7 +363,8 @@ a:hover {
     /*color: #313443;*/
     /*border: 1px solid #ffffff;*/
 }
-/*for login */
+
+/*for login page */
 
 .panel-login {
 	border-color: #ccc;
@@ -432,6 +472,11 @@ a:hover {
 }
 
 
+
+
+
+/* integration page */
+
 .clip_button {
     width: auto;
     height: auto;
@@ -442,7 +487,7 @@ a:hover {
         background-color: #ffffff;
         /*margin: 1px;*/
         padding: 0;
-    border-radius: 0;
+    /*border-radius: 0;*/
         /*padding: 1px;*/
       }
 .clip_button.zeroclipboard-is-hover { background-color: #eee; }
@@ -453,6 +498,7 @@ a:hover {
     border-radius: 4px;
     position: relative;
     margin-right: 10px;
+    margin-bottom: 20px;
 }
 
 .zero-clipboard{
@@ -466,14 +512,58 @@ pre{
     margin: 0;
 }
 
-h1,h2,h3,h4,h5,h6,label{
-    color: #000000;
+/*h1,h2,h3,h4,h5,h6,label{*/
+    /*color: #000000;*/
+/*}*/
+
+label a{
+    color:#0C9DD2!important;
+}
+.span12 h2{
+    color: #77CCC5;
+}
+.span12 .widget-title h3,h4{
+    color: #7d7d7d;
+}
+.span12 .widget-body label{
+    color: #7d7d7d;
+}
+.span12 .downloads_left button{
+    background-color: #0C9DD2!important;
+}
+.span12 code{
+    background-color: #ecf3f1;
+}
+
+/* settings page */
+#settings{
+    background-color: #FFFFFF;
+    padding-left: 40px;
+    padding-top: 10px;
+    height: 100%;
+    box-shadow: -7px 7px 10px 0 rgba( 2, 2, 2,0.3 );
+}
+
+#settings label{
+    color: #77CCC5;
+}
+#settings .input-group,.form-control{
+    background-color: #ecf3f1!important;
+}
+#settings .form-control{
+    border:none;
+}
+#settings .input-group{
+    border:1px solid #ccc;
+    border-radius: 4px;
+}
+#settings form{
+    margin-top: 20px;
 }
 
 #footer{
     margin-top: 30px;
 }
-
 
 
 @media all and (max-width: 800px){

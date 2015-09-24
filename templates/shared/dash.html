@@ -7,13 +7,22 @@
                         <div class="dropdown" style="display: inline">
                           <button class="btn btn-default dropdown-toggle" category-name="{{ user_profile_type }}" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             {{ default_user_profile_category }}
+                               {% if user_profile_category_dict %}
                             <span class="caret"></span>
+
+                              {% endif %}
+
                           </button>
+                             {% if user_profile_category_dict %}
+
+
+
                           <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
                                {% for user_profile_type ,user_profile_category in user_profile_category_dict.items() %}
            <li ><a href="{{ user_profile_type }}">{{ user_profile_category }}</a></li>
         {% endfor %}
                           </ul>
+                            {% endif %}
                         </div>
 
                       </div> </div>
@@ -37,8 +46,13 @@
                         <div class="dropdown" style="display: inline">
                           <button class="btn btn-default dropdown-toggle" category-name="{{ path_analysis_type }}" type="button"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                           {{ default_path_analysis_category }}
+                               {% if path_analysis_measure_dict %}
                             <span class="caret"></span>
+
+                              {% endif %}
+
                           </button>
+                             {% if path_analysis_measure_dict %}
                           <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
 
                                {% for path_analysis_type,path_analysis_measure in path_analysis_measure_dict.items() %}
@@ -49,6 +63,7 @@
 
                             <!--<li><a href="/">App...</a></li>-->
                           </ul>
+                            {% endif %}
                         </div>
 
                       </div> </div>
@@ -71,16 +86,22 @@
                         <div class="dropdown" id="dropdown-event" style="display: inline">
                           <button class="btn btn-default dropdown-toggle" category-name="{{ event_name_type }}"type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             {{ default_event_name }}
+                              {% if behavior_recognition_event_dict%}
                             <span class="caret"></span>
+
+                              {% endif %}
                           </button>
+                            {% if behavior_recognition_event_dict%}
                           <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
                                {% for behavior_recognition_event_type,behavior_recognition_event in behavior_recognition_event_dict.items() %}
            <li><a href="{{ behavior_recognition_event_type }}">{{ behavior_recognition_event }}</a></li>
         {% endfor %}
+
                             <!--<li><a href="/">App1</a></li>-->
                             <!--<li><a href="/">App2</a></li>-->
                             <!--<li><a href="/">App...</a></li>-->
                           </ul>
+                              {% endif %}
                         </div>
                     <span class="dropdown-text" style="font-size: 14px;margin-left: 70px;">Switch measure:</span>
                     <div class="dropdown" id="dropdown-category" style="display: inline">

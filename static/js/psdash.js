@@ -159,7 +159,7 @@ function init_dom(){
         $("#register-form").fadeIn(0);
 
 		$('#login-form-link').removeClass('active');
-		$('#register-form-link').addClass('active');
+		$('#register-form-link').addClass('axctive');
         //e.preventDefault();
     }
     if (active_id == 'forgotpass'){

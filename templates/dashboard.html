@@ -1,392 +1,260 @@
 {% if not is_xhr|default(false) %}{% extends "shared/footer.html" %}{% endif -%}
 {% block content %}
-<div class="main-content">
- <div id="dashboard">
-        <div class="box ">
-            <div class="box-header">
-                <span>Age&Gender</span>
-            </div>
-            <div class="box-content">
-
-
-        <div id="age" style="height:400px ">
-
-            {% if not age_data %}
-             <div><h1>Data not exists in this section !</h1></div>
-{% endif %}
-        </div>
-                 </div></div>
-     <div class="box ">
-            <div class="box-header">
-                <span>Time spent by location</span>
-            </div>
-            <div class="box-content">
-
-
-        <div id="location" style="height:400px ">
-            {% if not location_data %}
-             <div><h1>Data not exists in this section !</h1></div>
-{% endif %}
-        </div>
-                 </div></div>
-     <div class="box ">
-            <div class="box-header">
-                <span>Custom Event Info</span>
-            </div>
-            <div class="box-content">
-
-
-       <div id="event" style="height:400px ">
-            {% if not event_data %}
-             <div><h1>Data not exists in this section !</h1></div>
-{% endif %}
-        </div>
-                 </div></div>
-
-
-
-
-            </div>
-        </div>
-        <!--<div class="box ">-->
-            <!--<div class="box-header">-->
-                <!--<span>Time spent by location</span>-->
-            <!--</div>-->
-            <!--<div class="box-content">-->
-                    <!--<div id="location" style="height:400px"></div>-->
-
-            <!--</div>-->
-        <!--</div>-->
-        <!--<div class="box ">-->
-            <!--<div class="box-header">-->
-                <!--<span>Time spent by motion</span>-->
-            <!--</div>-->
-            <!--<div class="box-content">-->
-                    <!--<div id="motion" style="height:400px"></div>-->
-
-            <!--</div>-->
-        <!--</div>-->
-         <!--<div class="box ">-->
-            <!--<div class="box-header">-->
-                <!--<span>{{event_name|safe}}</span>-->
-            <!--</div>-->
-            <!--<div class="box-content">-->
-                    <!--<div id="event" style="height:400px"></div>-->
-
-            <!--</div>-->
-        <!--</div>-->
-
-    </div>
-        </div>
-
+<div class="main-content"></div>
 {% endblock %}
 {% block extra_js %}
-  <script src="http://echarts.baidu.com/build/dist/echarts.js"></script>
+  <!--<script src="http://echarts.baidu.com/build/dist/echarts.js"></script>-->
+ <script src="{{ url_for(".static",filename="js/echarts-all.js") }}"></script>
 <script type="text/javascript">
-//        console.log('the age range data of man is : '+{{ man_data_list|safe }})
-//        console.log('the age range data of woman is : '+{{ woman_data_list|safe }})
 
-        require.config({
-            paths: {
-                echarts: 'http://echarts.baidu.com/build/dist'
-            }
+        $(document).ready(function(){
+    var _xsrf = $("[name='_xsrf']").attr('value');
+    var app_id = $(".switch-app .dropdown button").attr("app_id");
+    url = '/dash'
+    $.post(url,
+             {
+            _xsrf: _xsrf,
+                 app_id: app_id
+            },
+             function(data,status) {
+                 console.log(data);
+                 $('.main-content').html(data);
+//                 初始化页面的所有数据
+                 init_dashboard()
+
         });
-  {% if age_data %}
+});
 
-       require(
-            [
-                'echarts',
-                    'echarts/chart/line',
-                'echarts/chart/bar' // 使用柱状图就加载bar模块，按需加载
-            ],
-            function (ec) {
+function init_dashboard() {
+    var _xsrf = $("[name='_xsrf']").attr('value');
+    var app_id = $(".switch-app .dropdown button").attr("app_id");
+    var url = '/ajax/dashboard/';
 
-                // 基于准备好的dom，初始化echarts图表
-                var myChart = ec.init(document.getElementById('age'));
-         //option begin
-               option = {
-    title : {
-
-        textStyle:{
-        fontSize: 24,
-        fontWeight: 'bolder',
-        color: '#5f7d8c'
-} ,
-        subtextStyle:{
-        fontSize: 12,
-        fontWeight: 'normal',
-        color: '#5f7d8c'
-} ,
-
-        text: 'Age & Gender',
-//        subtext: 'Application: Tesenz',
-//        backgroundColor: 'rgba(56,151,197,0.2)'
-    },
-    tooltip : {
-        trigger: 'axis'
-    },
-    legend: {
-        x: 'right',
-        itemWidth: 40,
-        itemHeight: 24,
-        data: ['man', 'woman']
-    },
-
-    xAxis : [
-        {
-            nameTextStyle:{
-            fontSize:14,
-            fontWeight:'bold'
+    user_profile_category = $('#user-profile .switch-category .dropdown button').attr('category-name')
+    $.post(url+'profile',
+             {
+            _xsrf: _xsrf,
+                 app_id: app_id,
+                category : user_profile_category
             },
-            name: 'Age Range',
-            type : 'category',
-            data : ['16down','16to35','35to55','55up']
-        }
-    ],
-    yAxis : [
-        {   nameTextStyle:{
-            fontSize:14,
-            fontWeight:'bold'
-        },
-            name:'Total Amount',
-            type : 'value'
-        }
-    ],
-    series : [
-        {
-            barGap:'5%',
+             function(data,status) {
+                 console.log(data);
+                 if(data['status']==1){
+                     console.log(data['data'])
+                     user_profile(data['data']);
+                 }
+                 else{
+                      console.log('hfdskflaksdjfkladsjflkadsjfkadsjfklasd')
+                     var img_wrapper = '<div id="profile" class="img-wrapper" style="margin-left: 50px;"><img src="{{ url_for(".static",filename="img/profile1.jpg") }}" style="margin: 45px 40px 0 0;"><img src="{{ url_for(".static",filename="img/profile2.jpg") }}"></div>'
+                     console.log(img_wrapper)
+                     $('#profile').replaceWith(img_wrapper);
+                 }
 
-            name:'man',
-            type:'bar',
-            itemStyle:{
-                normal:{
-                    color:'#2EC7C9',
-                    barBorderRadius:4
-                }
+        });
 
+    path_analysis_category = $('#path-analysis .switch-category .dropdown button').attr('category-name')
+    $.post(url+'path',
+             {
+                _xsrf: _xsrf,
+                 app_id: app_id,
+                category : path_analysis_category
             },
-            data:{{ man_data_list|safe }}
+             function(data,status) {
+                 console.log(data);
+                 if(data['status']==1){
+                     path_analysis(data['data']);
+                 }
+                 else{
+                     console.log('hfdskflaksdjfkladsjflkadsjfkadsjfklasd')
+                     var img_wrapper = '<div id="path" class="img-wrapper" style="margin-left: 50px;"><img src="{{ url_for(".static",filename="img/path1.jpg") }}" style="margin: 45px 40px 0 0;"><img src="{{ url_for(".static",filename="img/path2.jpg") }}"></div>'
+                     console.log(img_wrapper)
+                     $('#path').replaceWith(img_wrapper);
+                 }
+        });
 
-        },
-        {
-            barGap:'5%',
-            name:'woman',
-            type:'bar',
-                itemStyle:{
-                normal:{
-                    color:'#B6A2DE',
-//                    color:'#1790CF',
-                    barBorderRadius:4
-                }
-
+    behavior_recognition_event = $('#behavior-recognition #dropdown-event  button').attr('category-name');
+    behavior_recognition_category = $('#behavior-recognition #dropdown-category  button').attr('category-name');
+    $.post(url+'behavior',
+             {
+                 _xsrf: _xsrf,
+                 app_id: app_id,
+                 event:behavior_recognition_event,
+                 category : behavior_recognition_category
             },
-            data:{{ woman_data_list|safe }}
-        }
-    ]
-};
-//option end
-                // 为echarts对象加载数据
-                myChart.setOption(option);
-            }
-        //function end
-        );
-    //require end
-{% endif %}
+             function(data,status) {
+                 console.log(data);
+                  if(data['status']==1){
+                     behavior_recognition(data['data']);
+                 }
+                 else{
+                     console.log('hfdskflaksdjfkladsjflkadsjfkadsjfklasd')
+                     var img_wrapper = '<div id="behavior" class="img-wrapper" style="margin-left: 50px;"><img src="{{ url_for(".static",filename="img/behavior1.jpg") }}" style="margin: 45px 40px 0 0;"><img src="{{ url_for(".static",filename="img/behavior2.jpg") }}"></div>'
+                     console.log(img_wrapper)
+                     $('#behavior').replaceWith(img_wrapper);
+                 }
 
-{% if location_data %}
-
-     require(
-            [
-                'echarts',
-                    'echarts/chart/line',
-                'echarts/chart/bar' // 使用柱状图就加载bar模块，按需加载
-            ],
-            function (ec) {
-
-                // 基于准备好的dom，初始化echarts图表
-                var myChart = ec.init(document.getElementById('location'),'blue');
-         //option begin
-               option = {
-    title : {
-
-        textStyle:{
-        fontSize: 24,
-        fontWeight: 'bolder',
-        color: '#5f7d8c'
-} ,
-        subtextStyle:{
-        fontSize: 12,
-        fontWeight: 'normal',
-        color: '#5f7d8c'
-} ,
-
-        text: 'Location percentage',
-//        subtext: 'Application: Tesenz',
-//        backgroundColor: 'rgba(56,151,197,0.2)'
-    },
-    tooltip : {
-        trigger: 'axis'
-    },
-    legend: {
-        x: 'right',
-        itemWidth: 40,
-        itemHeight: 24,
-        data: ['Location']
-    },
-
-    xAxis : [
-        {
-            nameTextStyle:{
-            fontSize:10,
-            fontWeight:'bold'
-            },
-            name: 'Name',
-            type : 'category',
-            data : {{location_category_list|safe}},
-             axisLabel:{
-    interval:0,
-            rotate:5
+        });
 }
-        }
-    ],
-    yAxis : [
-        {   nameTextStyle:{
-            fontSize:14,
-            fontWeight:'bold',
 
-        },
-            name:'Time Percentage',
-            type : 'value'
-        }
-    ],
-series : [
-        {
-
-            name:'Location',
-            type:'bar',
-            itemStyle:{
-                normal:{
-                    color:'#2EC7C9',
-                    barBorderRadius:4
-                }
-
-            },
-            data:{{location_percentage_list|safe}}
-
-        }
-
-    ]
-};
-//option end
-                // 为echarts对象加载数据
-                myChart.setOption(option);
-            }
-        //function end
-        );
-    //require end
-
-    {% endif %}
-
-
-
-
-{% if event_data %}
-    event_name=String('{{event_name}}')
-     require(
-            [
-                'echarts',
-                    'echarts/chart/line',
-                'echarts/chart/bar' // 使用柱状图就加载bar模块，按需加载
-            ],
-            function (ec) {
-
-                // 基于准备好的dom，初始化echarts图表
-                var myChart = ec.init(document.getElementById('event'),'blue');
-         //option begin
-               option = {
-    title : {
-
-        textStyle:{
-        fontSize: 24,
-        fontWeight: 'bolder',
-        color: '#5f7d8c'
-} ,
-        subtextStyle:{
-        fontSize: 12,
-        fontWeight: 'normal',
-        color: '#5f7d8c'
-} ,
-
-        text: 'Custom event statistics',
-//        subtext: 'Application: Tesenz',
-//        backgroundColor: 'rgba(56,151,197,0.2)'
-    },
-    tooltip : {
-        trigger: 'axis'
-    },
-    legend: {
-        x: 'right',
-        itemWidth: 40,
-        itemHeight: 24,
-        data: [{
-            name: event_name
-        }]
-    },
-
-    xAxis : [
-        {
-            nameTextStyle:{
-            fontSize:10,
-            fontWeight:'bold'
-            },
-            name: 'Activity',
-            type : 'category',
-            data : {{activity_category_list|safe}},
-             axisLabel:{
-    interval:0,
-            rotate:5
+function change_li($this,e){
+        var click_text = $this.text();
+        var dropdown_button = $this.parent('li').parent('ul').siblings('button');
+        var button_text = dropdown_button.text().trim();
+        var link = dropdown_button.attr('category-name');
+        dropdown_button.text(click_text);
+        dropdown_button.attr('category-name',$this.attr('href'));
+        var new_li = $("<a></a>").attr('href',link).text(button_text).wrap("<li></li>").parent();
+        $this.parent('li').parent('ul').prepend(new_li);
+        $this.parent('li').remove();
+       e.preventDefault();
 }
-        }
-    ],
-    yAxis : [
-        {   nameTextStyle:{
-            fontSize:14,
-            fontWeight:'bold',
 
-        },
-            name:'Times',
-            type : 'value'
-        }
-    ],
-series : [
-        {
-
-            name:event_name,
-            type:'bar',
-            itemStyle:{
-                normal:{
-                    color:'#2EC7C9',
-                    barBorderRadius:4
-                }
-
+$('body').on('click',"#user-profile ul li a",function(e){
+        change_li($(this),e)
+        var _xsrf = $("[name='_xsrf']").attr('value');
+        var app_id = $(".switch-app .dropdown button").attr("app_id");
+         var url = '/ajax/dashboard/';
+        console.log(_xsrf);
+        console.log(app_id);
+    var param = 'profile';
+//这里是不是考虑要在某个地方存放一个用户的hash_id这样的一个值，以避免不同的用户访问了别人应用的值
+        $.post(url+param,
+             {
+                _xsrf: _xsrf,
+                 app_id: app_id,
+                 category: $(this).attr('href')
             },
-            data:{{activity_count_list|safe}}
+             function(data,status){
+            console.log(data);
+                 if(data['status']==1){
+                     var dom_wrapper = '<div id="profile" style="height:400px ">'
+                     $('#profile').replaceWith(dom_wrapper);
+                     user_profile(data['data']);
+                 }
+                 else{
+                    console.log('hfdskflaksdjfkladsjflkadsjfkadsjfklasd')
+                     var img_wrapper = '<div id="profile" class="img-wrapper" style="margin-left: 50px;"><img src="{{ url_for(".static",filename="img/profile1.jpg") }}" style="margin: 45px 40px 0 0;"><img src="{{ url_for(".static",filename="img/profile2.jpg") }}"></div>'
+                     console.log(img_wrapper)
+                     $('#profile').replaceWith(img_wrapper);
+                 }
 
-        }
+        });
+    });
 
-    ]
-};
-//option end
-                // 为echarts对象加载数据
-                myChart.setOption(option);
-            }
-        //function end
-        );
-    //require end
+$('body').on('click',"#path-analysis ul li a",function(e){
+        change_li($(this),e)
+        var _xsrf = $("[name='_xsrf']").attr('value');
+        var app_id = $(".switch-app .dropdown button").attr("app_id");
+        var url = '/ajax/dashboard/';
+        console.log(_xsrf);
+        console.log(app_id);
+    });
 
-    {% endif %}
+
+$('body').on('click',"#behavior-recognition #dropdown-event ul li a",function(e){
+        change_li($(this),e)
+        var _xsrf = $("[name='_xsrf']").attr('value');
+        var app_id = $(".switch-app .dropdown button").attr("app_id");
+         var url = '/ajax/dashboard/';
+        console.log(_xsrf)
+        console.log(app_id)
+
+        behavior_recognition_event = $(this).attr('href');
+        behavior_recognition_category = $('#behavior-recognition #dropdown-category button').attr('category-name');
+
+        var param = 'behavior';
+        $.post(url+param,
+             {
+                 _xsrf: _xsrf,
+                 app_id: app_id,
+                 event: behavior_recognition_event,
+                 category: behavior_recognition_category
+            },
+             function(data,status){
+                 console.log(data+" "+status);
+                  if(data['status']==1){
+                      var dom_wrapper = '<div id="behavior" style="height:400px ">'
+                     $('#behavior').replaceWith(dom_wrapper);
+                     behavior_recognition(data['data']);
+                 }
+                 else{
+                     console.log('hfdskflaksdjfkladsjflkadsjfkadsjfklasd')
+                     var img_wrapper = '<div id="behavior" class="img-wrapper"><img src="{{ url_for(".static",filename="img/behavior1.jpg") }}" style="margin: 45px 40px 0 0;"><img src="{{ url_for(".static",filename="img/behavior2.jpg") }}"></div>'
+                     console.log(img_wrapper)
+                     $('#behavior').replaceWith(img_wrapper);
+                 }
+
+        });
+    });
+
+
+$('body').on('click',"#behavior-recognition #dropdown-category ul li a",function(e){
+        change_li($(this),e)
+        var _xsrf = $("[name='_xsrf']").attr('value');
+        var app_id = $(".switch-app .dropdown button").attr("app_id");
+        var url = '/ajax/dashboard/';
+
+        console.log(_xsrf);
+        console.log(app_id);
+
+        behavior_recognition_event = $('#behavior-recognition #dropdown-event button').attr('category-name');
+        behavior_recognition_category = $(this).attr('href');
+
+        var param = 'behavior';
+        $.post(url+param,
+             {
+                 _xsrf: _xsrf,
+                 app_id: app_id,
+                 event: behavior_recognition_event,
+                 category: behavior_recognition_category
+            },
+             function(data,status){
+                 console.log(data+" "+status);
+                 if(data['status']==1){
+                     var dom_wrapper = '<div id="behavior" style="height:400px ">'
+                     $('#behavior').replaceWith(dom_wrapper);
+                     behavior_recognition(data['data']);
+                 }
+                 else{
+                     console.log('hfdskflaksdjfkladsjflkadsjfkadsjfklasd')
+                     var img_wrapper = '<div id="behavior" class="img-wrapper"><img src="{{ url_for(".static",filename="img/behavior1.jpg") }}" style="margin: 45px 40px 0 0;"><img src="{{ url_for(".static",filename="img/behavior2.jpg") }}"></div>'
+                     console.log(img_wrapper)
+                     $('#behavior').replaceWith(img_wrapper);
+                 }
+        });
+    });
+
+function user_profile(option){
+    var myChart = echarts.init(document.getElementById('profile'));
+    myChart.setOption(option);
+}
+
+function path_analysis(option){
+    var myChart = echarts.init(document.getElementById('path'));
+    myChart.setOption(option);
+}
+
+function behavior_recognition(option){
+    var myChart = echarts.init(document.getElementById('behavior'));
+    myChart.setOption(option);
+}
+
 
 
 
     </script>
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,6 +1,6 @@
 
 {% block content %}
- <div id="dashboard">
+ <div id="settings">
 
 <div class="col-md-10" id="appset">
      <!-- ngView:  --><div ng-view="" class="ng-scope">
@@ -34,6 +34,20 @@
              <!--<span class="btn btn-default clip_button input-group-addon"><span class="mega-octicon octicon-clippy"></span></span>-->
         <!--</div>-->
     <!--</div>-->
+        {% if disabled %}
+        <div class="input-group col-sm-6">
+        <button class="btn btn-danger" type="button" id="delete-app" aria-haspopup="true" aria-expanded="false" style="width: 100%;" disabled>
+            Delete This Application
+                          </button>
+            </div>
+        {% else %}
+            <div class="input-group col-sm-6">
+        <button class="btn btn-danger" type="button" id="delete-app" aria-haspopup="true" aria-expanded="false" style="width: 100%;" >
+            Delete This Application
+                          </button>
+            </div>
+        {% endif %}
+
 </form>
 </div>
     </div>
@@ -85,6 +99,29 @@ var client_form_app_id = new ZeroClipboard( $('.form-app-id-clipboard') );
         // console.log( 'ZeroClipboard error of type "' + event.name + '": ' + event.message );
         ZeroClipboard.destroy();
       } );
+
+
+    $('#delete-app').click(function(e){
+        e.preventDefault();
+        var _xsrf = $("[name='_xsrf']").attr('value');
+        var app_id = $(".switch-app .dropdown button").attr("app_id");
+        console.log(_xsrf);
+        console.log(app_id);
+        var url = 'delete'
+        e.preventDefault();
+        $.post(url,
+             {
+            _xsrf: _xsrf,
+                 app_id: app_id
+
+            },
+             function(data,status){
+                 if(data['delete']=='success'){
+                    window.location.replace('http://'+window.location.host+'/console');
+                 }
+                 console.log(data+" "+status)
+        });
+    })
 
     </script>
 {% endblock %}

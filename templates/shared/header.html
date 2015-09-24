@@ -3,7 +3,7 @@
 <div class="header">
                 <div class="logo">
                     <a href="{{ url_for(".index") }}">
-                        <span class="app-name"> Senz <small>v0.2.0</small></span>
+                        <span class="app-name">Senz<small>v0.2.0</small></span>
                     </a>
                 </div>
                 <div class="top-nav">
@@ -14,7 +14,7 @@
                             <!--{{ username }}-->
                             <!--<span class="caret"></span>-->
                           <!--</button>-->
-                          <!--<ul class="dropdown-menu" aria-labelledby="dropdownMenu2">-->
+                          <!--<ul class ="dropdown-menu" aria-labelledby="dropdownMenu2">-->
                             <!--<li><a href="/">App2</a></li>-->
                             <!--<li><a href="/">App3</a></li>-->
                             <!--<li><a href="/">App4</a></li>-->
@@ -28,8 +28,12 @@
                         <div class="dropdown">
                           <button class="btn btn-default dropdown-toggle" app_id="{{ app_id }}"type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             {{ app_name }}
+                                  {% if all_application_dict %}
                             <span class="caret"></span>
+
+                              {% endif %}
                           </button>
+                                 {% if all_application_dict %}
                           <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
                                {% for app_name, app_id in all_application_dict.items() %}
            <li><a href="{{ url_for( route_link ,app_name= app_name ,app_id= app_id )}}">{{app_name}}</a></li>
@@ -39,6 +43,7 @@
 
                             <!--<li><a href="/">App...</a></li>-->
                           </ul>
+                              {% endif %}
                         </div>
                       </div>
 
