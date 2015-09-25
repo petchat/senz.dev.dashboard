@@ -419,7 +419,7 @@ body .caret{
 	border-color: #ccc;
 }
 .btn-login {
-	background-color: #59B2E0;
+	background-color: #59B2E0!important;
 	outline: none;
 	color: #fff;
 	font-size: 14px;
@@ -547,7 +547,7 @@ label a{
 #settings label{
     color: #77CCC5;
 }
-#settings .input-group,.form-control{
+#settings .input-group,#settings .form-control{
     background-color: #ecf3f1!important;
 }
 #settings .form-control{
