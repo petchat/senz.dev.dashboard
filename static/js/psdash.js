@@ -235,7 +235,7 @@ $(function() {
         $('.left-nav ul li[class="active"]').removeClass("active");
         $(this).parent().addClass("active");
         var href = $(this).attr('href');
-        console.log(href)
+        console.log(href);
         e.preventDefault();
 
         $.post(href,
@@ -247,7 +247,6 @@ $(function() {
              function(data,status){
             $("#psdash").find(".main-content").html(data);
              //$(this).addClass("btn-default")
-
                  console.log(data+" "+status)
         });
     })
