@@ -1078,6 +1078,33 @@ class Developer:
             print e
             return 0
 
+    def get_tracker_of_app(self, app_id=''):
+        try:
+            self.tracker_list = []
+            user = self.user.become(self.session_token)
+            Application = Object.extend('Application')
+            query = Query(Application)
+            #query.equal_to('user', user)
+
+            #app_id = 'demo 55f7e36f60b2fe7115171b4b'
+            print "@@@@@@@@@@@@@@@@@@" + app_id
+            query.equal_to('app_id', app_id)
+            app_list = query.find()
+
+            if len(app_list) != 1:
+                return []
+            the_app = app_list[0]
+
+            #Tracker = Object.extend('BindingInstallation')
+            #query = Query(Tracker)
+            #query.equal_to('application', the_app)
+            #app_list = query.find()
+            relation = the_app.relation('tracker')
+            print relation,
+            return 1
+        except LeanCloudError, e:
+            print e
+            return 0
 
 
 

@@ -1,0 +1,91 @@
+{%  block content %}
+<div id="location_type_one">
+    {% for item1 in location1_list %}
+        <input type="radio" name="test" value="{{item1}}" />{{ item1 }} &nbsp;
+        <select id="{{ item1 }}" selected="selected">
+        {% for item2 in location2_list[location1_list.index(item1)] %}
+            <option value="{{ item2 }}" >{{ item2 }}</option>
+        {% endfor %}
+        </select><br>
+    {% endfor %}
+</div>
+<br>
+<div id="motion">
+    <label>Motion:</label><br>
+    {% for key, value in motion_dict.iteritems()%}
+    <input type="radio" name="test" value="{{value}}"/> {{key}} &nbsp;
+    {% endfor %}
+</div>
+<br>
+<div id="event">
+    <label>Event:</label><br>
+    {% for item in event_list%}
+    <input type="radio" name="test" value="{{item}}"/> {{item}} &nbsp;
+    {% endfor %}
+</div>
+<br>
+<div id="home_office_status">
+    <label>HomeOfficeStatus:</label><br>
+    {% for key, value in status_dict.iteritems()%}
+    <input type="radio" name="test" value="{{value}}"/> {{key}} &nbsp;
+    {% endfor %}
+</div>
+<br>
+<input id="btn" type="button" value="Submit" />
+
+<script>
+var location2;
+$(function(){
+    $("select").click(function(){
+        $(this).find("option:selected").parent().prev().attr("checked", true);
+        location2 = $(this).find("option:selected").text();
+    });
+    $("select").change(function(){
+        location2 = $(this).find("option:selected").text();
+    });
+});
+
+$(function(){
+    $("#location_type_one input").click(function(){
+        location2 = $(this).next().find("option:selected").text();
+    });
+});
+
+$(document).ready(function(){
+    $('#btn').click(function(e){
+        var _xsrf = $("[name='_xsrf']").attr('value');
+        var app_id = $(".switch-app .dropdown button").attr("app_id");
+        var chkObjs = document.getElementsByName('test');
+        var type, val;
+
+        for(var i=0; i<chkObjs.length; ++i){
+            if(chkObjs[i].checked){
+                type = chkObjs[i].parentNode.getAttribute("id");
+                val = chkObjs[i].value;
+                break;
+            }
+        }
+
+        $.post("/panel",
+        {
+            _xsrf: _xsrf,
+            app_id: app_id,
+            type: type,
+            val: val,
+        });
+
+        if(type === "location_type_one"){
+            $.post("/panel",
+            {
+                _xsrf: _xsrf,
+                app_id: app_id,
+                type: "location_type_two",
+                val: location2,
+            });
+        }
+
+    });
+});
+
+</script>
+{%  endblock %}
