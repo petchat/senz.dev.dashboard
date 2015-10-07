@@ -171,7 +171,7 @@ def dash(param):
     print 'Param is %s' %(str(param))
     if param == 'dashboard':
         if user.get_all_application():
-            all_application_dict = user.all_application_dict                #一旦上一步执行成功，会给user添加一个成员变量 all_demo_application_dict
+            all_application_dict = user.all_application_dict                #一旦上一步执行成功，会给user添加一个成员变量 all_application_dict
         else:
             print 'no application  exists'
             all_application_dict ={}
