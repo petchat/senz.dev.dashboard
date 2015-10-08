@@ -16,6 +16,8 @@ query_limit = 1000
 
 APPLICATION_CLASS = 'BindingApplication'
 
+STATIC_INFO_TABLE = 'MageiaAppStaticInfo'
+
 user_profile_base_option = {
     'title' : {
         'textStyle':{
@@ -292,7 +294,7 @@ class Dashboard:
         age_and_gender_dict={}
         try:
             app = self.get_the_app(kind=kind)
-            static_info_table='AppStaticInfo'
+            static_info_table=STATIC_INFO_TABLE
             DbTable = Object.extend(static_info_table)
             query = Query(DbTable)
             query.equal_to(field_name,app)
@@ -321,7 +323,7 @@ class Dashboard:
     def get_occupation_data_dict(self,app_table=APPLICATION_CLASS,field_name = 'app',kind=None):
         try:
             app = self.get_the_app(kind=kind)
-            static_info_table='AppStaticInfo'
+            static_info_table=STATIC_INFO_TABLE
             DbTable = Object.extend(static_info_table)
             query = Query(DbTable)
             query.equal_to(field_name,app)
@@ -348,7 +350,7 @@ class Dashboard:
         try:
             field = 'sport'
             app = self.get_the_app(kind=kind)
-            static_info_table='AppStaticInfo'
+            static_info_table=STATIC_INFO_TABLE
             DbTable = Object.extend(static_info_table)
             query = Query(DbTable)
             query.equal_to(field_name,app)
@@ -376,7 +378,7 @@ class Dashboard:
         try:
             field = 'consumption'
             app = self.get_the_app(kind=kind)
-            static_info_table='AppStaticInfo'
+            static_info_table=STATIC_INFO_TABLE
             DbTable = Object.extend(static_info_table)
             query = Query(DbTable)
             query.equal_to(field_name,app)
@@ -402,7 +404,7 @@ class Dashboard:
         try:
             field = 'field'
             app = self.get_the_app(kind=kind)
-            static_info_table='AppStaticInfo'
+            static_info_table=STATIC_INFO_TABLE
             DbTable = Object.extend(static_info_table)
             query = Query(DbTable)
             query.equal_to(field_name,app)
@@ -431,7 +433,7 @@ class Dashboard:
         try:
 
             app = self.get_the_app(kind=kind)
-            static_info_table='AppStaticInfo'
+            static_info_table=STATIC_INFO_TABLE
             DbTable = Object.extend(static_info_table)
             query = Query(DbTable)
             query.equal_to(field_name,app)
@@ -974,6 +976,8 @@ class Developer:
 
     def create_new_app(self,app_name):
         try:
+            if not app_name:
+                return 0
             user = self.user.become(self.session_token)
             print 'Got the user'
             Application = Object.extend(APPLICATION_CLASS)

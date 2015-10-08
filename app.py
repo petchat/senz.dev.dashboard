@@ -16,23 +16,26 @@ app.config['SECRET_KEY'] = config.SECRET_KEY
 expiration_days = 30
 from models import Dashboard,Developer
 
+
 def generate_token():
-    '''
-        Generates a token with randomly salted SHA1. Returns a string.
-        '''
+    """Generates a token with randomly salted SHA1. Returns a string.
+    """
     _MAX_CSRF_KEY = long(2 << 63)
     salt = str(random.randrange(0, _MAX_CSRF_KEY)).encode('utf-8')
     return hashlib.sha1(salt).hexdigest()
 
+
 @app.before_request
 def xsrf_protect():
-    print 'The endpoint of the request is: '+str(request.endpoint)
-    if request.method == "POST" and request.endpoint not in ['panel', 'integration','settings','ajax_demo','demo','dash','console','delete','dashboard']:
+    print 'The endpoint of the request is: ' + str(request.endpoint)
+    if request.method == "POST" and request.endpoint not in \
+            ['panel', 'integration', 'settings', 'ajax_demo', 'demo', 'dash', 'console', 'delete', 'dashboard']:
         token = session.pop('_xsrf', None)
-        print 'token: ' +str(token)
-        print 'form xsrf: ' +str(request.form.get('_xsrf'))
+        print 'token: ' + str(token)
+        print 'form xsrf: ' + str(request.form.get('_xsrf'))
         if not token or token != request.form.get('_xsrf'):
             abort(403)
+
 
 def generate_xsrf_token():
     if '_xsrf' not in session:
@@ -40,12 +43,15 @@ def generate_xsrf_token():
     return session['_xsrf']
 app.jinja_env.globals['_xsrf'] = generate_xsrf_token
 
+
 # 动态路由
 # app.register_blueprint(dashboard_view, url_prefix='/dashboard')
 def get_expiration():
     expire_date = datetime.datetime.now()
     expire_date = expire_date + datetime.timedelta(days=expiration_days)
     return expire_date
+
+
 @app.route('/')
 def index():
     error = None
@@ -56,6 +62,7 @@ def index():
     #     return render_template('index.html', username=username)
     # return redirect(url_for('dashboard',username=username))
 # 注意现在还没有做user和app_id是否是从属关系的认证
+
 
 @app.route('/integration',methods=['POST'])
 def integration():
@@ -255,57 +262,58 @@ def dash(param):
 
     print 'log comes out !!!!!'
     return render_template('shared/dash.html',
-                           is_xhr = is_xhr,
-                           # dashboard_link = dashboard_link,
-                           route_link='dashboard',
-                           # sort according to ['16down', '16to35', '35to55', '55up']
-                           # discard unknown data
+                            is_xhr = is_xhr,
+                            # dashboard_link = dashboard_link,
+                            route_link='dashboard',
+                            # sort according to ['16down', '16to35', '35to55', '55up']
+                            # discard unknown data
                             username = username,
-                           app_name = app_name,
-                           app_id =app_id,
-                           all_application_dict = all_application_dict,
+                            app_name = app_name,
+                            app_id =app_id,
+                            all_application_dict = all_application_dict,
 
-                           # age_data = age_data,
-                           # age_category_list = age_category_list,
-                           # man_data_list = man_data_list,
-                           # woman_data_list = woman_data_list,
-                           #
-                           # location_data = location_data,
-                           #  location_category_list = location_category_list,
-                           #  location_percentage_list = location_percentage_list,
+                            # age_data = age_data,
+                            # age_category_list = age_category_list,
+                            # man_data_list = man_data_list,
+                            # woman_data_list = woman_data_list,
+                            #
+                            # location_data = location_data,
+                            #  location_category_list = location_category_list,
+                            #  location_percentage_list = location_percentage_list,
 
-                           #  event_data=event_data,
-                           #   event_name =event_name,
-                           # activity_category_list=activity_category_list,
-                           # activity_count_list=activity_count_list,
+                            #  event_data=event_data,
+                            #   event_name =event_name,
+                            # activity_category_list=activity_category_list,
+                            # activity_count_list=activity_count_list,
 
                             default_user_profile_category = default_user_profile_category,
-                           default_path_analysis_category = default_path_analysis_category,
-                           default_event_name = default_event_name,
-                           default_behavior_recognition_measure = default_behavior_recognition_measure,
+                            default_path_analysis_category = default_path_analysis_category,
+                            default_event_name = default_event_name,
+                            default_behavior_recognition_measure = default_behavior_recognition_measure,
 
-                           user_profile_type = user_profile_type,
-                           path_analysis_type = path_analysis_type,
+                            user_profile_type = user_profile_type,
+                            path_analysis_type = path_analysis_type,
                             event_name_type = event_name_type,
                             behavior_recognition_measure_type = behavior_recognition_measure_type,
 
-                           user_profile_category_dict = user_profile_category_dict,
-                           path_analysis_measure_dict = path_analysis_measure_dict,
-                           behavior_recognition_event_dict = behavior_recognition_event_dict,
-                           behavior_recognition_measure_dict = behavior_recognition_measure_dict
+                            user_profile_category_dict = user_profile_category_dict,
+                            path_analysis_measure_dict = path_analysis_measure_dict,
+                            behavior_recognition_event_dict = behavior_recognition_event_dict,
+                            behavior_recognition_measure_dict = behavior_recognition_measure_dict
 
-                           # location_name_list = [str(kv[0]) for kv in sorted_frequent_location_percentage],
-                           # location_time_list = [kv[1] for kv in sorted_frequent_location_percentage],
-                           # motion_name_list = [str(kv[0]) for kv in sorted_frequent_motion_percentage],
-                           # motion_time_list = [kv[1] for kv in sorted_frequent_motion_percentage],
-                           # sound_name_list = [str(kv[0]) for kv in sorted_frequent_sound_percentage],
-                           # sound_time_list = [kv[1] for kv in sorted_frequent_sound_percentage],
-                           # event_name =event_name,
-                           # event_to_activity_name_list=[str(key) for key in activity_statistics_dict.keys()],
-                           # event_to_activity_count_list=activity_statistics_dict.values()
-                           )
+                            # location_name_list = [str(kv[0]) for kv in sorted_frequent_location_percentage],
+                            # location_time_list = [kv[1] for kv in sorted_frequent_location_percentage],
+                            # motion_name_list = [str(kv[0]) for kv in sorted_frequent_motion_percentage],
+                            # motion_time_list = [kv[1] for kv in sorted_frequent_motion_percentage],
+                            # sound_name_list = [str(kv[0]) for kv in sorted_frequent_sound_percentage],
+                            # sound_time_list = [kv[1] for kv in sorted_frequent_sound_percentage],
+                            # event_name =event_name,
+                            # event_to_activity_name_list=[str(key) for key in activity_statistics_dict.keys()],
+                            # event_to_activity_count_list=activity_statistics_dict.values()
+                            )
 
-@app.route('/demo',methods=['GET','POST'])
+
+@app.route('/demo',methods=['GET', 'POST'])
 def demo():
 
     username = session.get('username')
@@ -317,7 +325,7 @@ def demo():
     user = Developer()
     user.session_token = session_token
     if user.get_all_demo_application():
-        all_demo_application_dict = user.all_demo_application_dict   #一旦上一步执行成功，会给user添加一个成员变量 all_demo_application_dict
+        all_demo_application_dict = user.all_demo_application_dict   # 一旦上一步执行成功，会给user添加一个成员变量 all_demo_application_dict
     else:
         print 'no demo application  exists'
         all_demo_application_dict ={}
@@ -384,7 +392,7 @@ def demo():
                            route_link='dashboard',
                            # sort according to ['16down', '16to35', '35to55', '55up']
                            # discard unknown data
-                            username = username,
+                           username = username,
                            app_name = app_name,
                            app_id =app_id,
                            all_application_dict = {},
@@ -833,6 +841,7 @@ def track():
                                app_name = app_name,
                                app_id = app_id,
                            all_application_dict = all_application_dict)
+
 
 @app.route('/console', methods=['POST','GET'])
 def console():

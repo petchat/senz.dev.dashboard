@@ -3,7 +3,7 @@
  {% block header %}
 <div class="header">
                 <div class="logo">
-                    <a href="{{ url_for("index") }}">
+                    <a href="{{ url_for('index') }}">
                         <span class="app-name"> Senz <small>v0.2.0</small></span>
                     </a>
                 </div>
@@ -26,8 +26,8 @@
                      {% else %}
 
                      <ul class="nav navbar-nav" id="login" >
-                        <li><a href="{{ url_for("login",_anchor="signin") }}">Login</a></li>
-                        <li><a href="{{ url_for("login",_anchor="signup") }}">Sign up</a></li>
+                        <li><a href="{{ url_for('login',_anchor='signin') }}">Login</a></li>
+                        <li><a href="{{ url_for('login',_anchor='signup') }}">Sign up</a></li>
                      </ul>
 
                      {% endif %}

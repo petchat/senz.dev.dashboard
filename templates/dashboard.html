@@ -3,26 +3,24 @@
 <div class="main-content"></div>
 {% endblock %}
 {% block extra_js %}
-  <!--<script src="http://echarts.baidu.com/build/dist/echarts.js"></script>-->
- <script src="{{ url_for(".static",filename="js/echarts-all.js") }}"></script>
+<script src="{{ url_for(".static",filename="js/echarts-all.js") }}"></script>
 <script type="text/javascript">
 
-        $(document).ready(function(){
+$(document).ready(function(){
     var _xsrf = $("[name='_xsrf']").attr('value');
     var app_id = $(".switch-app .dropdown button").attr("app_id");
-            //获得Dashboard页面的基本框架
+    //获得Dashboard页面的基本框架
     url = '/dash/dashboard'
     $.post(url,
-             {
+        {
             _xsrf: _xsrf,
-                 app_id: app_id
-            },
-             function(data,status) {
-                 console.log(data);
-                 $('.main-content').html(data);
-//                 初始化页面的所有数据
-                 init_dashboard()
-
+            app_id: app_id
+        },
+        function(data,status) {
+            console.log(data);
+            $('.main-content').html(data);
+            //初始化页面的所有数据
+            init_dashboard()
         });
 });
 
@@ -33,44 +31,41 @@ function init_dashboard() {
 
     user_profile_category = $('#user-profile .switch-category .dropdown button').attr('category-name')
     $.post(url+'profile',
-             {
+        {
             _xsrf: _xsrf,
-                 app_id: app_id,
-                category : user_profile_category
-            },
-             function(data,status) {
-                 console.log(data);
-                 if(data['status']==1){
-                     console.log(data['data'])
-                     user_profile(data['data']);
-                 }
-                 else{
-                      console.log('hfdskflaksdjfkladsjflkadsjfkadsjfklasd')
-                     var img_wrapper = '<div id="profile" class="img-wrapper" style="margin-left: 50px;"><img src="{{ url_for(".static",filename="img/profile1.jpg") }}" style="margin: 45px 40px 0 0;"><img src="{{ url_for(".static",filename="img/profile2.jpg") }}"></div>'
-                     console.log(img_wrapper)
-                     $('#profile').replaceWith(img_wrapper);
-                 }
-
+            app_id: app_id,
+            category : user_profile_category
+        },
+        function(data,status) {
+            console.log(data);
+            if(data['status']==1){
+                console.log(data['data'])
+                user_profile(data['data']);
+            }else{
+                console.log('hfdskflaksdjfkladsjflkadsjfkadsjfklasd')
+                var img_wrapper = '<div id="profile" class="img-wrapper" style="margin-left: 50px;"><img src="{{ url_for(".static",filename="img/profile1.jpg") }}" style="margin: 45px 40px 0 0;"><img src="{{ url_for(".static",filename="img/profile2.jpg") }}"></div>'
+                console.log(img_wrapper)
+                $('#profile').replaceWith(img_wrapper);
+            }
         });
 
     path_analysis_category = $('#path-analysis .switch-category .dropdown button').attr('category-name')
     $.post(url+'path',
-             {
-                _xsrf: _xsrf,
-                 app_id: app_id,
-                category : path_analysis_category
-            },
-             function(data,status) {
-                 console.log(data);
-                 if(data['status']==1){
-                     path_analysis(data['data']);
-                 }
-                 else{
-                     console.log('hfdskflaksdjfkladsjflkadsjfkadsjfklasd')
-                     var img_wrapper = '<div id="path" class="img-wrapper" style="margin-left: 50px;"><img src="{{ url_for(".static",filename="img/path1.jpg") }}" style="margin: 45px 40px 0 0;"><img src="{{ url_for(".static",filename="img/path2.jpg") }}"></div>'
-                     console.log(img_wrapper)
-                     $('#path').replaceWith(img_wrapper);
-                 }
+        {
+            _xsrf: _xsrf,
+            app_id: app_id,
+            category : path_analysis_category
+        },
+        function(data,status) {
+            console.log(data);
+            if(data['status']==1){
+                path_analysis(data['data']);
+            }else{
+                console.log('hfdskflaksdjfkladsjflkadsjfkadsjfklasd')
+                var img_wrapper = '<div id="path" class="img-wrapper" style="margin-left: 50px;"><img src="{{ url_for(".static",filename="img/path1.jpg") }}" style="margin: 45px 40px 0 0;"><img src="{{ url_for(".static",filename="img/path2.jpg") }}"></div>'
+                console.log(img_wrapper)
+                $('#path').replaceWith(img_wrapper);
+            }
         });
 
     behavior_recognition_event = $('#behavior-recognition #dropdown-event  button').attr('category-name');
@@ -240,10 +235,7 @@ function behavior_recognition(option){
     myChart.setOption(option);
 }
 
-
-
-
-    </script>
+</script>
 {% endblock %}
 
 
