@@ -235,8 +235,6 @@ def dash(param):
     event_name_type = 'Event1'
     behavior_recognition_measure_type = 'activity'
 
-
-
     user_profile_category_dict = dashboard.get_user_profile_category_dict()    #['Occupation','Tastes']
     path_analysis_measure_dict = dashboard.get_path_analysis_measure_dict() # ['Frequently Track']
     behavior_recognition_event_dict = dashboard.get_behavior_recognition_event_dict() #['event2']
@@ -539,8 +537,13 @@ def dashboard():
 
     if not session_token:
         return redirect(url_for('index'))
+
+    # change app_name & app_id as demo for test
     app_name = request.args.get('app_name')
     app_id = request.args.get('app_id')
+    # app_name = 'Demo'
+    print "###############@@@@@@@@@@@@@@@@" + app_name
+    app_id = 'demo55bc5d8e00b0cb9c40dec37b'
     print 'the app_id of the app is: %s' %(str(app_id))
 
     user = Developer()
@@ -569,7 +572,7 @@ def dashboard():
         is_xhr = True
     else:
         is_xhr = False
-    dashboard_link = '/dashboard'
+    dashboard_link = '/dashboard/'
 
     # default_user_profile_category = 'Age&Gender'
     # default_path_analysis_category = 'Frequently Location'
@@ -598,8 +601,8 @@ def dashboard():
 
 
     return render_template('dashboard.html',
-                           is_xhr = is_xhr,
-                           dashboard_link = dashboard_link,
+                           is_xhr=is_xhr,
+                           dashboard_link=dashboard_link,
                            route_link='dashboard',
                            # sort according to ['16down', '16to35', '35to55', '55up']
                            # discard unknown data
@@ -773,7 +776,7 @@ def panel():
     type = request.form.get('type')
     val = request.form.get('val')
     if type and val:
-        if user.get_tracker_of_app('demo 55f7e36f60b2fe7115171b4b'):
+        if user.get_tracker_of_app(app_id):
             tracker_list = user.tracker_list
         headers = {"X-AVOSCloud-Application-Id": "qTFUwcnM3U3us8B3ArenyJbm", "X-AVOSCloud-Application-Key": "ksfJtp9tIEriApWmbtOrQs5F"}
         payload = {"type": type, "val": val}

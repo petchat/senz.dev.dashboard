@@ -240,14 +240,12 @@ $(function() {
 
         $.post(href,
              {
-            _xsrf: _xsrf,
-                 app_id: app_id
-
+             _xsrf: _xsrf,
+             app_id: app_id
             },
              function(data,status){
-            $("#psdash").find(".main-content").html(data);
-             //$(this).addClass("btn-default")
-                 console.log(data+" "+status)
+             $("#psdash").find(".main-content").html(data);
+             $(this).addClass("btn-default")
         });
     })
 
