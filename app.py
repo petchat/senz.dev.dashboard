@@ -16,7 +16,6 @@ app.config['SECRET_KEY'] = config.SECRET_KEY
 expiration_days = 30
 from models import Dashboard,Developer
 
-
 def generate_token():
     """Generates a token with randomly salted SHA1. Returns a string.
     """
@@ -776,10 +775,11 @@ def panel():
     if type and val:
         if user.get_tracker_of_app(app_id):
             tracker_list = user.tracker_list
-        headers = {"X-AVOSCloud-Application-Id": "qTFUwcnM3U3us8B3ArenyJbm", "X-AVOSCloud-Application-Key": "ksfJtp9tIEriApWmbtOrQs5F"}
+        headers = {"X-AVOSCloud-Application-Id": "wsbz6p3ouef94ubvsdqk2jfty769wkyed3qsry5hebi2va2h", "X-AVOSCloud-Application-Key": "6z6n0w3dopxmt32oi2eam2dt0orh8rxnqc8lgpf2hqnar4tr"}
         payload = {"type": type, "val": val}
         #for tracker in tracker_list:
-        requests.post("https://leancloud.cn/1.1/functions/notify_new_details",  headers = headers, data = payload)
+        r = requests.post("https://leancloud.cn/1.1/functions/notify_new_details",  headers = headers, data = payload)
+        print r
     return render_template('panel.html', 
                            location1_list = location1_list,
                            location2_list = location2_list,
