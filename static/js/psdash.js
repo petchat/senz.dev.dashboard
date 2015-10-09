@@ -241,6 +241,7 @@ $(function() {
         $.post(href,
              {
              _xsrf: _xsrf,
+             app_name: "Demo",
              app_id: app_id
             },
              function(data,status){
