@@ -237,20 +237,17 @@ event_recognition_base_option= {
 }
 
 
-
 class Dashboard:
     def __init__(self):
         self.app_id = None
-        pass
 
-    def get_app_key(self,app_table=APPLICATION_CLASS):
+    def get_app_key(self, app_table=APPLICATION_CLASS):
         try:
-            Application = Object.extend(app_table)
-            query = Query(Application)
-            query.equal_to('app_id',self.app_id)
+            query = Query(Object.extend(app_table))
+            query.equal_to('app_id', self.app_id)
             result_list = query.find()
             length = len(result_list)
-            if length==0:
+            if length == 0:
                 print 'error: application not exists in table Applicaiton'
                 return 0
             elif length != 1:
@@ -259,11 +256,10 @@ class Dashboard:
             else:
                 app_key = result_list[0].get('app_key')
         except LeanCloudError, e:
-
-             raise e
+            raise e
         return app_key
 
-    def get_demo_app_key(self,app_table=APPLICATION_CLASS):
+    def get_demo_app_key(self, app_table=APPLICATION_CLASS):
         return self.get_app_key(app_table=app_table)
 
     def get_the_app(self,app_table=APPLICATION_CLASS,kind=None):

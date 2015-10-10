@@ -104,23 +104,23 @@ $('body').on('click',"#user-profile ul li a",function(e){
          var url = '/ajax/dashboard/';
         console.log(_xsrf);
         console.log(app_id);
-    var param = 'profile';
-//这里是不是考虑要在某个地方存放一个用户的hash_id这样的一个值，以避免不同的用户访问了别人应用的值
+        var param = 'profile';
+        //这里是不是考虑要在某个地方存放一个用户的hash_id这样的一个值，以避免不同的用户访问了别人应用的值
         $.post(url+param,
              {
-                _xsrf: _xsrf,
+                 _xsrf: _xsrf,
                  app_id: app_id,
                  category: $(this).attr('href')
-            },
+             },
              function(data,status){
-            console.log(data);
-                 if(data['status']==1){
-                     console.log(data['data'])
-                     user_profile(data['data']);
-                 }
-                 else{
-                     user_profile(data['data']);
-                 }
+             console.log(data);
+             if(data['status']==1){
+                 console.log(data['data'])
+                 user_profile(data['data']);
+             }
+             else{
+                 user_profile(data['data']);
+             }
         });
     });
 
