@@ -3,12 +3,12 @@
 import datetime
 from flask import Flask, render_template,request,session,redirect,url_for,flash,abort,make_response,jsonify
 import hashlib
-import json
+#import json
 import requests
 import random
 # from views.dashboard import dashboard_view
 import config as config
-import itsdangerous
+#import itsdangerous
 DEMO_APP_NAME = 'Demo'
 app = Flask(__name__)
 app.config['SECRET_KEY'] = config.SECRET_KEY
@@ -400,7 +400,6 @@ def ajax_demo(param):
 @app.route('/ajax/dashboard/<param>', methods=['GET','POST'])
 def ajax_dashboard(param):
     session_token = session.get('session_token')
-
     if not session_token:
         print 'session_token not exists!'
         return None
