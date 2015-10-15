@@ -29,7 +29,7 @@ def generate_token():
 def xsrf_protect():
     print 'The endpoint of the request is: ' + str(request.endpoint)
     if request.method == "POST" and request.endpoint not in \
-            ['panel', 'integration', 'settings', 'ajax_demo', 'demo', 'dash', 'console', 'delete', 'dashboard']:
+            ['panel', 'integration', 'settings', 'ajax_dashboard', 'ajax_demo', 'demo', 'dash', 'console', 'delete', 'dashboard']:
         token = session.pop('_xsrf', None)
         print 'token: ' + str(token)
         print 'form xsrf: ' + str(request.form.get('_xsrf'))
@@ -543,8 +543,6 @@ def dashboard():
     # change app_name & app_id as demo for test
     app_name = request.args.get('app_name')
     app_id = request.args.get('app_id')
-    # app_name = 'Demo'
-    print "###############@@@@@@@@@@@@@@@@" + app_name
     app_id = 'demo55bc5d8e00b0cb9c40dec37b'
     print 'the app_id of the app is: %s' %(str(app_id))
 
@@ -914,7 +912,8 @@ def delete():
 @app.errorhandler(403)
 def permission_forbidden(e):
     flash('Permission denied!')
-    return redirect(url_for('index'))
+    # return redirect(url_for('index'))
+    return make_response(jsonify({'error': 'Unauthorized access'}), 403)
 
 @app.errorhandler(404)
 def page_not_found(e):

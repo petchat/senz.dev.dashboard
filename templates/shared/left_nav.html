@@ -3,34 +3,35 @@
 <div class="left-nav" id="left-nav">
     <ul class="menu">
         <li class="active">
-            <a href="{{ dashboard_link }}">
-                <div class="tab-text-wrapper"><span class="glyphicon glyphicon-th"></span>
-                <span class="option-text">Dashboard</span></div>
-            </a>
-        </li>
-        <li>
-            <a href="{{ url_for("integration") }}" id="integration-link">
+            <a href="{{ url_for('dashboard') }}">
                 <div class="tab-text-wrapper">
-                <span class="glyphicon glyphicon-tasks"></span>
-                <span class="option-text">Integration</span>
+                    <span class="glyphicon glyphicon-th"></span>
+                    <span class="option-text">Dashboard</span>
                 </div>
             </a>
         </li>
         <li>
-            <a href="{{ url_for("settings") }}" id="integration-link">
-            <div class="tab-text-wrapper">
-                <span class="glyphicon glyphicon-cog"></span>
-                <span class="option-text">Settings</span>
+            <a href="{{ url_for('integration') }}" id="integration-link">
+                <div class="tab-text-wrapper">
+                    <span class="glyphicon glyphicon-tasks"></span>
+                    <span class="option-text">Integration</span>
+                </div>
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for('settings') }}" id="settings-link">
+                <div class="tab-text-wrapper">
+                    <span class="glyphicon glyphicon-cog"></span>
+                    <span class="option-text">Settings</span>
                 </div>
             </a>
         </li>
         <!-- added by mageia-->
         <li>
-            <!--<a href="{{ url_for('panel') }}" id="integration-link" >-->
-            <a href="/panel">
-            <div class="tab-text-wrapper">
-                <span class="glyphicon glyphicon-cog"></span>
-                <span class="option-text">Panel</span>
+            <a href="{{ url_for('panel') }}" id="panel-link" >
+                <div class="tab-text-wrapper">
+                    <span class="glyphicon glyphicon-wrench"></span>
+                    <span class="option-text">Panel</span>
                 </div>
             </a>
         </li>
