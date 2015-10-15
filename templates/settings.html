@@ -1,40 +1,61 @@
 
 {% block content %}
-<div id="settings">
-    <div class="col-md-10" id="appset">
-         <!-- ngView:  -->
-        <div ng-view="" class="ng-scope">
-            <form class="general-form ng-scope ng-pristine ng-valid ng-valid-required" name="generalform" id="generalform">
-                <!-- <h3 translate="APP_KEY_SET"></h3> -->
-                <div class="form-group">
-                    <label class="control-label" for="form-app-id">
-                        App ID
-                    </label>
-                    <div class="input-group col-sm-6">
-                        <input id="form-app-id" class="form-control" type="text" value="{{ app_id }}" required="" readonly="">
-                        <span class="btn btn-default clip_button input-group-addon form-app-id-clipboard"><span class="mega-octicon octicon-clippy"></span></span>
-                    </div>
-                </div>
+ <div id="settings">
 
-                <div class="form-group">
-                    <label class="control-label" for="form-app-key">
-                        App Key
-                    </label>
-                    <div class="input-group col-sm-6">
-                        <input id="form-app-key" class="form-control" type="text" value="{{ app_key }}" required="" readonly="">
-                        <span class="btn btn-default clip_button input-group-addon form-app-key-clipboard"><span class="mega-octicon octicon-clippy"></span></span>
-                    </div>
-                </div>
-
-                <div class="input-group col-sm-6">
-                    <button class="btn btn-danger" type="button" id="delete-app" aria-haspopup="true" aria-expanded="false" style="width: 100%;" >
-                        Delete This Application
-                    </button>
-                </div>
-            </form>
+<div class="col-md-10" id="appset">
+     <!-- ngView:  --><div ng-view="" class="ng-scope">
+    <form class="general-form ng-scope ng-pristine ng-valid ng-valid-required" name="generalform" id="generalform">
+    <!-- <h3 translate="APP_KEY_SET"></h3> -->
+    <div class="form-group">
+        <label class="control-label" for="form-app-id">
+            App ID
+        </label>
+        <div class="input-group col-sm-6">
+            <input id="form-app-id" class="form-control" type="text" value="{{ app_id }}" required="" readonly="">
+            <span class="btn btn-default clip_button input-group-addon form-app-id-clipboard"><span class="mega-octicon octicon-clippy"></span></span>
         </div>
     </div>
+    <div class="form-group">
+        <label class="control-label" for="form-app-key">
+            App Key
+        </label>
+        <div class="input-group col-sm-6">
+            <input id="form-app-key" class="form-control" type="text" value="{{ app_key }}" required="" readonly="">
+            <span class="btn btn-default clip_button input-group-addon form-app-key-clipboard"><span class="mega-octicon octicon-clippy"></span></span>
+
+        </div>
+    </div>
+    <!--<div class="form-group">-->
+        <!--<label class="control-label" for="form-app-key-master">-->
+            <!--Master Key-->
+        <!--</label>-->
+        <!--<div class="input-group col-sm-6">-->
+            <!--<input id="form-app-key-master" class="form-control ng-pristine ng-valid ng-valid-required" type="text" ng-model="app.master_key" required="" readonly="">-->
+             <!--<span class="btn btn-default clip_button input-group-addon"><span class="mega-octicon octicon-clippy"></span></span>-->
+        <!--</div>-->
+    <!--</div>-->
+        {% if disabled %}
+        <div class="input-group col-sm-6">
+        <button class="btn btn-danger" type="button" id="delete-app" aria-haspopup="true" aria-expanded="false" style="width: 100%;" disabled>
+            Delete This Application
+                          </button>
+            </div>
+        {% else %}
+            <div class="input-group col-sm-6">
+        <button class="btn btn-danger" type="button" id="delete-app" aria-haspopup="true" aria-expanded="false" style="width: 100%;" >
+            Delete This Application
+                          </button>
+            </div>
+        {% endif %}
+
+</form>
 </div>
+    </div>
+
+
+
+     </div>
+
 {% endblock %}
 
 {% block extra_js %}

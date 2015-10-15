@@ -174,8 +174,9 @@ function init_dom(){
 $(document).ready(function() {
     init_dom();
 });
-
 $(function() {
+
+
     $('#login-form-link').click(function(e) {
 		$("#login-form").delay(100).fadeIn(100);
  		$("#register-form").fadeOut(100);
@@ -239,15 +240,17 @@ $(function() {
 
         $.post(href,
              {
-                 _xsrf: _xsrf,
-                 app_name: "Demo",
-                 app_id: app_id
-             },
+             _xsrf: _xsrf,
+             app_name: "Demo",
+             app_id: app_id
+            },
              function(data,status){
              $("#psdash").find(".main-content").html(data);
              $(this).addClass("btn-default")
         });
     })
+
+
 
     $(".alert").fadeTo(5000, 0.3).slideUp(2000, function(){
     $(".alert").alert('close');
