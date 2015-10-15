@@ -534,9 +534,11 @@ def ajax_dashboard(param):
 def dashboard():
     username = session.get('username')
     session_token = session.get('session_token')
+    print username
+    print "session_token+", session_token
 
-    if not session_token:
-        return redirect(url_for('index'))
+    #if not session_token:
+    #    return redirect(url_for('index'))
 
     # change app_name & app_id as demo for test
     app_name = request.args.get('app_name')
