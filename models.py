@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import leancloud
 from leancloud import Object
 from leancloud import LeanCloudError
 from leancloud import Query
@@ -10,12 +9,10 @@ from wsgi import signer
 
 import copy
 
-not_binary_label_dict = {'field':['field__manufacture', 'field__financial', 'field__infotech', 'field__law', 'field__agriculture', 'field__human_resource', 'field__commerce', 'field__natural', 'field__service', 'field__humanities', 'field__medical', 'field__architecture', 'field__athlete'], 'age':['age__16to35', 'age__35to55', 'age__55up', 'age__16down'], 'sport':['sport__basketball', 'sport__bicycling', 'sport__tabel_tennis', 'sport__football', 'sport__jogging', 'sport__badminton', 'sport__fitness'],'consumption': ['consumption__10000to20000', 'consumption__20000up', 'consumption__5000to10000', 'consumption__5000down'], 'occupation':['occupation__freelancer', 'occupation__supervisor', 'occupation__student', 'occupation__others', 'occupation__official', 'occupation__salesman', 'occupation__teacher', 'occupation__soldier', 'occupation__engineer']}
-binary_label_list = [u'ACG', u'indoorsman', u'game_show', u'has_car', u'game_news', u'entertainment_news', u'health', u'online_shopping', u'variety_show', u'business_news', u'tvseries_show', u'current_news', u'sports_news', u'tech_news', u'offline_shopping', u'pregnant', u'gender', u'study', u'married', u'sports_show', u'gamer', u'social', u'has_pet']
+#not_binary_label_dict = {'field':['field__manufacture', 'field__financial', 'field__infotech', 'field__law', 'field__agriculture', 'field__human_resource', 'field__commerce', 'field__natural', 'field__service', 'field__humanities', 'field__medical', 'field__architecture', 'field__athlete'], 'age':['age__16to35', 'age__35to55', 'age__55up', 'age__16down'], 'sport':['sport__basketball', 'sport__bicycling', 'sport__tabel_tennis', 'sport__football', 'sport__jogging', 'sport__badminton', 'sport__fitness'],'consumption': ['consumption__10000to20000', 'consumption__20000up', 'consumption__5000to10000', 'consumption__5000down'], 'occupation':['occupation__freelancer', 'occupation__supervisor', 'occupation__student', 'occupation__others', 'occupation__official', 'occupation__salesman', 'occupation__teacher', 'occupation__soldier', 'occupation__engineer']}
+#binary_label_list = [u'ACG', u'indoorsman', u'game_show', u'has_car', u'game_news', u'entertainment_news', u'health', u'online_shopping', u'variety_show', u'business_news', u'tvseries_show', u'current_news', u'sports_news', u'tech_news', u'offline_shopping', u'pregnant', u'gender', u'study', u'married', u'sports_show', u'gamer', u'social', u'has_pet']
 query_limit = 1000
-
 APPLICATION_CLASS = 'BindingApplication'
-
 STATIC_INFO_TABLE = 'MageiaAppStaticInfo'
 
 user_profile_base_option = {
@@ -1089,7 +1086,7 @@ class Developer:
     def get_tracker_of_app(self, app_id=''):
         try:
             self.tracker_list = []
-            user = self.user.become(self.session_token)
+            #user = self.user.become(self.session_token)
             Application = Object.extend('Application')
             query = Query(Application)
             #query.equal_to('user', user)

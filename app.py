@@ -3,12 +3,14 @@
 import datetime
 from flask import Flask, render_template,request,session,redirect,url_for,flash,abort,make_response,jsonify
 import hashlib
-import json
+#import json
 import requests
 import random
 # from views.dashboard import dashboard_view
 import config as config
-import itsdangerous
+#import itsdangerous
+from leancloud import  Object, Query
+
 DEMO_APP_NAME = 'Demo'
 app = Flask(__name__)
 app.config['SECRET_KEY'] = config.SECRET_KEY
@@ -29,7 +31,9 @@ def generate_token():
 def xsrf_protect():
     print 'The endpoint of the request is: ' + str(request.endpoint)
     if request.method == "POST" and request.endpoint not in \
-            ['panel', 'integration', 'settings', 'ajax_dashboard', 'ajax_demo', 'demo', 'dash', 'console', 'delete', 'dashboard']:
+            ['panel', 'integration', 'settings', 'ajax_dashboard', 
+             'ajax_demo', 'demo', 'dash', 'console', 'delete', 
+             'dashboard', 'update_static_info']:
         token = session.pop('_xsrf', None)
         print 'token: ' + str(token)
         print 'form xsrf: ' + str(request.form.get('_xsrf'))
@@ -54,22 +58,16 @@ def get_expiration():
 
 @app.route('/')
 def index():
-    error = None
     username = session.get('username')
-
     return render_template('index.html', username=username)
-    # if not username:
-    #     return render_template('index.html', username=username)
-    # return redirect(url_for('dashboard',username=username))
-# 注意现在还没有做user和app_id是否是从属关系的认证
 
 
 @app.route('/integration',methods=['POST'])
 def integration():
-    print 'args: '+str(request.args)
-    print 'form: '+str(request.form)
+    #print 'args: '+str(request.args)
+    #print 'form: '+str(request.form)
     # app_id = request.form.get('app_id')
-    app_name = session.get('app_name')
+    #app_name = session.get('app_name')
     app_id = session.get('app_id')
 
     dashboard = Dashboard()
@@ -83,30 +81,8 @@ def integration():
     return render_template('integration.html',
                            app_id=app_id,
                            app_key=app_key)
-    # app_name = session.get('app_name')
-    # app_id = session.get('app_id')
-    # username = session.get('username')
-    # session_token = session.get('session_token')
-    #
-    # user = Developer()
-    # user.session_token = session_token
-    # if user.get_all_application():
-    #     all_application_dict = user.all_application_dict
-    # else:
-    #     print 'no application  exists'
-    #     all_application_dict ={}
-    # print 'all_application_dict is : %s' %(str(all_application_dict))
-    # del all_application_dict[app_name]
-    #
-    # error = None
-    # username = session.get('username')
-    #
-    # return render_template('integration.html',
-    #                        route_link='dashboard',
-    #                         username = username,
-    #                        app_name = app_name,
-    #                        all_application_dict =all_application_dict ,
-    #                       )
+
+
 @app.route('/settings',methods=['POST'])
 def settings():
     print 'args: '+str(request.args)
@@ -131,39 +107,10 @@ def settings():
                            app_id=app_id,
                            app_key=app_key,
                            disabled=disabled)
-    # app_name = session.get('app_name')
-    # app_id = session.get('app_id')
-    # username = session.get('username')
-    # session_token = session.get('session_token')
-    #
-    # user = Developer()
-    # user.session_token = session_token
-    # if user.get_all_application():
-    #     all_application_dict = user.all_application_dict
-    # else:
-    #     print 'no application  exists'
-    #     all_application_dict ={}
-    # print 'all_application_dict is : %s' %(str(all_application_dict))
-    # del all_application_dict[app_name]
-    #
-    # error = None
-    # username = session.get('username')
-    #
-    # return render_template('settings.html',
-    #                        route_link='dashboard',
-    #                         username = username,
-    #                        app_name = app_name,
-    #                        all_application_dict = all_application_dict,
-    #                       )
-    # if not username:
-    #     return render_template('index.html', username=username)
-    # return redirect(url_for('dashboard',username=username))
 # 注意现在还没有做user和app_id是否是从属关系的认证
 
 @app.route('/dash/<param>',methods=['GET','POST'])
 def dash(param):
-
-
     username = session.get('username')
     session_token = session.get('session_token')
 
@@ -218,7 +165,7 @@ def dash(param):
     print 'app_name is %s and app_id is %s' %(str(app_name),str(app_id))
     dashboard = Dashboard()
     dashboard.app_id = app_id
-    all_app_event = 1
+    #all_app_event = 1
     if request.method == 'POST':
         is_xhr = True
     else:
@@ -245,19 +192,6 @@ def dash(param):
     del behavior_recognition_event_dict[event_name_type]
     del behavior_recognition_measure_dict[behavior_recognition_measure_type]
 
-
-    # sorted_frequent_location_percentage = dashboard.get_location_distribution_data_dict()
-    # sorted_frequent_motion_percentage=dashboard.get_motion_distribution_data_dict()
-    # sorted_frequent_sound_percentage = dashboard.get_sound_distribution_data_dict()
-    # event_name = 'event1'
-    # application_id = 'application_id'
-    # activity_statistics_dict = dashboard.get_event_to_activity_data(application_id,event_name)
-    # print 'new_data_dict: ' + str(new_data_dict)
-    # print 'sorted_frequent_location_percentage: ' +str(sorted_frequent_location_percentage)
-    # print 'sorted_frequent_motion_percentage: ' + str(sorted_frequent_motion_percentage)
-    # print 'sorted_frequent_sound_percentage: ' + str(sorted_frequent_sound_percentage)
-    # print 'sorted_frequent_sound_percentage: ' + str(activity_statistics_dict)
-
     print 'log comes out !!!!!'
     return render_template('shared/dash.html',
                             is_xhr = is_xhr,
@@ -269,20 +203,6 @@ def dash(param):
                             app_name = app_name,
                             app_id =app_id,
                             all_application_dict = all_application_dict,
-
-                            # age_data = age_data,
-                            # age_category_list = age_category_list,
-                            # man_data_list = man_data_list,
-                            # woman_data_list = woman_data_list,
-                            #
-                            # location_data = location_data,
-                            #  location_category_list = location_category_list,
-                            #  location_percentage_list = location_percentage_list,
-
-                            #  event_data=event_data,
-                            #   event_name =event_name,
-                            # activity_category_list=activity_category_list,
-                            # activity_count_list=activity_count_list,
 
                             default_user_profile_category = default_user_profile_category,
                             default_path_analysis_category = default_path_analysis_category,
@@ -297,18 +217,7 @@ def dash(param):
                             user_profile_category_dict = user_profile_category_dict,
                             path_analysis_measure_dict = path_analysis_measure_dict,
                             behavior_recognition_event_dict = behavior_recognition_event_dict,
-                            behavior_recognition_measure_dict = behavior_recognition_measure_dict
-
-                            # location_name_list = [str(kv[0]) for kv in sorted_frequent_location_percentage],
-                            # location_time_list = [kv[1] for kv in sorted_frequent_location_percentage],
-                            # motion_name_list = [str(kv[0]) for kv in sorted_frequent_motion_percentage],
-                            # motion_time_list = [kv[1] for kv in sorted_frequent_motion_percentage],
-                            # sound_name_list = [str(kv[0]) for kv in sorted_frequent_sound_percentage],
-                            # sound_time_list = [kv[1] for kv in sorted_frequent_sound_percentage],
-                            # event_name =event_name,
-                            # event_to_activity_name_list=[str(key) for key in activity_statistics_dict.keys()],
-                            # event_to_activity_count_list=activity_statistics_dict.values()
-                            )
+                            behavior_recognition_measure_dict = behavior_recognition_measure_dict)
 
 
 @app.route('/demo',methods=['GET', 'POST'])
@@ -341,49 +250,13 @@ def demo():
     print 'app_name is %s and app_id is %s' %(str(app_name),str(app_id))
     dashboard = Dashboard()
     dashboard.app_id = app_id
-    all_app_event = 1
+    #all_app_event = 1
     if request.method == 'POST':
         is_xhr = True
     else:
         is_xhr = False
     dashboard_link = '/demo'
 
-    # default_user_profile_category = 'Age&Gender'
-    # default_path_analysis_category = 'Frequently Location'
-    # default_event_name = 'Event1'
-    # default_behavior_recognition_measure = 'Activity'
-    #
-    # user_profile_type = 'age'
-    # path_analysis_type = 'location'
-    # event_name_type = 'Event1'
-    # behavior_recognition_measure_type = 'activity'
-    #
-    #
-    #
-    # user_profile_category_dict = dashboard.get_user_profile_category_dict()    #['Occupation','Tastes']
-    # path_analysis_measure_dict = dashboard.get_path_analysis_measure_dict() # ['Frequently Track']
-    # behavior_recognition_event_dict = dashboard.get_behavior_recognition_event_dict() #['event2']
-    # behavior_recognition_measure_dict = dashboard.get_behavior_recognition_measure_dict() #['Location','Time']
-    #
-    # del user_profile_category_dict[user_profile_type]
-    # del path_analysis_measure_dict[path_analysis_type]
-    # del behavior_recognition_event_dict[event_name_type]
-    # del behavior_recognition_measure_dict[behavior_recognition_measure_type]
-
-
-    # sorted_frequent_location_percentage = dashboard.get_location_distribution_data_dict()
-    # sorted_frequent_motion_percentage=dashboard.get_motion_distribution_data_dict()
-    # sorted_frequent_sound_percentage = dashboard.get_sound_distribution_data_dict()
-    # event_name = 'event1'
-    # application_id = 'application_id'
-    # activity_statistics_dict = dashboard.get_event_to_activity_data(application_id,event_name)
-    # print 'new_data_dict: ' + str(new_data_dict)
-    # print 'sorted_frequent_location_percentage: ' +str(sorted_frequent_location_percentage)
-    # print 'sorted_frequent_motion_percentage: ' + str(sorted_frequent_motion_percentage)
-    # print 'sorted_frequent_sound_percentage: ' + str(sorted_frequent_sound_percentage)
-    # print 'sorted_frequent_sound_percentage: ' + str(activity_statistics_dict)
-
-    print 'log comes out !!!!!'
     return render_template('demo.html',
                            is_xhr = is_xhr,
                            dashboard_link = dashboard_link,
@@ -393,51 +266,11 @@ def demo():
                            username = username,
                            app_name = app_name,
                            app_id =app_id,
-                           all_application_dict = {},
-
-                           # age_data = age_data,
-                           # age_category_list = age_category_list,
-                           # man_data_list = man_data_list,
-                           # woman_data_list = woman_data_list,
-                           #
-                           # location_data = location_data,
-                           #  location_category_list = location_category_list,
-                           #  location_percentage_list = location_percentage_list,
-
-                           #  event_data=event_data,
-                           #   event_name =event_name,
-                           # activity_category_list=activity_category_list,
-                           # activity_count_list=activity_count_list,
-
-                           #  default_user_profile_category = default_user_profile_category,
-                           # default_path_analysis_category = default_path_analysis_category,
-                           # default_event_name = default_event_name,
-                           # default_behavior_recognition_measure = default_behavior_recognition_measure,
-                           #
-                           # user_profile_type = user_profile_type,
-                           # path_analysis_type = path_analysis_type,
-                           #  event_name_type = event_name_type,
-                           #  behavior_recognition_measure_type = behavior_recognition_measure_type,
-                           #
-                           # user_profile_category_dict = user_profile_category_dict,
-                           # path_analysis_measure_dict = path_analysis_measure_dict,
-                           # behavior_recognition_event_dict = behavior_recognition_event_dict,
-                           # behavior_recognition_measure_dict = behavior_recognition_measure_dict
-
-                           # location_name_list = [str(kv[0]) for kv in sorted_frequent_location_percentage],
-                           # location_time_list = [kv[1] for kv in sorted_frequent_location_percentage],
-                           # motion_name_list = [str(kv[0]) for kv in sorted_frequent_motion_percentage],
-                           # motion_time_list = [kv[1] for kv in sorted_frequent_motion_percentage],
-                           # sound_name_list = [str(kv[0]) for kv in sorted_frequent_sound_percentage],
-                           # sound_time_list = [kv[1] for kv in sorted_frequent_sound_percentage],
-                           # event_name =event_name,
-                           # event_to_activity_name_list=[str(key) for key in activity_statistics_dict.keys()],
-                           # event_to_activity_count_list=activity_statistics_dict.values()
-                           )
+                           all_application_dict = {})
 
 @app.route('/ajax/demo/<param>',methods=['GET','POST'])
 def ajax_demo(param):
-    username = session.get('username')
+    #username = session.get('username')
     session_token = session.get('session_token')
 
     if not session_token:
@@ -452,7 +285,7 @@ def ajax_demo(param):
     user.session_token = session_token
     print 'The form is: %s' %(str(request.form))
     print 'Param is: %s' %(str(param))
-    _xsrf = request.form.get('_xsrf')
+    #_xsrf = request.form.get('_xsrf')
     app_id = request.form.get('app_id')
 
     dashboard = Dashboard()
@@ -484,7 +317,7 @@ def ajax_demo(param):
 
 @app.route('/ajax/dashboard/<param>',methods=['GET','POST'])
 def ajax_dashboard(param):
-    username = session.get('username')
+    #username = session.get('username')
     session_token = session.get('session_token')
 
     if not session_token:
@@ -497,9 +330,9 @@ def ajax_dashboard(param):
 
     user = Developer()
     user.session_token = session_token
-    print 'The form is: %s' %(str(request.form))
-    print 'Param is: %s' %(str(param))
-    _xsrf = request.form.get('_xsrf')
+    #print 'The form is: %s' %(str(request.form))
+    #print 'Param is: %s' %(str(param))
+    #_xsrf = request.form.get('_xsrf')
     app_id = request.form.get('app_id')
 
     dashboard = Dashboard()
@@ -574,32 +407,6 @@ def dashboard():
         is_xhr = False
     dashboard_link = '/dashboard/'
 
-    # default_user_profile_category = 'Age&Gender'
-    # default_path_analysis_category = 'Frequently Location'
-    # default_event_name = 'Event1'
-    # default_behavior_recognition_measure = 'Activity'
-    #
-    # user_profile_type = 'age'
-    # path_analysis_type = 'location'
-    # event_name_type = 'Event1'
-    # behavior_recognition_measure_type = 'activity'
-    #
-    #
-    #
-    # user_profile_category_dict = dashboard.get_user_profile_category_dict()    #['Occupation','Tastes']
-    # path_analysis_measure_dict = dashboard.get_path_analysis_measure_dict() # ['Frequently Track']
-    # behavior_recognition_event_dict = dashboard.get_behavior_recognition_event_dict() #['event2']
-    # behavior_recognition_measure_dict = dashboard.get_behavior_recognition_measure_dict() #['Location','Time']
-    #
-    # del user_profile_category_dict[user_profile_type]
-    # del path_analysis_measure_dict[path_analysis_type]
-    # del behavior_recognition_event_dict[event_name_type]
-    # del behavior_recognition_measure_dict[behavior_recognition_measure_type]
-
-
-    print 'log comes out !!!!!'
-
-
     return render_template('dashboard.html',
                            is_xhr=is_xhr,
                            dashboard_link=dashboard_link,
@@ -609,24 +416,8 @@ def dashboard():
                             username = username,
                            app_name = app_name,
                            app_id =app_id,
+                           all_application_dict = all_application_dict)
 
-                           all_application_dict = all_application_dict,
-
-                           #  default_user_profile_category = default_user_profile_category,
-                           # default_path_analysis_category = default_path_analysis_category,
-                           # default_event_name = default_event_name,
-                           # default_behavior_recognition_measure = default_behavior_recognition_measure,
-                           #
-                           # user_profile_type = user_profile_type,
-                           # path_analysis_type = path_analysis_type,
-                           #  event_name_type = event_name_type,
-                           #  behavior_recognition_measure_type = behavior_recognition_measure_type,
-                           #
-                           # user_profile_category_dict = user_profile_category_dict,
-                           # path_analysis_measure_dict = path_analysis_measure_dict,
-                           # behavior_recognition_event_dict = behavior_recognition_event_dict,
-                           # behavior_recognition_measure_dict = behavior_recognition_measure_dict
-                           )
 
 @app.route('/login', methods=['GET','POST'])
 def login():
@@ -688,7 +479,6 @@ def signup():
     if  username:
         return redirect(url_for('dashboard',username=username))
     user = Developer()
-    error = None
     if request.method == 'POST':
         print request.form
         email=request.form['email']
@@ -718,8 +508,8 @@ def logout():
 def reset():
     # if session.get('username'):
     #     session['username'] = None
-    email = request.form['email']
-    print 'request.form is: %s' %(str(request.form))
+    #email = request.form['email']
+    #print 'request.form is: %s' %(str(request.form))
     return redirect(url_for('index'))
 
 
@@ -750,11 +540,9 @@ def panel():
         ['golf','skiing','sports_venues','football_field','tennis_court','horsemanship','race_course','basketball_court'],
     ]
     motion_dict = {'sitting': 0, 'walking': 3, 'running': 4, 'ridding': 2, 'driving': 1, 'unknown': -1}
-    motion_list = [-1, 0, 1, 2, 3, 4]
     event_list = ['attend_concert', 'go_outing', 'dining_in_restaurant', 'watch_movie', 
                   'study_in_class', 'visit_sights', 'work_in_office', 'exercise_outdoor', 
                   'shopping_in_mall', 'exercise_indoor']
-    status_list = [-1, 0, 1, 2, 3, 4, 5]
     status_dict = {"unknown": -1, "arriving_home":0, "leaving_home":1, "arriving_office": 2, "leaving_office": 3, "going_home":4, "going_office":5, "user_home_office_not_yet_defined": 6}
 
     session_token = session.get('session_token')
@@ -799,7 +587,6 @@ def track():
 
     if not session_token:
         return redirect(url_for('login'))
-    error = None
     user = Developer()
     user.session_token = session_token
     if user.get_all_application():
@@ -821,16 +608,12 @@ def track():
         tracker_id=request.form['tracker_id']
         app_id = request.form['app_id']
 
-        print 'all_application_dict is : %s' %(str(all_application_dict))
-
-
         result = user.connect_new_tracker(tracker_id=tracker_id,app_id=app_id)
         if not result:
             return 'error when connect new tracker'
         else:
             return 'success'
     else:
-
         if user.get_all_tracker():
             all_tracker_dict = user.all_tracker_dict
         else:
@@ -850,10 +633,9 @@ def track():
 def console():
     username = session.get('username')
     session_token = request.cookies.get('session_token')
-    _xsrf = request.cookies.get('_xsrf')
+    #_xsrf = request.cookies.get('_xsrf')
     if not session_token:
         return redirect(url_for('login'))
-    error = None
     user = Developer()
     user.session_token = session_token
     if request.method == 'POST':
@@ -876,9 +658,10 @@ def console():
     print 'all_application_dict is : %s' %(str(all_application_dict))
     return render_template('console.html', username=username,all_application_dict=all_application_dict)
 
+
 @app.route('/delete',methods=['GET','POST'])
 def delete():
-    username = session.get('username')
+    #username = session.get('username')
     session_token = session.get('session_token')
 
     if not session_token:
@@ -891,8 +674,8 @@ def delete():
 
     user = Developer()
     user.session_token = session_token
-    print 'The form is: %s' %(str(request.form))
-    _xsrf = request.form.get('_xsrf')
+    #print 'The form is: %s' %(str(request.form))
+    #_xsrf = request.form.get('_xsrf')
     app_id = request.form.get('app_id')
 
     dashboard = Dashboard()
@@ -907,6 +690,203 @@ def delete():
         return jsonify(response_json)
 
 
+@app.route('/v1/StaticInfo', methods=['POST'])
+def update_static_info():
+    user_id = request.json.get('user_id')
+    if not user_id:
+       return make_response('Error')
+    staticInfo = request.json.get('staticInfo')
+    
+    parse_dict = parse_static_info(staticInfo=staticInfo)
+    # get user Object
+    query =Query(Object.extend('_User'))
+    query.equal_to('objectId', user_id)
+    user = query.find()[0]
+
+    # get app Object
+    query = Query(Object.extend('BindingInstallation'))
+    query.equal_to('user', user)
+    result_list = query.find()
+    app_set = set()
+    for result in result_list:
+        app_set.add(result.attributes['application'].id)
+    app_id_list = list(app_set)
+
+    for app_id in app_id_list:
+        query =Query(Object.extend('Application'))
+        query.equal_to('objectId', app_id)
+        app = query.find()[0]
+
+        DashboardSource = Object.extend('DashboardSource')
+        query = Query(DashboardSource)
+        query.equal_to('app', app)
+        query.equal_to('user', user)
+        dst_table =query.find()
+        if not dst_table:
+            dst_table = DashboardSource()
+        else: 
+            dst_table = dst_table[0]
+
+        dst_table.set('app', app)
+        dst_table.set('user', user)
+        for key, value in parse_dict.items():
+            if value:
+                dst_table.set(key, value)
+        dst_table.save()
+    return make_response('OK')
+
+
+def parse_static_info(staticInfo={}):
+    ret_dict = {}
+    age = ''
+    if staticInfo.has_key('age'):
+        age_dict = staticInfo.get('age')
+        age = sorted(age_dict.items(), key=lambda age_dict: -age_dict[1])[0][0]
+    ret_dict['age'] = age
+
+    gender = ''
+    if staticInfo.has_key('gender'):
+        gender = 'male' if staticInfo.get('gender') > 0 else 'female'
+    ret_dict['gender'] = gender
+
+    consumption = ''
+    if staticInfo.has_key('consumption'):
+        consumption_dict = staticInfo.get('consumption')
+        consumption = sorted(consumption_dict.items(), 
+                             key=lambda consumption_dict: -consumption_dict[1])[0][0]
+    ret_dict['consumption'] = consumption
+
+    marriage = ''
+    if staticInfo.has_key('marriage'):
+        marriage = 'yes' if staticInfo.get('marriage') > 0 else 'no'
+    ret_dict['marriage'] = marriage
+
+    has_pet = ''
+    if staticInfo.has_key('has_pet'):
+        has_pet = 'yes' if staticInfo.get('has_pet') > 0 else 'no'
+    ret_dict['has_pet'] = has_pet
+
+    has_car = ''
+    if staticInfo.has_key('has_car'):
+        has_car = 'yes' if staticInfo.get('has_car') > 0 else 'no'
+    ret_dict['has_car'] = has_car
+
+    pregnant = ''
+    if staticInfo.has_key('pregnant'):
+        pregnant = 'yes' if staticInfo.get('pregnant') > 0 else 'no'
+    ret_dict['pregnant'] = pregnant
+
+    occupation = ''
+    if staticInfo.has_key('occupation'):
+        occupation_dict = staticInfo.get('occupation')
+        occupation = sorted(occupation_dict.items(),
+                            key=lambda occupation_dict: -occupation_dict[1])[0][0]
+    ret_dict['occupation'] = occupation
+            
+    field = ''
+    if staticInfo.has_key('field'):
+        field_dict = staticInfo.get('field')
+        field = sorted(field_dict.items(),
+                            key=lambda field_dict: -field_dict[1])[0][0]
+    ret_dict['field'] = field
+
+    sport = ''
+    if staticInfo.has_key('sport'):
+        sport_dict = staticInfo.get('sport')
+        sport = sorted(sport_dict.items(),
+                            key=lambda sport_dict: -sport_dict[1])[0][0]
+    ret_dict['sport'] = sport
+
+    social = ''
+    if staticInfo.has_key('social'):
+        social = 'yes' if staticInfo.get('social') > 0 else 'no'
+    ret_dict['social'] = social
+
+    indoorsman = ''
+    if staticInfo.has_key('indoorsman'):
+        indoorsman = 'yes' if staticInfo.get('indoorsman') > 0 else 'no'
+    ret_dict['indoorsman'] = indoorsman
+
+    acg = ''
+    if staticInfo.has_key('acg'):
+        acg = 'yes' if staticInfo.get('acg') > 0 else 'no'
+    ret_dict['acg'] = acg
+
+    tvseries_show = ''
+    if staticInfo.has_key('tvseries_show'):
+        tvseries_show = 'yes' if staticInfo.get('tvseries_show') > 0 else 'no'
+    ret_dict['tvseries_show'] = tvseries_show
+
+    variety_show = ''
+    if staticInfo.has_key('variety_show'):
+        variety_show = 'yes' if staticInfo.get('variety_show') > 0 else 'no'
+    ret_dict['variety_show'] = variety_show
+
+    game_show = ''
+    if staticInfo.has_key('game_show'):
+        game_show = 'yes' if staticInfo.get('game_show') > 0 else 'no'
+    ret_dict['game_show'] = game_show
+
+    sports_show = ''
+    if staticInfo.has_key('sports_show'):
+        sports_show = 'yes' if staticInfo.get('sports_show') > 0 else 'no'
+    ret_dict['sports_show'] = sports_show
+
+    health = ''
+    if staticInfo.has_key('health'):
+        health = 'yes' if staticInfo.get('health') > 0 else 'no'
+    ret_dict['health'] = health
+
+    gamer = ''
+    if staticInfo.has_key('gamer'):
+        gamer = 'yes' if staticInfo.get('gamer') > 0 else 'no'
+    ret_dict['gamer'] = gamer
+
+    study = ''
+    if staticInfo.has_key('study'):
+        study = 'yes' if staticInfo.get('study') > 0 else 'no'
+    ret_dict['study'] = study
+
+    game_news = ''
+    if staticInfo.has_key('game_news'):
+        game_news = 'yes' if staticInfo.get('game_news') > 0 else 'no'
+    ret_dict['game_news'] = game_news
+
+    sports_news = ''
+    if staticInfo.has_key('sports_news'):
+        sports_news = 'yes' if staticInfo.get('sports_news') > 0 else 'no'
+    ret_dict['sports_news'] = sports_news
+
+    business_news = ''
+    if staticInfo.has_key('business_news'):
+        business_news = 'yes' if staticInfo.get('business_news') > 0 else 'no'
+    ret_dict['business_news'] = business_news
+
+    current_news = ''
+    if staticInfo.has_key('current_news'):
+        current_news = 'yes' if staticInfo.get('current_news') > 0 else 'no'
+    ret_dict['current_news'] = current_news
+
+    entertainment_news = ''
+    if staticInfo.has_key('entertainment_news'):
+        entertainment_news = 'yes' if staticInfo.get('entertainment_news') > 0 else 'no'
+    ret_dict['entertainment_news'] = entertainment_news
+
+    tech_news = ''
+    if staticInfo.has_key('tech_news'):
+        tech_news = 'yes' if staticInfo.get('tech_news') > 0 else 'no'
+    ret_dict['tech_news'] = tech_news
+
+    offline_shopping = ''
+    if staticInfo.has_key('offline_shopping'):
+        offline_shopping = 'yes' if staticInfo.get('offline_shopping') > 0 else 'no'
+    ret_dict['offline_shopping'] = offline_shopping
+
+    online_shopping = ''
+    if staticInfo.has_key('online_shopping'):
+        online_shopping = 'yes' if staticInfo.get('online_shopping') > 0 else 'no'
+    ret_dict['online_shopping'] = online_shopping
+    return ret_dict
 
 
 @app.errorhandler(403)
