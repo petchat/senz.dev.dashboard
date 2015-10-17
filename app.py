@@ -449,18 +449,8 @@ def login():
             return resp
         else:
             return redirect(url_for('login'))
-        # if valid_login(request.form['username'],
-        #                request.form['password']):
-        #     return log_the_user_in(request.form['username'])
-        # else:
-        #     error = 'Invalid username/password'
-    # the code below this is executed if the request method
-    # was GET or the credentials were invalid
-    resp = make_response(render_template('login.html', error=error))
+    return make_response(render_template('login.html', error=error))
 
-    # resp.set_cookie('_xsrf',generate_xsrf_token())
-
-    return resp
 
 @app.route('/signup', methods=['POST'])
 def signup():
