@@ -427,14 +427,6 @@ def login():
     if  session_token  :
         return redirect(url_for('index'))
 
-    # else:
-    #     session_token = request.cookies.get('session_token')
-    #     if session_token :
-    #         session['session_token'] = session_token
-    #         return redirect(url_for('index'))
-
-    # if expiration and expiration > datetime.datetime.now():
-    #     return redirect(url_for('index'))
     user = Developer()
     error = None
     if request.method == 'POST':
