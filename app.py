@@ -315,6 +315,7 @@ def ajax_demo(param):
         return None
         pass
 
+
 @app.route('/ajax/dashboard/<param>',methods=['GET','POST'])
 def ajax_dashboard(param):
     #username = session.get('username')
@@ -690,6 +691,16 @@ def delete():
         return jsonify(response_json)
 
 
+@app.route('/v1/Location', methods=['POST'])
+def updata_location_info():
+    pass
+
+
+@app.route('/v1/Event', methods=['POST'])
+def update_event_info():
+    pass
+
+
 @app.route('/v1/StaticInfo', methods=['POST'])
 def update_static_info():
     user_id = request.json.get('user_id')
@@ -756,28 +767,21 @@ def parse_static_info(staticInfo={}):
                              key=lambda consumption_dict: -consumption_dict[1])[0][0]
     ret_dict['consumption'] = consumption
 
-    marriage = ''
-    if staticInfo.has_key('marriage'):
-        marriage = 'yes' if staticInfo.get('marriage') > 0 else 'no'
+    marriage = '' if 'marriage' not in staticInfo else marriage = 'yes' if staticInfo.get('marriage') > 0 else 'no'
     ret_dict['marriage'] = marriage
 
-    has_pet = ''
-    if staticInfo.has_key('has_pet'):
-        has_pet = 'yes' if staticInfo.get('has_pet') > 0 else 'no'
+    has_pet = '' if 'has_pet' not in staticInfo else has_pet = 'yes' if staticInfo.get('has_pet') > 0 else 'no'
     ret_dict['has_pet'] = has_pet
 
-    has_car = ''
-    if staticInfo.has_key('has_car'):
-        has_car = 'yes' if staticInfo.get('has_car') > 0 else 'no'
+    has_car = '' if 'has_car' not in staticInfo else has_car = 'yes' if staticInfo.get('has_car') > 0 else 'no'
     ret_dict['has_car'] = has_car
 
-    pregnant = ''
-    if staticInfo.has_key('pregnant'):
-        pregnant = 'yes' if staticInfo.get('pregnant') > 0 else 'no'
+    pregnant = '' if 'pregnant' not in staticInfo else pregnant = 'yes' if staticInfo.get('pregnant') > 0 else 'no'
     ret_dict['pregnant'] = pregnant
 
-    occupation = ''
-    if staticInfo.has_key('occupation'):
+    if 'occupation' not in staticInfo:
+        occupation = ''
+    else:
         occupation_dict = staticInfo.get('occupation')
         occupation = sorted(occupation_dict.items(),
                             key=lambda occupation_dict: -occupation_dict[1])[0][0]
@@ -894,6 +898,7 @@ def permission_forbidden(e):
     flash('Permission denied!')
     # return redirect(url_for('index'))
     return make_response(jsonify({'error': 'Unauthorized access'}), 403)
+
 
 @app.errorhandler(404)
 def page_not_found(e):
