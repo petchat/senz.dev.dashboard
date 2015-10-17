@@ -763,132 +763,71 @@ def parse_static_info(staticInfo={}):
     consumption = ''
     if staticInfo.has_key('consumption'):
         consumption_dict = staticInfo.get('consumption')
-        consumption = sorted(consumption_dict.items(), 
-                             key=lambda consumption_dict: -consumption_dict[1])[0][0]
+        consumption = sorted(consumption_dict.items(), key=lambda consumption_dict: -consumption_dict[1])[0][0]
     ret_dict['consumption'] = consumption
-
-    marriage = '' if 'marriage' not in staticInfo else marriage = 'yes' if staticInfo.get('marriage') > 0 else 'no'
-    ret_dict['marriage'] = marriage
-
-    has_pet = '' if 'has_pet' not in staticInfo else has_pet = 'yes' if staticInfo.get('has_pet') > 0 else 'no'
-    ret_dict['has_pet'] = has_pet
-
-    has_car = '' if 'has_car' not in staticInfo else has_car = 'yes' if staticInfo.get('has_car') > 0 else 'no'
-    ret_dict['has_car'] = has_car
-
-    pregnant = '' if 'pregnant' not in staticInfo else pregnant = 'yes' if staticInfo.get('pregnant') > 0 else 'no'
-    ret_dict['pregnant'] = pregnant
 
     if 'occupation' not in staticInfo:
         occupation = ''
     else:
         occupation_dict = staticInfo.get('occupation')
-        occupation = sorted(occupation_dict.items(),
-                            key=lambda occupation_dict: -occupation_dict[1])[0][0]
+        occupation = sorted(occupation_dict.items(), key=lambda occupation_dict: -occupation_dict[1])[0][0]
     ret_dict['occupation'] = occupation
             
     field = ''
     if staticInfo.has_key('field'):
         field_dict = staticInfo.get('field')
-        field = sorted(field_dict.items(),
-                            key=lambda field_dict: -field_dict[1])[0][0]
+        field = sorted(field_dict.items(), key=lambda field_dict: -field_dict[1])[0][0]
     ret_dict['field'] = field
 
     sport = ''
     if staticInfo.has_key('sport'):
         sport_dict = staticInfo.get('sport')
-        sport = sorted(sport_dict.items(),
-                            key=lambda sport_dict: -sport_dict[1])[0][0]
+        sport = sorted(sport_dict.items(), key=lambda sport_dict: -sport_dict[1])[0][0]
     ret_dict['sport'] = sport
 
-    social = ''
-    if staticInfo.has_key('social'):
-        social = 'yes' if staticInfo.get('social') > 0 else 'no'
+    marriage = '' if 'marriage' not in staticInfo else marriage = 'yes' if staticInfo.get('marriage') > 0 else 'no'
+    ret_dict['marriage'] = marriage
+    has_pet = '' if 'has_pet' not in staticInfo else has_pet = 'yes' if staticInfo.get('has_pet') > 0 else 'no'
+    ret_dict['has_pet'] = has_pet
+    has_car = '' if 'has_car' not in staticInfo else has_car = 'yes' if staticInfo.get('has_car') > 0 else 'no'
+    ret_dict['has_car'] = has_car
+    pregnant = '' if 'pregnant' not in staticInfo else pregnant = 'yes' if staticInfo.get('pregnant') > 0 else 'no'
+    ret_dict['pregnant'] = pregnant
+    social = '' if 'social' not in staticInfo else social = 'yes' if staticInfo.get('social') > 0 else 'no'
     ret_dict['social'] = social
-
-    indoorsman = ''
-    if staticInfo.has_key('indoorsman'):
-        indoorsman = 'yes' if staticInfo.get('indoorsman') > 0 else 'no'
+    indoorsman = '' if 'indoorsman' not in staticInfo else indoorsman = 'yes' if staticInfo.get('indoorsman') > 0 else 'no'
     ret_dict['indoorsman'] = indoorsman
-
-    acg = ''
-    if staticInfo.has_key('acg'):
-        acg = 'yes' if staticInfo.get('acg') > 0 else 'no'
+    acg = '' if 'acg' not in staticInfo else acg = 'yes' if staticInfo.get('acg') > 0 else 'no'
     ret_dict['acg'] = acg
-
-    tvseries_show = ''
-    if staticInfo.has_key('tvseries_show'):
-        tvseries_show = 'yes' if staticInfo.get('tvseries_show') > 0 else 'no'
+    tvseries_show = '' if 'tvseries_show' not in staticInfo else tvseries_show = 'yes' if staticInfo.get('tvseries_show') > 0 else 'no'
     ret_dict['tvseries_show'] = tvseries_show
-
-    variety_show = ''
-    if staticInfo.has_key('variety_show'):
-        variety_show = 'yes' if staticInfo.get('variety_show') > 0 else 'no'
+    variety_show = '' if 'variety_show' not in staticInfo else variety_show = 'yes' if staticInfo.get('variety_show') > 0 else 'no'
     ret_dict['variety_show'] = variety_show
-
-    game_show = ''
-    if staticInfo.has_key('game_show'):
-        game_show = 'yes' if staticInfo.get('game_show') > 0 else 'no'
+    game_show = '' if 'game_show' not in staticInfo else game_show = 'yes' if staticInfo.get('game_show') > 0 else 'no'
     ret_dict['game_show'] = game_show
-
-    sports_show = ''
-    if staticInfo.has_key('sports_show'):
-        sports_show = 'yes' if staticInfo.get('sports_show') > 0 else 'no'
+    sports_show = '' if 'sports_show' not in staticInfo else sports_show = 'yes' if staticInfo.get('sports_show') > 0 else 'no'
     ret_dict['sports_show'] = sports_show
-
-    health = ''
-    if staticInfo.has_key('health'):
-        health = 'yes' if staticInfo.get('health') > 0 else 'no'
+    health = '' if 'health' not in staticInfo else health = 'yes' if staticInfo.get('health') > 0 else 'no'
     ret_dict['health'] = health
-
-    gamer = ''
-    if staticInfo.has_key('gamer'):
-        gamer = 'yes' if staticInfo.get('gamer') > 0 else 'no'
+    gamer = '' if 'gamer' not in staticInfo else gamer = 'yes' if staticInfo.get('gamer') > 0 else 'no'
     ret_dict['gamer'] = gamer
-
-    study = ''
-    if staticInfo.has_key('study'):
-        study = 'yes' if staticInfo.get('study') > 0 else 'no'
+    study = '' if 'study' not in staticInfo else study = 'yes' if staticInfo.get('study') > 0 else 'no'
     ret_dict['study'] = study
-
-    game_news = ''
-    if staticInfo.has_key('game_news'):
-        game_news = 'yes' if staticInfo.get('game_news') > 0 else 'no'
+    game_news = '' if 'game_news' not in staticInfo else game_news = 'yes' if staticInfo.get('game_news') > 0 else 'no'
     ret_dict['game_news'] = game_news
-
-    sports_news = ''
-    if staticInfo.has_key('sports_news'):
-        sports_news = 'yes' if staticInfo.get('sports_news') > 0 else 'no'
+    sports_news = '' if 'sports_news' not in staticInfo else sports_news = 'yes' if staticInfo.get('sports_news') > 0 else 'no'
     ret_dict['sports_news'] = sports_news
-
-    business_news = ''
-    if staticInfo.has_key('business_news'):
-        business_news = 'yes' if staticInfo.get('business_news') > 0 else 'no'
+    business_news = '' if 'business_news' not in staticInfo else business_news = 'yes' if staticInfo.get('business_news') > 0 else 'no'
     ret_dict['business_news'] = business_news
-
-    current_news = ''
-    if staticInfo.has_key('current_news'):
-        current_news = 'yes' if staticInfo.get('current_news') > 0 else 'no'
+    current_news = '' if 'current_news' not in staticInfo else current_news = 'yes' if staticInfo.get('current_news') > 0 else 'no'
     ret_dict['current_news'] = current_news
-
-    entertainment_news = ''
-    if staticInfo.has_key('entertainment_news'):
-        entertainment_news = 'yes' if staticInfo.get('entertainment_news') > 0 else 'no'
+    entertainment_news = '' if 'entertainment_news' not in staticInfo else entertainment_news = 'yes' if staticInfo.get('entertainment_news') > 0 else 'no'
     ret_dict['entertainment_news'] = entertainment_news
-
-    tech_news = ''
-    if staticInfo.has_key('tech_news'):
-        tech_news = 'yes' if staticInfo.get('tech_news') > 0 else 'no'
+    tech_news = '' if 'tech_news' not in staticInfo else tech_news = 'yes' if staticInfo.get('tech_news') > 0 else 'no'
     ret_dict['tech_news'] = tech_news
-
-    offline_shopping = ''
-    if staticInfo.has_key('offline_shopping'):
-        offline_shopping = 'yes' if staticInfo.get('offline_shopping') > 0 else 'no'
+    offline_shopping = '' if 'offline_shopping' not in staticInfo else offline_shopping = 'yes' if staticInfo.get('offline_shopping') > 0 else 'no'
     ret_dict['offline_shopping'] = offline_shopping
-
-    online_shopping = ''
-    if staticInfo.has_key('online_shopping'):
-        online_shopping = 'yes' if staticInfo.get('online_shopping') > 0 else 'no'
+    online_shopping = '' if 'online_shopping' not in staticInfo else online_shopping = 'yes' if staticInfo.get('online_shopping') > 0 else 'no'
     ret_dict['online_shopping'] = online_shopping
     return ret_dict
 
